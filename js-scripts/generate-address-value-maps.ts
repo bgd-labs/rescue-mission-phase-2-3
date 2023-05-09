@@ -1,30 +1,49 @@
 import { BigNumber, Event, providers } from 'ethers';
-import { IERC20__factory } from './typechain/IERC20__factory';
 import fs from 'fs';
 import { ChainId } from '@aave/contract-helpers';
-import { PromisePool } from '@supercharge/promise-pool';
 import { fetchLabel, wait } from './label-map';
+import { AaveV2Avalanche, AaveV2Ethereum, AaveV2Polygon, AaveV3Ethereum, AaveV3Polygon } from "@bgd-labs/aave-address-book";
+import { IERC20__factory } from './typechain/IERC20__factory';
+import { LendingPoolFactory } from './typechain/LendingPoolFactory';
+import { L2Pool__factory } from './typechain/L2Pool__factory';
+import { L2Pool } from './typechain/L2Pool';
+import { Pool } from './typechain/Pool';
+import { Pool__factory } from './typechain/Pool__factory';
+import { LendingPool } from './typechain/LendingPool';
 import TOKENS_ETH from './assets/ethTokens.json';
-import V2_A_TOKENS from './assets/v2ATokens.json';
-import V3_A_TOKENS from './assets/v3ATokens.json';
+import TOKENS_POL from './assets/polTokens.json';
+import TOKENS_AVA from './assets/avaTokens.json';
+import V2_POL_A_TOKENS from './assets/v2PolATokens.json';
+import V3_POL_A_TOKENS from './assets/v2PolATokens.json';
+import V2_AVA_A_TOKENS from './assets/v2PolATokens.json';
+import V2AMM_ETH_A_TOKENS from './assets/v2AmmATokens.json';
+import V2_ETH_A_TOKENS from './assets/v2EthATokens.json';
+import V3_ETH_A_TOKENS from './assets/v3EthATokens.json';
 const amountsFilePath = `./js-scripts/maps/amountsByContract.txt`;
 
 const JSON_RPC_PROVIDER = {
   [ChainId.mainnet]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+  [ChainId.polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
+  [ChainId.avalanche]: process.env.RPC_AVALANCHE,
 };
+
+enum AaveMarket { v1, v2, v2Amm, v3 };
 
 async function fetchTxns(
   token: string,
   to: string,
   network: keyof typeof JSON_RPC_PROVIDER,
   name: string,
-  validateEvent?: (events: Event[]) => Promise<Event[]>,
+  isAToken?: boolean,
+  aTokenMarket?: AaveMarket,
+  validateEvent?: (events: Event[], network: keyof typeof JSON_RPC_PROVIDER) => Promise<Event[]>,
 ): Promise<Record<string, { amount: string; txHash: string[] }>> {
   const provider = new providers.StaticJsonRpcProvider(
     JSON_RPC_PROVIDER[network],
   );
   const contract = IERC20__factory.connect(token, provider);
   const event = contract.filters.Transfer(null, to);
+
   async function getPastLogs(
     fromBlock: number,
     toBlock: number,
@@ -33,7 +52,7 @@ async function fetchTxns(
     if (fromBlock <= toBlock) {
       try {
         const events = await contract.queryFilter(event, fromBlock, toBlock);
-        return events;
+        return isAToken ? await filterEvents(events, fromBlock, toBlock) : events;
       } catch (error) {
         // @ts-expect-error
         if (error.error?.message?.indexOf('[') > -1) {
@@ -75,9 +94,111 @@ async function fetchTxns(
     return [];
   }
 
+  async function getV3ATokensEventsToFilterOut(fromBlock: number, toBlock: number): Promise<Event[]> {
+    let v3PoolContract: Pool | L2Pool;
+    switch (network) {
+      case ChainId.mainnet:
+        v3PoolContract = Pool__factory.connect(AaveV3Ethereum.POOL, provider);
+        break;
+      case ChainId.polygon:
+        v3PoolContract = L2Pool__factory.connect(AaveV3Polygon.POOL, provider);
+        break;
+      default:
+        throw Error('Invalid network for v3 market');
+    }
+    const repayEvent = v3PoolContract.filters.Repay(getUnderlyingToken(to), null, null, null);
+    const supplyEvent = v3PoolContract.filters.Supply(getUnderlyingToken(to), null, null, null, null);
+    const liqCallEvent = v3PoolContract.filters.LiquidationCall(null, getUnderlyingToken(to), null, null, null, null, null);
+    const flashloanEvent = v3PoolContract.filters.FlashLoan(null, null, getUnderlyingToken(to), null, null, null);
+
+    const repayEvents = await v3PoolContract.queryFilter(repayEvent, fromBlock, toBlock);
+    const supplyEvents = await v3PoolContract.queryFilter(supplyEvent, fromBlock, toBlock);
+    const liqCallEvents = await v3PoolContract.queryFilter(liqCallEvent, fromBlock, toBlock);
+    const flashloanEvents = await v3PoolContract.queryFilter(flashloanEvent, fromBlock, toBlock);
+    return [...repayEvents, ...supplyEvents, ...liqCallEvents, ...flashloanEvents];
+  }
+
+  async function getV2ATokensEventsToFilterOut(fromBlock: number, toBlock: number): Promise<Event[]> {
+    let v2PoolContract: LendingPool;
+    switch (network) {
+      case ChainId.mainnet:
+        v2PoolContract = LendingPoolFactory.connect(AaveV2Ethereum.POOL, provider);
+        break;
+      case ChainId.polygon:
+        v2PoolContract = LendingPoolFactory.connect(AaveV2Polygon.POOL, provider);
+        break;
+      case ChainId.avalanche:
+        v2PoolContract = LendingPoolFactory.connect(AaveV2Avalanche.POOL, provider);
+      default:
+        throw Error('Invalid network for v2 market');
+    }
+    const repayEvent = v2PoolContract.filters.Repay(getUnderlyingToken(to), null, null, null);
+    const supplyEvent = v2PoolContract.filters.Deposit(getUnderlyingToken(to), null, null, null, null);
+    const liqCallEvent = v2PoolContract.filters.LiquidationCall(null, getUnderlyingToken(to), null, null, null, null, null);
+    const flashloanEvent = v2PoolContract.filters.FlashLoan(null, null, getUnderlyingToken(to), null, null, null);
+
+    const repayEvents = await v2PoolContract.queryFilter(repayEvent, fromBlock, toBlock);
+    const supplyEvents = await v2PoolContract.queryFilter(supplyEvent, fromBlock, toBlock);
+    const liqCallEvents = await v2PoolContract.queryFilter(liqCallEvent, fromBlock, toBlock);
+    const flashloanEvents = await v2PoolContract.queryFilter(flashloanEvent, fromBlock, toBlock);
+    return [...repayEvents, ...supplyEvents, ...liqCallEvents, ...flashloanEvents];
+  }
+
+  // TODO: Add more markets
+  async function getEventsToFilterOut(fromBlock: number, toBlock: number): Promise<Event[]> {
+    if (isAToken) {
+      switch (aTokenMarket) {
+        case AaveMarket.v2:
+          return await getV2ATokensEventsToFilterOut(fromBlock, toBlock);
+        case AaveMarket.v3:
+          return await getV3ATokensEventsToFilterOut(fromBlock, toBlock);
+        default:
+          throw Error('Invalid Aave market for the aToken');
+      }
+    }
+    return [];
+  }
+
+  // TODO: Add more markets
+  function getUnderlyingToken(aToken: string): string {
+    if (network == ChainId.mainnet && aTokenMarket == AaveMarket.v2) {
+      const tokenSymbol = Object.keys(V2_ETH_A_TOKENS).find(key => V2_ETH_A_TOKENS[key as keyof typeof V2_ETH_A_TOKENS] === aToken);
+      return TOKENS_ETH[tokenSymbol as keyof typeof TOKENS_ETH];
+    } else if (network == ChainId.mainnet && aTokenMarket == AaveMarket.v3) {
+      const tokenSymbol = Object.keys(V3_ETH_A_TOKENS).find(key => V3_ETH_A_TOKENS[key as keyof typeof V3_ETH_A_TOKENS] === aToken);
+      return TOKENS_ETH[tokenSymbol as keyof typeof TOKENS_ETH];
+    } else if (network == ChainId.mainnet && aTokenMarket == AaveMarket.v2Amm) {
+      const tokenSymbol = Object.keys(V2AMM_ETH_A_TOKENS).find(key => V2AMM_ETH_A_TOKENS[key as keyof typeof V2AMM_ETH_A_TOKENS] === aToken);
+      return TOKENS_ETH[tokenSymbol as keyof typeof TOKENS_ETH];
+    } else if (network == ChainId.polygon && aTokenMarket == AaveMarket.v2) {
+      const tokenSymbol = Object.keys(V2_POL_A_TOKENS).find(key => V2_POL_A_TOKENS[key as keyof typeof V2_POL_A_TOKENS] === aToken);
+      return TOKENS_POL[tokenSymbol as keyof typeof TOKENS_POL];
+    } else if (network == ChainId.polygon && aTokenMarket == AaveMarket.v3) {
+      const tokenSymbol = Object.keys(V3_POL_A_TOKENS).find(key => V3_POL_A_TOKENS[key as keyof typeof V3_POL_A_TOKENS] === aToken);
+      return TOKENS_POL[tokenSymbol as keyof typeof TOKENS_POL];
+    } else if (network == ChainId.avalanche && aTokenMarket == AaveMarket.v2) {
+      const tokenSymbol = Object.keys(V2_AVA_A_TOKENS).find(key => V2_AVA_A_TOKENS[key as keyof typeof V2_AVA_A_TOKENS] === aToken);
+      return TOKENS_AVA[tokenSymbol as keyof typeof TOKENS_AVA];
+    }
+    throw Error('Unable to find the underlying token for the aToken');
+  }
+
+  async function filterEvents(events: Event[], fromBlock: number, toBlock: number): Promise<Event[]> {
+    try {
+      if (events.length == 0) return events;
+      const eventsToFilter = await getEventsToFilterOut(fromBlock, toBlock);
+      const filteredEvents = events.filter((event) => !eventsToFilter.some((poolEvents) => poolEvents.transactionHash === event.transactionHash));
+      // console.log('filtered events', filteredEvents);
+      return filteredEvents as Event[];
+    } catch (error) {
+      console.log('error in filtering');
+      throw(error);
+    }
+  }
+
   const currentBlockNumber = await provider.getBlockNumber();
   let events = await getPastLogs(0, currentBlockNumber);
-  if (validateEvent) events = await validateEvent(events);
+  if (validateEvent) events = await validateEvent(events, network);
 
   // Write events map of address value to json
   const addressValueMap: Record<string, { amount: string; txHash: string[] }> =
@@ -93,12 +214,6 @@ async function fetchTxns(
         }
 
         totalValue = totalValue.add(value);
-        // if we are looking at LEND token rescue
-        // we need to divide by 100 as users will get the rescue amount
-        // in AAVE tokens
-        if (token === TOKENS_ETH['LEND']) {
-          value = BigNumber.from(e.args.value.toString()).div(100);
-        }
         if (addressValueMap[e.args.from]) {
           const aggregatedValue = value
             .add(addressValueMap[e.args.from].amount)
@@ -119,7 +234,7 @@ async function fetchTxns(
   if (totalValue.gt(0)) {
     fs.appendFileSync(
       amountsFilePath,
-      `total amount for ${name} in wei: ${totalValue} for token ${token} latestBlock: ${latestBlockNumber}\r\n`,
+      `total amount for ${name} chainId: ${network} in wei: ${totalValue} latestBlock: ${latestBlockNumber}\r\n`,
     );
   }
   return addressValueMap;
@@ -140,53 +255,6 @@ async function retryTillSuccess(
     console.log('retrying');
     return retryTillSuccess(provider, event, fn);
   }
-}
-
-async function validateATokenEvents(events: Event[]): Promise<Event[]> {
-  console.log('validate aToken events: ', events.length);
-  async function validate(event: Event) {
-    const txHash = event.transactionHash;
-    const receipt = await provider.getTransactionReceipt(txHash);
-    if (
-      !receipt.logs.some((log) =>
-        log.topics.includes(
-          '0x4cdde6e09bb755c9a5589ebaec640bbfedff1362d4b255ebf8339782b9942faa', // v2 Repay topic
-        ) ||
-        log.topics.includes(
-          '0x4c209b5fc8ad50758f13e2e1088ba56a560dff690a1c6fef26394f4c03821c4f', // v2 Mint topic (we can keep supply topic as well)
-        ) ||
-        log.topics.includes(
-          '0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286', // v2 LiquidationCall topic
-        ) ||
-        log.topics.includes(
-          '0x631042c832b07452973831137f2d73e395028b44b250dedc5abb0ee766e168ac', // v2 Flashloan topic
-        ) ||
-        log.topics.includes(
-          '0xa534c8dbe71f871f9f3530e97a74601fea17b426cae02e1c5aee42c96c784051', // v3 Repay topic
-        ) ||
-        log.topics.includes(
-          '0x2b627736bca15cd5381dcf80b0bf11fd197d01a037c52b927a881a10fb73ba61', // v3 Supply topic
-        ) ||
-        log.topics.includes(
-          '0xefefaba5e921573100900a3ad9cf29f222d995fb3b6045797eaea7521bd8d6f0', // v3 Flashloan topic
-        )
-      )
-    ) {
-      return event;
-    }
-  }
-
-  const provider = new providers.StaticJsonRpcProvider(process.env.RPC_MAINNET);
-  const { results, errors } = await PromisePool.for(events)
-    .withConcurrency(15)
-    .process(async (event, ix) => {
-      console.log(`validating ${ix}`);
-      return retryTillSuccess(provider, event, validate);
-    });
-
-  const validTxns: Event[] = results.filter((r) => r !== undefined) as Event[];
-  console.log('valid aToken tx: ', validTxns.length);
-  return validTxns;
 }
 
 async function generateAndSaveMap(
@@ -237,9 +305,10 @@ async function generateEthTokensMap() {
   tokenList.forEach(async (token) => {
       const tokenName = token[0];
       const tokenAddress = token[1];
-      const v2AToken = V2_A_TOKENS[tokenName as keyof typeof V2_A_TOKENS];
-      const v3AToken = V3_A_TOKENS[tokenName as keyof typeof V3_A_TOKENS];
+      const v2AToken = V2_ETH_A_TOKENS[tokenName as keyof typeof V2_ETH_A_TOKENS];
+      const v3AToken = V3_ETH_A_TOKENS[tokenName as keyof typeof V3_ETH_A_TOKENS];
 
+      // rescue aRAI sent to aRAI contract
       if (tokenName == 'RAI') {
         const mappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
         await Promise.all([
@@ -247,13 +316,15 @@ async function generateEthTokensMap() {
             v2AToken,
             v2AToken,
             ChainId.mainnet,
-            'aRAI-aRAI',
-            validateATokenEvents
+            `v2a${tokenName}-v2a${tokenName}`,
+            true,
+            AaveMarket.v2
           )
         ]);
-        await generateAndSaveMap(mappedContracts, 'aRAI');
+        await generateAndSaveMap(mappedContracts, `ethereum_a${tokenName}`);
       }
 
+      // rescue v2 tokens sent to aToken contract
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
           v2AToken ? fetchTxns(
@@ -261,17 +332,92 @@ async function generateEthTokensMap() {
             v2AToken,
             ChainId.mainnet,
             `v2${tokenName}-v2a${tokenName}`,
-            validateATokenEvents
+            true,
+            AaveMarket.v2,
           ): {},
           v3AToken ? fetchTxns(
             tokenAddress,
             v3AToken,
             ChainId.mainnet,
             `v3${tokenName}-v3a${tokenName}`,
-            validateATokenEvents
+            // validateATokenEvents
           ): {}
         ]);
-      await generateAndSaveMap(mappedContracts, tokenName.toLocaleLowerCase());
+      await generateAndSaveMap(mappedContracts, 'ethereum_' + tokenName.toLocaleLowerCase());
+  });
+}
+
+async function generatePolTokensMap() {
+  const tokenList = Object.entries(TOKENS_POL);
+
+  tokenList.forEach(async (token) => {
+      const tokenName = token[0];
+      const tokenAddress = token[1];
+      const v2AToken = V2_POL_A_TOKENS[tokenName as keyof typeof V2_POL_A_TOKENS];
+      const v3AToken = V3_POL_A_TOKENS[tokenName as keyof typeof V3_POL_A_TOKENS];
+
+      // rescue aUSDC aDAI sent to aUSDC and aDAI contracts respectively
+      if (tokenName == 'USDC' || tokenName == 'DAI') {
+        console.log('v2AToken', v2AToken);
+        const mappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
+        await Promise.all([
+          fetchTxns(
+            v2AToken,
+            v2AToken,
+            ChainId.polygon,
+            `v2a${tokenName}-v2a${tokenName}`,
+            true,
+            AaveMarket.v2,
+          )
+        ]);
+        await generateAndSaveMap(mappedContracts, `polygon_a${tokenName.toLocaleLowerCase()}`);
+      }
+
+      // rescue v2 tokens sent to aToken contract
+      const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
+        await Promise.all([
+          v2AToken ? fetchTxns(
+            tokenAddress,
+            v2AToken,
+            ChainId.polygon,
+            `v2${tokenName}-v2a${tokenName}`,
+            true,
+            AaveMarket.v2
+          ): {},
+          v3AToken ? fetchTxns(
+            tokenAddress,
+            v3AToken,
+            ChainId.mainnet,
+            `v3${tokenName}-v3a${tokenName}`,
+            true,
+            AaveMarket.v3
+          ): {}
+        ]);
+      await generateAndSaveMap(mappedContracts, 'polygon_' + tokenName.toLocaleLowerCase());
+  });
+}
+
+async function generateAvaTokensMap() {
+  const tokenList = Object.entries(TOKENS_AVA);
+
+  tokenList.forEach(async (token) => {
+      const tokenName = token[0];
+      const tokenAddress = token[1];
+      const v2AToken = V2_AVA_A_TOKENS[tokenName as keyof typeof V2_AVA_A_TOKENS];
+
+      // rescue v2 tokens sent to aToken contract
+      const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
+        await Promise.all([
+          v2AToken ? fetchTxns(
+            tokenAddress,
+            v2AToken,
+            ChainId.avalanche,
+            `v2${tokenName}-v2a${tokenName}`,
+            true,
+            AaveMarket.v2
+          ): {}
+        ]);
+      await generateAndSaveMap(mappedContracts, 'avalanche_' + tokenName.toLocaleLowerCase());
   });
 }
 
@@ -279,6 +425,8 @@ async function generateEthTokensMap() {
 async function phase2() {
   fs.writeFileSync(amountsFilePath, '');
   await generateEthTokensMap();
+  await generatePolTokensMap();
+  await generateAvaTokensMap();
 }
 
 phase2().then(() => console.log('phase 2 all finished'));
