@@ -38,6 +38,7 @@
     "prettier-plugin-solidity": "^1.0.0-beta.19",
     "ts-node": "^10.7.0",
     "tslib": "^2.4.0",
-    "typescript": "^4.6.4"
+    "typescript": "^4.6.4",
+    "@bgd-labs/aave-address-book": "^1.23.0"
   }
 }
