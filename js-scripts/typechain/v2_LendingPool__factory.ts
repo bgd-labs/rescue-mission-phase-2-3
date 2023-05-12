@@ -6,7 +6,7 @@ import { Signer } from "ethers";
 import { Provider, TransactionRequest } from "@ethersproject/providers";
 import { Contract, ContractFactory, Overrides } from "@ethersproject/contracts";
 
-import type { LendingPool } from "./LendingPool";
+import type { LendingPool } from "./v2_LendingPool";
 
 export class LendingPoolFactory extends ContractFactory {
   constructor(
