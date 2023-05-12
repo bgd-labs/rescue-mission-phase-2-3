@@ -1,7 +1,7 @@
 import { BigNumber, Event, ethers, providers } from 'ethers';
 import fs from 'fs';
 import { ChainId } from '@aave/contract-helpers';
-import { fetchLabel, wait } from './label-map';
+import { fetchLabel } from './label-map';
 import { AaveV2Avalanche, AaveV2Ethereum, AaveV2EthereumAMM, AaveV2Polygon, AaveV3Arbitrum, AaveV3Avalanche, AaveV3Ethereum, AaveV3Fantom, AaveV3Harmony, AaveV3Optimism, AaveV3Polygon } from "@bgd-labs/aave-address-book";
 import { IERC20__factory } from './typechain/IERC20__factory';
 import { LendingPoolFactory } from './typechain/LendingPoolFactory';
