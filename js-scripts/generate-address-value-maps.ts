@@ -34,7 +34,7 @@ const JSON_RPC_PROVIDER = {
   [ChainId.mainnet]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
   [ChainId.polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
   [ChainId.optimism]: `https://opt-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
-  [ChainId.arbitrum_one]: `https://arbitrum-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
+  [ChainId.arbitrum_one]: `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
   [ChainId.avalanche]: process.env.RPC_AVALANCHE,
   [ChainId.harmony]: process.env.RPC_HARMONY,
   [ChainId.fantom]: process.env.RPC_FANTOM,
@@ -239,7 +239,6 @@ async function fetchTxns(
       console.log('filtered events', filteredEvents);
       return filteredEvents as Event[];
     } catch (error) {
-      console.log('error in filtering', error);
       throw(error);
     }
   }
@@ -397,6 +396,8 @@ async function generateEthTokensMap() {
             v3AToken,
             ChainId.mainnet,
             `v3${tokenName}-v3a${tokenName}`,
+            true,
+            AaveMarket.v3
             // validateATokenEvents
           ): {}
         ]);
