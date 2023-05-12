@@ -1,4 +1,4 @@
-import { BigNumber, Event, providers } from 'ethers';
+import { BigNumber, Event, ethers, providers } from 'ethers';
 import fs from 'fs';
 import { ChainId } from '@aave/contract-helpers';
 import { fetchLabel, wait } from './label-map';
@@ -17,6 +17,7 @@ import TOKENS_OPT from './assets/optTokens.json';
 import TOKENS_ARB from './assets/arbTokens.json';
 import TOKENS_HAR from './assets/harTokens.json';
 import TOKENS_FAN from './assets/fanTokens.json';
+import V1_ETH_A_TOKENS from './assets/v1EthATokens.json';
 import V2_ETH_A_TOKENS from './assets/v2EthATokens.json';
 import V2_POL_A_TOKENS from './assets/v2PolATokens.json';
 import V2_AVA_A_TOKENS from './assets/v2AvaATokens.json';
@@ -179,6 +180,8 @@ async function fetchTxns(
   async function getEventsToFilterOut(fromBlock: number, toBlock: number): Promise<Event[]> {
     if (isAToken) {
       switch (aTokenMarket) {
+        case AaveMarket.v1:
+          return [];
         case AaveMarket.v2:
           return await getV2ATokensEventsToFilterOut(fromBlock, toBlock);
         case AaveMarket.v2Amm:
@@ -316,6 +319,7 @@ async function generateAndSaveMap(
 
   for (let mappedContract of mappedContracts) {
     for (let address of Object.keys(mappedContract)) {
+      if (address === ethers.constants.AddressZero) continue;
       if (aggregatedMapping[address]) {
         const aggregatedValue = BigNumber.from(
           mappedContract[address].amount.toString(),
@@ -356,7 +360,7 @@ async function generateEthTokensMap() {
       const v2AToken = V2_ETH_A_TOKENS[tokenName as keyof typeof V2_ETH_A_TOKENS];
       const v3AToken = V3_ETH_A_TOKENS[tokenName as keyof typeof V3_ETH_A_TOKENS];
 
-      // rescue aRAI sent to aRAI contract
+      // rescue v2 aRAI sent to v2 aRAI contract
       if (tokenName == 'RAI') {
         const mappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
         await Promise.all([
@@ -369,7 +373,23 @@ async function generateEthTokensMap() {
             AaveMarket.v2
           )
         ]);
-        await generateAndSaveMap(mappedContracts, `ethereum_a${tokenName}`);
+        await generateAndSaveMap(mappedContracts, `ethereum_v2a${tokenName.toLocaleLowerCase()}`);
+      }
+
+      // rescue v1 aDAI sent to v1 aDAI contract
+      if (tokenName == 'DAI') {
+        const mappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
+        await Promise.all([
+          fetchTxns(
+            V1_ETH_A_TOKENS.DAI,
+            V1_ETH_A_TOKENS.DAI,
+            ChainId.mainnet,
+            `v1a${tokenName}-v1a${tokenName}`,
+            true,
+            AaveMarket.v1
+          )
+        ]);
+        await generateAndSaveMap(mappedContracts, `ethereum_v1a${tokenName.toLocaleLowerCase()}`);
       }
 
       // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively
@@ -414,9 +434,8 @@ async function generatePolTokensMap() {
       const v2AToken = V2_POL_A_TOKENS[tokenName as keyof typeof V2_POL_A_TOKENS];
       const v3AToken = V3_POL_A_TOKENS[tokenName as keyof typeof V3_POL_A_TOKENS];
 
-      // rescue aUSDC aDAI sent to aUSDC and aDAI contracts respectively
+      // rescue v2 aUSDC v2 aDAI sent to v2 aUSDC and v2 aDAI contracts respectively
       if (tokenName == 'USDC' || tokenName == 'DAI') {
-        console.log('v2AToken', v2AToken);
         const mappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
         await Promise.all([
           fetchTxns(
@@ -428,7 +447,7 @@ async function generatePolTokensMap() {
             AaveMarket.v2,
           )
         ]);
-        await generateAndSaveMap(mappedContracts, `polygon_a${tokenName.toLocaleLowerCase()}`);
+        await generateAndSaveMap(mappedContracts, `polygon_v2a${tokenName.toLocaleLowerCase()}`);
       }
 
       // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively
