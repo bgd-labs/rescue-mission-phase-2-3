@@ -290,23 +290,6 @@ async function fetchTxns(
   return addressValueMap;
 }
 
-async function retryTillSuccess(
-  provider: providers.Provider,
-  event: Event,
-  fn: (
-    event: Event,
-    provider: providers.Provider,
-  ) => Promise<Event | undefined>,
-): Promise<Event | undefined> {
-  try {
-    return fn(event, provider);
-  } catch (e) {
-    await wait(0.3);
-    console.log('retrying');
-    return retryTillSuccess(provider, event, fn);
-  }
-}
-
 async function generateAndSaveMap(
   mappedContracts: Record<string, { amount: string; txHash: string[] }>[],
   name: string,
@@ -429,7 +412,7 @@ async function generateEthTokensMap() {
             tokenAddress,
             AaveV2Ethereum.POOL,
             ChainId.mainnet,
-            `${tokenName}-v2Pool${tokenName}`,
+            `${tokenName}-v2Pool`,
             false,
             AaveMarket.v2
           ): {},
@@ -437,7 +420,7 @@ async function generateEthTokensMap() {
             tokenAddress,
             AaveV2EthereumAMM.POOL,
             ChainId.mainnet,
-            `${tokenName}-v2AmmPool${tokenName}`,
+            `${tokenName}-v2AmmPool`,
             false,
             AaveMarket.v2
           ): {}
@@ -448,12 +431,14 @@ async function generateEthTokensMap() {
 
 async function generatePolTokensMap() {
   const tokenList = Object.entries(TOKENS_POL);
+  const tokensStuckInV2Pool = [TOKENS_POL.WBTC, TOKENS_POL.USDC];
 
   tokenList.forEach(async (token) => {
       const tokenName = token[0];
       const tokenAddress = token[1];
       const v2AToken = V2_POL_A_TOKENS[tokenName as keyof typeof V2_POL_A_TOKENS];
       const v3AToken = V3_POL_A_TOKENS[tokenName as keyof typeof V3_POL_A_TOKENS];
+      const tokenStuckInV2Pool = tokensStuckInV2Pool.find((stuckToken) => stuckToken == tokenAddress);
 
       // rescue v2 aUSDC v2 aDAI sent to v2 aUSDC and v2 aDAI contracts respectively
       if (tokenName == 'USDC' || tokenName == 'DAI') {
@@ -471,24 +456,33 @@ async function generatePolTokensMap() {
         await generateAndSaveMap(mappedContracts, `polygon_v2a${tokenName.toLocaleLowerCase()}`);
       }
 
-      // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively
+      // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively.
+      // rescue tokens sent pol v2 lending pool.
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
           v2AToken ? fetchTxns(
             tokenAddress,
             v2AToken,
             ChainId.polygon,
-            `v2${tokenName}-v2a${tokenName}`,
+            `${tokenName}-v2a${tokenName}`,
             true,
             AaveMarket.v2
           ): {},
           v3AToken ? fetchTxns(
             tokenAddress,
             v3AToken,
-            ChainId.mainnet,
-            `v3${tokenName}-v3a${tokenName}`,
+            ChainId.polygon,
+            `${tokenName}-v3a${tokenName}`,
             true,
             AaveMarket.v3
+          ): {},
+          tokenStuckInV2Pool ? fetchTxns(
+            tokenAddress,
+            AaveV2Polygon.POOL,
+            ChainId.polygon,
+            `${tokenName}-v2Pool`,
+            false,
+            AaveMarket.v2
           ): {}
         ]);
       await generateAndSaveMap(mappedContracts, 'polygon_' + tokenName.toLocaleLowerCase());
@@ -497,21 +491,24 @@ async function generatePolTokensMap() {
 
 async function generateAvaTokensMap() {
   const tokenList = Object.entries(TOKENS_AVA);
+  const tokensStuckInV2Pool = [TOKENS_AVA.USDC, TOKENS_AVA.USDT];
 
   tokenList.forEach(async (token) => {
       const tokenName = token[0];
       const tokenAddress = token[1];
       const v2AToken = V2_AVA_A_TOKENS[tokenName as keyof typeof V2_AVA_A_TOKENS];
       const v3AToken = V3_AVA_A_TOKENS[tokenName as keyof typeof V3_AVA_A_TOKENS];
+      const tokenStuckInV2Pool = tokensStuckInV2Pool.find((stuckToken) => stuckToken == tokenAddress);
 
-      // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively
+      // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively.
+      // rescue tokens sent ava v2 lending pool.
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
           v2AToken ? fetchTxns(
             tokenAddress,
             v2AToken,
             ChainId.avalanche,
-            `v2${tokenName}-v2a${tokenName}`,
+            `${tokenName}-v2a${tokenName}`,
             true,
             AaveMarket.v2
           ): {},
@@ -519,9 +516,17 @@ async function generateAvaTokensMap() {
             tokenAddress,
             v3AToken,
             ChainId.avalanche,
-            `v3${tokenName}-v3a${tokenName}`,
+            `${tokenName}-v3a${tokenName}`,
             true,
             AaveMarket.v3
+          ): {},
+          tokenStuckInV2Pool ? fetchTxns(
+            tokenAddress,
+            AaveV2Avalanche.POOL,
+            ChainId.avalanche,
+            `${tokenName}-v2Pool`,
+            false,
+            AaveMarket.v2
           ): {}
         ]);
       await generateAndSaveMap(mappedContracts, 'avalanche_' + tokenName.toLocaleLowerCase());
