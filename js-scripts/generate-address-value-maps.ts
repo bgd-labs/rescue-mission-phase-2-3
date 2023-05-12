@@ -352,10 +352,14 @@ async function generateAndSaveMap(
 
 async function generateEthTokensMap() {
   const tokenList = Object.entries(TOKENS_ETH);
+  const tokensStuckInV2Pool = [TOKENS_ETH.DAI, TOKENS_ETH.GUSD, TOKENS_ETH.USDC, TOKENS_ETH.HOT];
+  const tokensStuckInV2AmmPool = [TOKENS_ETH.USDT];
 
   tokenList.forEach(async (token) => {
       const tokenName = token[0];
       const tokenAddress = token[1];
+      const tokenStuckInV2Pool = tokensStuckInV2Pool.find((stuckToken) => stuckToken == tokenAddress);
+      const tokenStuckInV2AmmPool = tokensStuckInV2AmmPool.find((stuckToken) => stuckToken == tokenAddress);
       const v2AmmAToken = V2AMM_ETH_A_TOKENS[tokenName as keyof typeof V2AMM_ETH_A_TOKENS];
       const v2AToken = V2_ETH_A_TOKENS[tokenName as keyof typeof V2_ETH_A_TOKENS];
       const v3AToken = V3_ETH_A_TOKENS[tokenName as keyof typeof V3_ETH_A_TOKENS];
@@ -392,14 +396,15 @@ async function generateEthTokensMap() {
         await generateAndSaveMap(mappedContracts, `ethereum_v1a${tokenName.toLocaleLowerCase()}`);
       }
 
-      // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively
+      // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively.
+      // rescue tokens sent to eth v2 and eth v2 amm lending pool.
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
           v2AmmAToken ? fetchTxns(
             tokenAddress,
             v2AmmAToken,
             ChainId.mainnet,
-            `v2${tokenName}-v2amm${tokenName}`,
+            `${tokenName}-v2amm${tokenName}`,
             true,
             AaveMarket.v2Amm,
           ): {},
@@ -407,7 +412,7 @@ async function generateEthTokensMap() {
             tokenAddress,
             v2AToken,
             ChainId.mainnet,
-            `v2${tokenName}-v2a${tokenName}`,
+            `${tokenName}-v2a${tokenName}`,
             true,
             AaveMarket.v2,
           ): {},
@@ -415,10 +420,26 @@ async function generateEthTokensMap() {
             tokenAddress,
             v3AToken,
             ChainId.mainnet,
-            `v3${tokenName}-v3a${tokenName}`,
+            `${tokenName}-v3a${tokenName}`,
             true,
             AaveMarket.v3
             // validateATokenEvents
+          ): {},
+          tokenStuckInV2Pool ? fetchTxns(
+            tokenAddress,
+            AaveV2Ethereum.POOL,
+            ChainId.mainnet,
+            `${tokenName}-v2Pool${tokenName}`,
+            false,
+            AaveMarket.v2
+          ): {},
+          tokenStuckInV2AmmPool ? fetchTxns(
+            tokenAddress,
+            AaveV2EthereumAMM.POOL,
+            ChainId.mainnet,
+            `${tokenName}-v2AmmPool${tokenName}`,
+            false,
+            AaveMarket.v2
           ): {}
         ]);
       await generateAndSaveMap(mappedContracts, 'ethereum_' + tokenName.toLocaleLowerCase());
@@ -606,13 +627,15 @@ async function generateFanTokensMap() {
 // Phase 2
 async function phase2() {
   fs.writeFileSync(amountsFilePath, '');
-  await generateEthTokensMap();
-  await generatePolTokensMap();
-  await generateAvaTokensMap();
-  await generateOptTokensMap();
-  await generateArbTokensMap();
-  await generateHarTokensMap();
-  await generateFanTokensMap();
+  await Promise.all([
+    generateEthTokensMap(),
+    generatePolTokensMap(),
+    generateAvaTokensMap(),
+    generateOptTokensMap(),
+    generateArbTokensMap(),
+    generateHarTokensMap(),
+    generateFanTokensMap(),
+  ]);
 }
 
 phase2().then(() => console.log('phase 2 all finished'));
