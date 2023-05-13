@@ -4,12 +4,13 @@ import { ChainId } from '@aave/contract-helpers';
 import { fetchLabel } from './label-map';
 import { AaveV2Avalanche, AaveV2Ethereum, AaveV2EthereumAMM, AaveV2Polygon, AaveV3Arbitrum, AaveV3Avalanche, AaveV3Ethereum, AaveV3Fantom, AaveV3Harmony, AaveV3Optimism, AaveV3Polygon } from "@bgd-labs/aave-address-book";
 import { IERC20__factory } from './typechain/IERC20__factory';
-import { LendingPoolFactory } from './typechain/LendingPoolFactory';
+import { LendingPoolFactory as v2LendingPoolFactory } from './typechain/v2_LendingPool__Factory';
+import { LendingPool__factory as v1LendingPoolFactory } from './typechain/v1_LendingPool__factory';
 import { L2Pool__factory } from './typechain/L2Pool__factory';
 import { L2Pool } from './typechain/L2Pool';
 import { Pool } from './typechain/Pool';
 import { Pool__factory } from './typechain/Pool__factory';
-import { LendingPool } from './typechain/LendingPool';
+import { LendingPool as v2LendingPool } from './typechain/v2_LendingPool';
 import TOKENS_ETH from './assets/ethTokens.json';
 import TOKENS_POL from './assets/polTokens.json';
 import TOKENS_AVA from './assets/avaTokens.json';
@@ -42,14 +43,18 @@ const JSON_RPC_PROVIDER = {
 };
 
 enum AaveMarket { v1, v2, v2Amm, v3 };
+enum ContractType { aToken, Pool, PoolCore };
+
+const AAVE_V1_LENDING_POOL = '0x398eC7346DcD622eDc5ae82352F02bE94C62d119';
+const AAVE_V1_LENDING_POOL_CORE = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 
 async function fetchTxns(
   token: string,
   to: string,
   network: keyof typeof JSON_RPC_PROVIDER,
   name: string,
-  isAToken?: boolean,
-  aTokenMarket?: AaveMarket,
+  toType?: ContractType,
+  aaveMarket?: AaveMarket,
   validateEvent?: (events: Event[], network: keyof typeof JSON_RPC_PROVIDER) => Promise<Event[]>,
 ): Promise<Record<string, { amount: string; txHash: string[] }>> {
   const provider = new providers.StaticJsonRpcProvider(
@@ -66,7 +71,7 @@ async function fetchTxns(
     if (fromBlock <= toBlock) {
       try {
         const events = await contract.queryFilter(event, fromBlock, toBlock);
-        return isAToken ? await filterEvents(events, fromBlock, toBlock) : events;
+        return await filterEvents(events, fromBlock, toBlock);
       } catch (error) {
         // @ts-expect-error
         if (error.error?.message?.indexOf('[') > -1) {
@@ -148,18 +153,18 @@ async function fetchTxns(
   }
 
   async function getV2ATokensEventsToFilterOut(fromBlock: number, toBlock: number, isAmm?: boolean): Promise<Event[]> {
-    let v2PoolContract: LendingPool;
+    let v2PoolContract: v2LendingPool;
     switch (network) {
       case ChainId.mainnet:
         v2PoolContract = isAmm ?
-          v2PoolContract = LendingPoolFactory.connect(AaveV2EthereumAMM.POOL, provider) :
-          v2PoolContract = LendingPoolFactory.connect(AaveV2Ethereum.POOL, provider);
+          v2PoolContract = v2LendingPoolFactory.connect(AaveV2EthereumAMM.POOL, provider) :
+          v2PoolContract = v2LendingPoolFactory.connect(AaveV2Ethereum.POOL, provider);
         break;
       case ChainId.polygon:
-        v2PoolContract = LendingPoolFactory.connect(AaveV2Polygon.POOL, provider);
+        v2PoolContract = v2LendingPoolFactory.connect(AaveV2Polygon.POOL, provider);
         break;
       case ChainId.avalanche:
-        v2PoolContract = LendingPoolFactory.connect(AaveV2Avalanche.POOL, provider);
+        v2PoolContract = v2LendingPoolFactory.connect(AaveV2Avalanche.POOL, provider);
         break;
       default:
         throw Error(`Invalid network for v2 market. network: ${network}`);
@@ -178,10 +183,8 @@ async function fetchTxns(
 
   // TODO: Add more markets
   async function getEventsToFilterOut(fromBlock: number, toBlock: number): Promise<Event[]> {
-    if (isAToken) {
-      switch (aTokenMarket) {
-        case AaveMarket.v1:
-          return [];
+    if (toType === ContractType.aToken) {
+      switch (aaveMarket) {
         case AaveMarket.v2:
           return await getV2ATokensEventsToFilterOut(fromBlock, toBlock);
         case AaveMarket.v2Amm:
@@ -197,37 +200,37 @@ async function fetchTxns(
 
   // TODO: Add more markets
   function getUnderlyingToken(aToken: string): string {
-    if (network == ChainId.mainnet && aTokenMarket == AaveMarket.v2) {
+    if (network == ChainId.mainnet && aaveMarket == AaveMarket.v2) {
       const tokenSymbol = Object.keys(V2_ETH_A_TOKENS).find(key => V2_ETH_A_TOKENS[key as keyof typeof V2_ETH_A_TOKENS] === aToken);
       return TOKENS_ETH[tokenSymbol as keyof typeof TOKENS_ETH];
-    } else if (network == ChainId.mainnet && aTokenMarket == AaveMarket.v3) {
+    } else if (network == ChainId.mainnet && aaveMarket == AaveMarket.v3) {
       const tokenSymbol = Object.keys(V3_ETH_A_TOKENS).find(key => V3_ETH_A_TOKENS[key as keyof typeof V3_ETH_A_TOKENS] === aToken);
       return TOKENS_ETH[tokenSymbol as keyof typeof TOKENS_ETH];
-    } else if (network == ChainId.mainnet && aTokenMarket == AaveMarket.v2Amm) {
+    } else if (network == ChainId.mainnet && aaveMarket == AaveMarket.v2Amm) {
       const tokenSymbol = Object.keys(V2AMM_ETH_A_TOKENS).find(key => V2AMM_ETH_A_TOKENS[key as keyof typeof V2AMM_ETH_A_TOKENS] === aToken);
       return TOKENS_ETH[tokenSymbol as keyof typeof TOKENS_ETH];
-    } else if (network == ChainId.polygon && aTokenMarket == AaveMarket.v2) {
+    } else if (network == ChainId.polygon && aaveMarket == AaveMarket.v2) {
       const tokenSymbol = Object.keys(V2_POL_A_TOKENS).find(key => V2_POL_A_TOKENS[key as keyof typeof V2_POL_A_TOKENS] === aToken);
       return TOKENS_POL[tokenSymbol as keyof typeof TOKENS_POL];
-    } else if (network == ChainId.polygon && aTokenMarket == AaveMarket.v3) {
+    } else if (network == ChainId.polygon && aaveMarket == AaveMarket.v3) {
       const tokenSymbol = Object.keys(V3_POL_A_TOKENS).find(key => V3_POL_A_TOKENS[key as keyof typeof V3_POL_A_TOKENS] === aToken);
       return TOKENS_POL[tokenSymbol as keyof typeof TOKENS_POL];
-    } else if (network == ChainId.avalanche && aTokenMarket == AaveMarket.v2) {
+    } else if (network == ChainId.avalanche && aaveMarket == AaveMarket.v2) {
       const tokenSymbol = Object.keys(V2_AVA_A_TOKENS).find(key => V2_AVA_A_TOKENS[key as keyof typeof V2_AVA_A_TOKENS] === aToken);
       return TOKENS_AVA[tokenSymbol as keyof typeof TOKENS_AVA];
-    } else if (network == ChainId.avalanche && aTokenMarket == AaveMarket.v3) {
+    } else if (network == ChainId.avalanche && aaveMarket == AaveMarket.v3) {
       const tokenSymbol = Object.keys(V3_AVA_A_TOKENS).find(key => V3_AVA_A_TOKENS[key as keyof typeof V3_AVA_A_TOKENS] === aToken);
       return TOKENS_AVA[tokenSymbol as keyof typeof TOKENS_AVA];
-    } else if (network == ChainId.optimism && aTokenMarket == AaveMarket.v3) {
+    } else if (network == ChainId.optimism && aaveMarket == AaveMarket.v3) {
       const tokenSymbol = Object.keys(V3_OPT_A_TOKENS).find(key => V3_OPT_A_TOKENS[key as keyof typeof V3_OPT_A_TOKENS] === aToken);
       return TOKENS_OPT[tokenSymbol as keyof typeof TOKENS_OPT];
-    } else if (network == ChainId.arbitrum_one && aTokenMarket == AaveMarket.v3) {
+    } else if (network == ChainId.arbitrum_one && aaveMarket == AaveMarket.v3) {
       const tokenSymbol = Object.keys(V3_ARB_A_TOKENS).find(key => V3_ARB_A_TOKENS[key as keyof typeof V3_ARB_A_TOKENS] === aToken);
       return TOKENS_ARB[tokenSymbol as keyof typeof TOKENS_ARB];
-    } else if (network == ChainId.harmony && aTokenMarket == AaveMarket.v3) {
+    } else if (network == ChainId.harmony && aaveMarket == AaveMarket.v3) {
       const tokenSymbol = Object.keys(V3_HAR_A_TOKENS).find(key => V3_HAR_A_TOKENS[key as keyof typeof V3_HAR_A_TOKENS] === aToken);
       return TOKENS_HAR[tokenSymbol as keyof typeof TOKENS_HAR];
-    } else if (network == ChainId.fantom && aTokenMarket == AaveMarket.v3) {
+    } else if (network == ChainId.fantom && aaveMarket == AaveMarket.v3) {
       const tokenSymbol = Object.keys(V3_FAN_A_TOKENS).find(key => V3_FAN_A_TOKENS[key as keyof typeof V3_FAN_A_TOKENS] === aToken);
       return TOKENS_FAN[tokenSymbol as keyof typeof TOKENS_FAN];
     }
@@ -236,7 +239,7 @@ async function fetchTxns(
 
   async function filterEvents(events: Event[], fromBlock: number, toBlock: number): Promise<Event[]> {
     try {
-      if (events.length == 0) return events;
+      if (events.length == 0 || (aaveMarket === AaveMarket.v1 && toType !== ContractType.PoolCore)) return events;
       const eventsToFilter = await getEventsToFilterOut(fromBlock, toBlock);
       const filteredEvents = events.filter((event) => !eventsToFilter.some((poolEvents) => poolEvents.transactionHash === event.transactionHash));
       console.log('filtered events', filteredEvents);
@@ -337,92 +340,126 @@ async function generateEthTokensMap() {
   const tokenList = Object.entries(TOKENS_ETH);
   const tokensStuckInV2Pool = [TOKENS_ETH.DAI, TOKENS_ETH.GUSD, TOKENS_ETH.USDC, TOKENS_ETH.HOT];
   const tokensStuckInV2AmmPool = [TOKENS_ETH.USDT];
+  const tokensStuckInV1Pool = [TOKENS_ETH.LINK, V1_ETH_A_TOKENS.WBTC];
+
+  // v2 aRAI token sent to v2 aRAI contract
+  const aRaiMappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
+  await Promise.all([
+    fetchTxns(
+      V2_ETH_A_TOKENS.RAI,
+      V2_ETH_A_TOKENS.RAI,
+      ChainId.mainnet,
+      `v2aRAI-v2aRAI`,
+      ContractType.aToken,
+      AaveMarket.v2
+    )
+  ]);
+  await generateAndSaveMap(aRaiMappedContracts, `ethereum_v2aRai`);
+
+  // v1 aDAI token sent to v1 aDAI contract
+  const aDaiMappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
+  await Promise.all([
+    fetchTxns(
+      V1_ETH_A_TOKENS.DAI,
+      V1_ETH_A_TOKENS.DAI,
+      ChainId.mainnet,
+      `v1aDAI-v1aDAI`,
+      ContractType.aToken,
+      AaveMarket.v1
+    )
+  ]);
+  await generateAndSaveMap(aDaiMappedContracts, `ethereum_v1aDai`);
+
+  // v1 aWBTC token sent to v1 Pool contract
+  const aWbtcMappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
+  await Promise.all([
+    fetchTxns(
+      V1_ETH_A_TOKENS.WBTC,
+      AAVE_V1_LENDING_POOL,
+      ChainId.mainnet,
+      `v1aWBTC-v1Pool`,
+      ContractType.Pool,
+      AaveMarket.v1
+    )
+  ]);
+  await generateAndSaveMap(aWbtcMappedContracts, `ethereum_v1aWbtc`);
 
   tokenList.forEach(async (token) => {
       const tokenName = token[0];
       const tokenAddress = token[1];
+      const tokenStuckInV1Pool = tokensStuckInV1Pool.find((stuckToken) => stuckToken == tokenAddress);
       const tokenStuckInV2Pool = tokensStuckInV2Pool.find((stuckToken) => stuckToken == tokenAddress);
       const tokenStuckInV2AmmPool = tokensStuckInV2AmmPool.find((stuckToken) => stuckToken == tokenAddress);
-      const v2AmmAToken = V2AMM_ETH_A_TOKENS[tokenName as keyof typeof V2AMM_ETH_A_TOKENS];
+      const v1AToken = V1_ETH_A_TOKENS[tokenName as keyof typeof V1_ETH_A_TOKENS];
       const v2AToken = V2_ETH_A_TOKENS[tokenName as keyof typeof V2_ETH_A_TOKENS];
+      const v2AmmAToken = V2AMM_ETH_A_TOKENS[tokenName as keyof typeof V2AMM_ETH_A_TOKENS];
       const v3AToken = V3_ETH_A_TOKENS[tokenName as keyof typeof V3_ETH_A_TOKENS];
 
-      // rescue v2 aRAI sent to v2 aRAI contract
-      if (tokenName == 'RAI') {
-        const mappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
-        await Promise.all([
-          fetchTxns(
-            v2AToken,
-            v2AToken,
-            ChainId.mainnet,
-            `v2a${tokenName}-v2a${tokenName}`,
-            true,
-            AaveMarket.v2
-          )
-        ]);
-        await generateAndSaveMap(mappedContracts, `ethereum_v2a${tokenName.toLocaleLowerCase()}`);
-      }
-
-      // rescue v1 aDAI sent to v1 aDAI contract
-      if (tokenName == 'DAI') {
-        const mappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
-        await Promise.all([
-          fetchTxns(
-            V1_ETH_A_TOKENS.DAI,
-            V1_ETH_A_TOKENS.DAI,
-            ChainId.mainnet,
-            `v1a${tokenName}-v1a${tokenName}`,
-            true,
-            AaveMarket.v1
-          )
-        ]);
-        await generateAndSaveMap(mappedContracts, `ethereum_v1a${tokenName.toLocaleLowerCase()}`);
-      }
-
-      // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively.
-      // rescue tokens sent to eth v2 and eth v2 amm lending pool.
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
+          // underlying token sent to eth v1 aToken contract
+          v1AToken ? fetchTxns(
+            tokenAddress,
+            v1AToken,
+            ChainId.mainnet,
+            `${tokenName}-v1Pool`,
+            ContractType.Pool,
+            AaveMarket.v1
+          ): {},
+          // underlying token sent to eth v2 amm aToken contract
           v2AmmAToken ? fetchTxns(
             tokenAddress,
             v2AmmAToken,
             ChainId.mainnet,
             `${tokenName}-v2amm${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v2Amm,
           ): {},
+          // underlying token sent to eth v2 aToken contract
           v2AToken ? fetchTxns(
             tokenAddress,
             v2AToken,
             ChainId.mainnet,
             `${tokenName}-v2a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v2,
           ): {},
+          // underlying token sent to eth v3 aToken contract
           v3AToken ? fetchTxns(
             tokenAddress,
             v3AToken,
             ChainId.mainnet,
             `${tokenName}-v3a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v3
             // validateATokenEvents
           ): {},
+          // tokens sent to eth v2 pool contract
           tokenStuckInV2Pool ? fetchTxns(
             tokenAddress,
             AaveV2Ethereum.POOL,
             ChainId.mainnet,
             `${tokenName}-v2Pool`,
-            false,
+            ContractType.Pool,
             AaveMarket.v2
           ): {},
+          // tokens sent to eth v2 amm pool contract
           tokenStuckInV2AmmPool ? fetchTxns(
             tokenAddress,
             AaveV2EthereumAMM.POOL,
             ChainId.mainnet,
             `${tokenName}-v2AmmPool`,
-            false,
+            ContractType.Pool,
             AaveMarket.v2
+          ): {},
+          // tokens sent to eth v1 pool contract
+          tokenStuckInV1Pool ? fetchTxns(
+            tokenAddress,
+            AAVE_V1_LENDING_POOL,
+            ChainId.mainnet,
+            `${tokenName}-v1Pool`,
+            ContractType.Pool,
+            AaveMarket.v1
           ): {}
         ]);
       await generateAndSaveMap(mappedContracts, 'ethereum_' + tokenName.toLocaleLowerCase());
@@ -440,7 +477,7 @@ async function generatePolTokensMap() {
       const v3AToken = V3_POL_A_TOKENS[tokenName as keyof typeof V3_POL_A_TOKENS];
       const tokenStuckInV2Pool = tokensStuckInV2Pool.find((stuckToken) => stuckToken == tokenAddress);
 
-      // rescue v2 aUSDC v2 aDAI sent to v2 aUSDC and v2 aDAI contracts respectively
+      // v2 aUSDC v2 aDAI tokens sent to v2 aUSDC and v2 aDAI contracts respectively
       if (tokenName == 'USDC' || tokenName == 'DAI') {
         const mappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
         await Promise.all([
@@ -449,39 +486,40 @@ async function generatePolTokensMap() {
             v2AToken,
             ChainId.polygon,
             `v2a${tokenName}-v2a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v2,
           )
         ]);
         await generateAndSaveMap(mappedContracts, `polygon_v2a${tokenName.toLocaleLowerCase()}`);
       }
 
-      // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively.
-      // rescue tokens sent pol v2 lending pool.
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
+          // underlying token sent to pol v2 aToken contract
           v2AToken ? fetchTxns(
             tokenAddress,
             v2AToken,
             ChainId.polygon,
             `${tokenName}-v2a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v2
           ): {},
+          // underlying token sent to pol v3 aToken contract
           v3AToken ? fetchTxns(
             tokenAddress,
             v3AToken,
             ChainId.polygon,
             `${tokenName}-v3a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v3
           ): {},
+          // tokens sent to pol v2 pool contract
           tokenStuckInV2Pool ? fetchTxns(
             tokenAddress,
             AaveV2Polygon.POOL,
             ChainId.polygon,
             `${tokenName}-v2Pool`,
-            false,
+            ContractType.Pool,
             AaveMarket.v2
           ): {}
         ]);
@@ -500,32 +538,33 @@ async function generateAvaTokensMap() {
       const v3AToken = V3_AVA_A_TOKENS[tokenName as keyof typeof V3_AVA_A_TOKENS];
       const tokenStuckInV2Pool = tokensStuckInV2Pool.find((stuckToken) => stuckToken == tokenAddress);
 
-      // rescue v2 and v3 tokens sent to v2 and v3 aToken contracts respectively.
-      // rescue tokens sent ava v2 lending pool.
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
+          // underlying token sent to ava v2 aToken contract
           v2AToken ? fetchTxns(
             tokenAddress,
             v2AToken,
             ChainId.avalanche,
             `${tokenName}-v2a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v2
           ): {},
+          // underlying token sent to ava v3 aToken contract
           v3AToken ? fetchTxns(
             tokenAddress,
             v3AToken,
             ChainId.avalanche,
             `${tokenName}-v3a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v3
           ): {},
+          // tokens sent to ava v2 pool contract
           tokenStuckInV2Pool ? fetchTxns(
             tokenAddress,
             AaveV2Avalanche.POOL,
             ChainId.avalanche,
             `${tokenName}-v2Pool`,
-            false,
+            ContractType.Pool,
             AaveMarket.v2
           ): {}
         ]);
@@ -541,15 +580,15 @@ async function generateOptTokensMap() {
       const tokenAddress = token[1];
       const v3AToken = V3_OPT_A_TOKENS[tokenName as keyof typeof V3_OPT_A_TOKENS];
 
-      // rescue v3 tokens sent to aToken contract
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
+          // underlying token sent to opt v3 aToken contract
           v3AToken ? fetchTxns(
             tokenAddress,
             v3AToken,
             ChainId.optimism,
             `v3${tokenName}-v3a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v3
           ): {}
         ]);
@@ -565,15 +604,15 @@ async function generateArbTokensMap() {
       const tokenAddress = token[1];
       const v3AToken = V3_ARB_A_TOKENS[tokenName as keyof typeof V3_ARB_A_TOKENS];
 
-      // rescue v3 tokens sent to aToken contract
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
+          // underlying token sent to arb v3 aToken contract
           v3AToken ? fetchTxns(
             tokenAddress,
             v3AToken,
             ChainId.arbitrum_one,
             `v3${tokenName}-v3a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v3
           ): {}
         ]);
@@ -589,15 +628,15 @@ async function generateHarTokensMap() {
       const tokenAddress = token[1];
       const v3AToken = V3_HAR_A_TOKENS[tokenName as keyof typeof V3_HAR_A_TOKENS];
 
-      // rescue v3 tokens sent to aToken contract
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
+          // underlying token sent to har v3 aToken contract
           v3AToken ? fetchTxns(
             tokenAddress,
             v3AToken,
             ChainId.harmony,
             `v3${tokenName}-v3a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v3
           ): {}
         ]);
@@ -613,15 +652,15 @@ async function generateFanTokensMap() {
       const tokenAddress = token[1];
       const v3AToken = V3_FAN_A_TOKENS[tokenName as keyof typeof V3_FAN_A_TOKENS];
 
-      // rescue v3 tokens sent to aToken contract
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
         await Promise.all([
+          // underlying token sent to fan v3 aToken contract
           v3AToken ? fetchTxns(
             tokenAddress,
             v3AToken,
             ChainId.fantom,
             `v3${tokenName}-v3a${tokenName}`,
-            true,
+            ContractType.aToken,
             AaveMarket.v3
           ): {}
         ]);
