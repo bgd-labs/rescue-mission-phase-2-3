@@ -10,6 +10,7 @@ import { L2Pool__factory } from './typechain/L2Pool__factory';
 import { L2Pool } from './typechain/L2Pool';
 import { Pool } from './typechain/Pool';
 import { Pool__factory } from './typechain/Pool__factory';
+import { LendingPool as v1LendingPool } from './typechain/v1_LendingPool';
 import { LendingPool as v2LendingPool } from './typechain/v2_LendingPool';
 import TOKENS_ETH from './assets/ethTokens.json';
 import TOKENS_POL from './assets/polTokens.json';
@@ -140,10 +141,10 @@ async function fetchTxns(
       default:
         throw Error(`Invalid network for v3 market. network: ${network}`);
     }
-    const repayEvent = v3PoolContract.filters.Repay(getUnderlyingToken(to), null, null, null);
-    const supplyEvent = v3PoolContract.filters.Supply(getUnderlyingToken(to), null, null, null, null);
-    const liqCallEvent = v3PoolContract.filters.LiquidationCall(null, getUnderlyingToken(to), null, null, null, null, null);
-    const flashloanEvent = v3PoolContract.filters.FlashLoan(null, null, getUnderlyingToken(to), null, null, null);
+    const repayEvent = v3PoolContract.filters.Repay(token, null, null, null);
+    const supplyEvent = v3PoolContract.filters.Supply(token, null, null, null, null);
+    const liqCallEvent = v3PoolContract.filters.LiquidationCall(null, token, null, null, null, null, null);
+    const flashloanEvent = v3PoolContract.filters.FlashLoan(null, null, token, null, null, null);
 
     const repayEvents = await v3PoolContract.queryFilter(repayEvent, fromBlock, toBlock);
     const supplyEvents = await v3PoolContract.queryFilter(supplyEvent, fromBlock, toBlock);
@@ -169,10 +170,10 @@ async function fetchTxns(
       default:
         throw Error(`Invalid network for v2 market. network: ${network}`);
     }
-    const repayEvent = v2PoolContract.filters.Repay(getUnderlyingToken(to), null, null, null);
-    const supplyEvent = v2PoolContract.filters.Deposit(getUnderlyingToken(to), null, null, null, null);
-    const liqCallEvent = v2PoolContract.filters.LiquidationCall(null, getUnderlyingToken(to), null, null, null, null, null);
-    const flashloanEvent = v2PoolContract.filters.FlashLoan(null, null, getUnderlyingToken(to), null, null, null);
+    const repayEvent = v2PoolContract.filters.Repay(token, null, null, null);
+    const supplyEvent = v2PoolContract.filters.Deposit(token, null, null, null, null);
+    const liqCallEvent = v2PoolContract.filters.LiquidationCall(null, token, null, null, null, null, null);
+    const flashloanEvent = v2PoolContract.filters.FlashLoan(null, null, token, null, null, null);
 
     const repayEvents = await v2PoolContract.queryFilter(repayEvent, fromBlock, toBlock);
     const supplyEvents = await v2PoolContract.queryFilter(supplyEvent, fromBlock, toBlock);
@@ -181,10 +182,26 @@ async function fetchTxns(
     return [...repayEvents, ...supplyEvents, ...liqCallEvents, ...flashloanEvents];
   }
 
-  // TODO: Add more markets
+  async function getV1PoolEventsToFilterOut(fromBlock: number, toBlock: number): Promise<Event[]> {
+    let v1PoolCoreContract: v1LendingPool;
+    v1PoolCoreContract = v1LendingPoolFactory.connect(AAVE_V1_LENDING_POOL, provider);
+    const repayEvent = v1PoolCoreContract.filters.Repay(token, null, null, null);
+    const supplyEvent = v1PoolCoreContract.filters.Deposit(token, null, null, null, null);
+    const liqCallEvent = v1PoolCoreContract.filters.LiquidationCall(null, token, null, null, null, null, null);
+    const flashloanEvent = v1PoolCoreContract.filters.FlashLoan(null, token, null, null, null, null);
+
+    const repayEvents = await v1PoolCoreContract.queryFilter(repayEvent, fromBlock, toBlock);
+    const supplyEvents = await v1PoolCoreContract.queryFilter(supplyEvent, fromBlock, toBlock);
+    const liqCallEvents = await v1PoolCoreContract.queryFilter(liqCallEvent, fromBlock, toBlock);
+    const flashloanEvents = await v1PoolCoreContract.queryFilter(flashloanEvent, fromBlock, toBlock);
+    return [...repayEvents, ...supplyEvents, ...liqCallEvents, ...flashloanEvents];
+  }
+
   async function getEventsToFilterOut(fromBlock: number, toBlock: number): Promise<Event[]> {
-    if (toType === ContractType.aToken) {
+    if (toType === ContractType.aToken || toType === ContractType.PoolCore) {
       switch (aaveMarket) {
+        case AaveMarket.v1:
+          return await getV1PoolEventsToFilterOut(fromBlock, toBlock);
         case AaveMarket.v2:
           return await getV2ATokensEventsToFilterOut(fromBlock, toBlock);
         case AaveMarket.v2Amm:
@@ -196,45 +213,6 @@ async function fetchTxns(
       }
     }
     return [];
-  }
-
-  // TODO: Add more markets
-  function getUnderlyingToken(aToken: string): string {
-    if (network == ChainId.mainnet && aaveMarket == AaveMarket.v2) {
-      const tokenSymbol = Object.keys(V2_ETH_A_TOKENS).find(key => V2_ETH_A_TOKENS[key as keyof typeof V2_ETH_A_TOKENS] === aToken);
-      return TOKENS_ETH[tokenSymbol as keyof typeof TOKENS_ETH];
-    } else if (network == ChainId.mainnet && aaveMarket == AaveMarket.v3) {
-      const tokenSymbol = Object.keys(V3_ETH_A_TOKENS).find(key => V3_ETH_A_TOKENS[key as keyof typeof V3_ETH_A_TOKENS] === aToken);
-      return TOKENS_ETH[tokenSymbol as keyof typeof TOKENS_ETH];
-    } else if (network == ChainId.mainnet && aaveMarket == AaveMarket.v2Amm) {
-      const tokenSymbol = Object.keys(V2AMM_ETH_A_TOKENS).find(key => V2AMM_ETH_A_TOKENS[key as keyof typeof V2AMM_ETH_A_TOKENS] === aToken);
-      return TOKENS_ETH[tokenSymbol as keyof typeof TOKENS_ETH];
-    } else if (network == ChainId.polygon && aaveMarket == AaveMarket.v2) {
-      const tokenSymbol = Object.keys(V2_POL_A_TOKENS).find(key => V2_POL_A_TOKENS[key as keyof typeof V2_POL_A_TOKENS] === aToken);
-      return TOKENS_POL[tokenSymbol as keyof typeof TOKENS_POL];
-    } else if (network == ChainId.polygon && aaveMarket == AaveMarket.v3) {
-      const tokenSymbol = Object.keys(V3_POL_A_TOKENS).find(key => V3_POL_A_TOKENS[key as keyof typeof V3_POL_A_TOKENS] === aToken);
-      return TOKENS_POL[tokenSymbol as keyof typeof TOKENS_POL];
-    } else if (network == ChainId.avalanche && aaveMarket == AaveMarket.v2) {
-      const tokenSymbol = Object.keys(V2_AVA_A_TOKENS).find(key => V2_AVA_A_TOKENS[key as keyof typeof V2_AVA_A_TOKENS] === aToken);
-      return TOKENS_AVA[tokenSymbol as keyof typeof TOKENS_AVA];
-    } else if (network == ChainId.avalanche && aaveMarket == AaveMarket.v3) {
-      const tokenSymbol = Object.keys(V3_AVA_A_TOKENS).find(key => V3_AVA_A_TOKENS[key as keyof typeof V3_AVA_A_TOKENS] === aToken);
-      return TOKENS_AVA[tokenSymbol as keyof typeof TOKENS_AVA];
-    } else if (network == ChainId.optimism && aaveMarket == AaveMarket.v3) {
-      const tokenSymbol = Object.keys(V3_OPT_A_TOKENS).find(key => V3_OPT_A_TOKENS[key as keyof typeof V3_OPT_A_TOKENS] === aToken);
-      return TOKENS_OPT[tokenSymbol as keyof typeof TOKENS_OPT];
-    } else if (network == ChainId.arbitrum_one && aaveMarket == AaveMarket.v3) {
-      const tokenSymbol = Object.keys(V3_ARB_A_TOKENS).find(key => V3_ARB_A_TOKENS[key as keyof typeof V3_ARB_A_TOKENS] === aToken);
-      return TOKENS_ARB[tokenSymbol as keyof typeof TOKENS_ARB];
-    } else if (network == ChainId.harmony && aaveMarket == AaveMarket.v3) {
-      const tokenSymbol = Object.keys(V3_HAR_A_TOKENS).find(key => V3_HAR_A_TOKENS[key as keyof typeof V3_HAR_A_TOKENS] === aToken);
-      return TOKENS_HAR[tokenSymbol as keyof typeof TOKENS_HAR];
-    } else if (network == ChainId.fantom && aaveMarket == AaveMarket.v3) {
-      const tokenSymbol = Object.keys(V3_FAN_A_TOKENS).find(key => V3_FAN_A_TOKENS[key as keyof typeof V3_FAN_A_TOKENS] === aToken);
-      return TOKENS_FAN[tokenSymbol as keyof typeof TOKENS_FAN];
-    }
-    throw Error('Unable to find the underlying token for the aToken');
   }
 
   async function filterEvents(events: Event[], fromBlock: number, toBlock: number): Promise<Event[]> {
@@ -460,7 +438,16 @@ async function generateEthTokensMap() {
             `${tokenName}-v1Pool`,
             ContractType.Pool,
             AaveMarket.v1
-          ): {}
+          ): {},
+          // tokens sent to eth v1 pool core contract
+          v1AToken ? fetchTxns(
+            tokenAddress,
+            AAVE_V1_LENDING_POOL_CORE,
+            ChainId.mainnet,
+            `${tokenName}-v1Pool`,
+            ContractType.PoolCore,
+            AaveMarket.v1
+          ): {},
         ]);
       await generateAndSaveMap(mappedContracts, 'ethereum_' + tokenName.toLocaleLowerCase());
   });
