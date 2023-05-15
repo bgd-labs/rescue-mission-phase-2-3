@@ -8,3 +8,6 @@
 	path = lib/protocol-v2
 	url = https://github.com/aave/protocol-v2
   branch = master
+[submodule "lib/aave-address-book"]
+	path = lib/aave-address-book
+	url = https://github.com/bgd-labs/aave-address-book
