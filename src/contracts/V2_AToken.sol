@@ -42,6 +42,14 @@ contract AToken is
   address internal _underlyingAsset;
   IAaveIncentivesController internal _incentivesController;
 
+  modifier onlyPoolAdmin {
+    require(
+      _msgSender() == ILendingPool(_pool).getAddressesProvider().getPoolAdmin(),
+      Errors.CALLER_NOT_POOL_ADMIN
+    );
+    _;
+  }
+
   modifier onlyLendingPool {
     require(_msgSender() == address(_pool), Errors.CT_CALLER_MUST_BE_LENDING_POOL);
     _;
@@ -402,5 +410,10 @@ contract AToken is
     uint256 amount
   ) internal override {
     _transfer(from, to, amount, true);
+  }
+
+  /// @inheritdoc IAToken
+  function rescueTokens(address token, address to, uint256 amount) external override onlyPoolAdmin {
+    IERC20(token).safeTransfer(to, amount);
   }
 }
