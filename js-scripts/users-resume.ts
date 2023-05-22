@@ -37,11 +37,11 @@ type MerkleTree = {
 type UsersJson = Record<string, UserInfo[]>;
 
 const merkleTree: Record<string, string> = {
-  USDT: './js-scripts/maps/usdtRescueMerkleTree.json',
+  V2_POL_A_USDC: './js-scripts/maps/polygon/v2_ausdcRescueMerkleTree.json',
 };
 
 const distributionIds: Record<string, number> = {
-  USDT: 4,
+  V2_POL_A_USDC: 1,
 };
 
 const getMerkleTreeJson = (path: string): MerkleTree => {

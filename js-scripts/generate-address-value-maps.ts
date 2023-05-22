@@ -4,7 +4,7 @@ import { ChainId } from '@aave/contract-helpers';
 import { fetchLabel } from './label-map';
 import { AaveV2Avalanche, AaveV2Ethereum, AaveV2EthereumAMM, AaveV2Polygon, AaveV3Arbitrum, AaveV3Avalanche, AaveV3Ethereum, AaveV3Fantom, AaveV3Harmony, AaveV3Optimism, AaveV3Polygon } from "@bgd-labs/aave-address-book";
 import { IERC20__factory } from './typechain/IERC20__factory';
-import { LendingPoolFactory as v2LendingPoolFactory } from './typechain/v2_LendingPool__Factory';
+import { LendingPoolFactory as v2LendingPoolFactory } from './typechain/v2_LendingPool__factory';
 import { LendingPool__factory as v1LendingPoolFactory } from './typechain/v1_LendingPool__factory';
 import { L2Pool__factory } from './typechain/L2Pool__factory';
 import { L2Pool } from './typechain/L2Pool';
@@ -274,6 +274,7 @@ async function fetchTxns(
 async function generateAndSaveMap(
   mappedContracts: Record<string, { amount: string; txHash: string[] }>[],
   name: string,
+  network: string,
 ): Promise<void> {
   const aggregatedMapping: Record<
     string,
@@ -308,7 +309,7 @@ async function generateAndSaveMap(
     }
   }
 
-  const path = `./js-scripts/maps/${name}RescueMap.json`;
+  const path = `./js-scripts/maps/${network}/${name}RescueMap.json`;
   if (Object.keys(aggregatedMapping).length > 0) {
     fs.writeFileSync(path, JSON.stringify(aggregatedMapping, null, 2));
   }
@@ -332,7 +333,7 @@ async function generateEthTokensMap() {
       AaveMarket.v2
     )
   ]);
-  await generateAndSaveMap(aRaiMappedContracts, `ethereum_v2aRai`);
+  await generateAndSaveMap(aRaiMappedContracts, `v2_aRai`, 'ethereum');
 
   // v1 aDAI token sent to v1 aDAI contract
   const aDaiMappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
@@ -346,7 +347,7 @@ async function generateEthTokensMap() {
       AaveMarket.v1
     )
   ]);
-  await generateAndSaveMap(aDaiMappedContracts, `ethereum_v1aDai`);
+  await generateAndSaveMap(aDaiMappedContracts, `v1_aDai`, 'ethereum');
 
   // v1 aWBTC token sent to v1 Pool contract
   const aWbtcMappedContracts: Record<string,{ amount: string; txHash: string[] }>[] =
@@ -360,7 +361,7 @@ async function generateEthTokensMap() {
       AaveMarket.v1
     )
   ]);
-  await generateAndSaveMap(aWbtcMappedContracts, `ethereum_v1aWbtc`);
+  await generateAndSaveMap(aWbtcMappedContracts, `v1_aWbtc`, 'ethereum');
 
   tokenList.forEach(async (token) => {
       const tokenName = token[0];
@@ -449,7 +450,7 @@ async function generateEthTokensMap() {
             AaveMarket.v1
           ): {},
         ]);
-      await generateAndSaveMap(mappedContracts, 'ethereum_' + tokenName.toLocaleLowerCase());
+      await generateAndSaveMap(mappedContracts, tokenName.toLocaleLowerCase(), 'ethereum');
   });
 }
 
@@ -477,7 +478,7 @@ async function generatePolTokensMap() {
             AaveMarket.v2,
           )
         ]);
-        await generateAndSaveMap(mappedContracts, `polygon_v2a${tokenName.toLocaleLowerCase()}`);
+        await generateAndSaveMap(mappedContracts, `v2_a${tokenName.toLocaleLowerCase()}`, 'polygon');
       }
 
       const mappedContracts: (Record<string,{ amount: string; txHash: string[] }>)[] =
@@ -510,7 +511,7 @@ async function generatePolTokensMap() {
             AaveMarket.v2
           ): {}
         ]);
-      await generateAndSaveMap(mappedContracts, 'polygon_' + tokenName.toLocaleLowerCase());
+      await generateAndSaveMap(mappedContracts, tokenName.toLocaleLowerCase(), 'polygon');
   });
 }
 
@@ -555,7 +556,7 @@ async function generateAvaTokensMap() {
             AaveMarket.v2
           ): {}
         ]);
-      await generateAndSaveMap(mappedContracts, 'avalanche_' + tokenName.toLocaleLowerCase());
+      await generateAndSaveMap(mappedContracts, tokenName.toLocaleLowerCase(), 'avalanche');
   });
 }
 
@@ -579,7 +580,7 @@ async function generateOptTokensMap() {
             AaveMarket.v3
           ): {}
         ]);
-      await generateAndSaveMap(mappedContracts, 'optimism_' + tokenName.toLocaleLowerCase());
+      await generateAndSaveMap(mappedContracts, tokenName.toLocaleLowerCase(), 'optimism');
   });
 }
 
@@ -603,7 +604,7 @@ async function generateArbTokensMap() {
             AaveMarket.v3
           ): {}
         ]);
-      await generateAndSaveMap(mappedContracts, 'arbitrum_' + tokenName.toLocaleLowerCase());
+      await generateAndSaveMap(mappedContracts, tokenName.toLocaleLowerCase(), 'arbitrum');
   });
 }
 
@@ -627,7 +628,7 @@ async function generateHarTokensMap() {
             AaveMarket.v3
           ): {}
         ]);
-      await generateAndSaveMap(mappedContracts, 'harmony_' + tokenName.toLocaleLowerCase());
+      await generateAndSaveMap(mappedContracts, tokenName.toLocaleLowerCase(), 'harmony');
   });
 }
 
@@ -651,22 +652,21 @@ async function generateFanTokensMap() {
             AaveMarket.v3
           ): {}
         ]);
-      await generateAndSaveMap(mappedContracts, 'fantom_' + tokenName.toLocaleLowerCase());
+      await generateAndSaveMap(mappedContracts, tokenName.toLocaleLowerCase(), 'fantom');
   });
 }
 
 // Phase 2
 async function phase2() {
   fs.writeFileSync(amountsFilePath, '');
-  await Promise.all([
-    generateEthTokensMap(),
-    generatePolTokensMap(),
-    generateAvaTokensMap(),
-    generateOptTokensMap(),
-    generateArbTokensMap(),
-    generateHarTokensMap(),
-    generateFanTokensMap(),
-  ]);
+  const network = parseInt(process.env.network as string) as ChainId;
+  if (network === ChainId.mainnet) await generateEthTokensMap()
+  else if (network === ChainId.polygon) await generatePolTokensMap()
+  else if (network === ChainId.avalanche) await generateAvaTokensMap()
+  else if (network === ChainId.arbitrum_one) await generateArbTokensMap()
+  else if (network === ChainId.optimism) await generateOptTokensMap()
+  else if (network === ChainId.harmony) await generateHarTokensMap()
+  else if (network === ChainId.fantom) await generateFanTokensMap()
 }
 
 phase2().then(() => console.log('phase 2 all finished'));
