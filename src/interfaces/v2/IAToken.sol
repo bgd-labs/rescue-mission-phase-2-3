@@ -47,6 +47,14 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
   event BalanceTransfer(address indexed from, address indexed to, uint256 value, uint256 index);
 
   /**
+   * @dev Emitted during the token rescue
+   * @param tokenRescued The token which is being rescued
+   * @param receiver The recipient which will receive the rescued token
+   * @param amountRescued The amount being rescued
+   **/
+  event TokensRescued(address indexed tokenRescued, address indexed receiver, uint256 amountRescued);
+
+  /**
    * @dev Burns aTokens from `user` and sends the equivalent amount of underlying to `receiverOfUnderlying`
    * @param user The owner of the aTokens, getting them burned
    * @param receiverOfUnderlying The address that will receive the underlying

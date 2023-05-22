@@ -4,7 +4,7 @@ pragma solidity 0.6.12;
 import {IERC20} from 'protocol-v2/contracts/protocol/tokenization/AToken.sol';
 import {SafeERC20} from 'protocol-v2/contracts/dependencies/openzeppelin/contracts/SafeERC20.sol';
 import {ILendingPool} from 'protocol-v2/contracts/interfaces/ILendingPool.sol';
-import {IAToken} from '../interfaces/v2_IAToken.sol';
+import {IAToken} from '../../interfaces/v2/IAToken.sol';
 import {WadRayMath} from 'protocol-v2/contracts/protocol/libraries/math/WadRayMath.sol';
 import {Errors} from 'protocol-v2/contracts/protocol/libraries/helpers/Errors.sol';
 import {VersionedInitializable} from 'protocol-v2/contracts/protocol/libraries/aave-upgradeability/VersionedInitializable.sol';
@@ -30,7 +30,7 @@ contract AToken is
   bytes32 public constant PERMIT_TYPEHASH =
     keccak256('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)');
 
-  uint256 public constant ATOKEN_REVISION = 0x1;
+  uint256 public constant ATOKEN_REVISION = 0x3;
 
   /// @dev owner => next valid nonce to submit with permit()
   mapping(address => uint256) public _nonces;
@@ -415,5 +415,6 @@ contract AToken is
   /// @inheritdoc IAToken
   function rescueTokens(address token, address to, uint256 amount) external override onlyPoolAdmin {
     IERC20(token).safeTransfer(to, amount);
+    emit TokensRescued(token, to, amount);
   }
 }
