@@ -2,10 +2,16 @@
   "name": "bgd-forge-template",
   "version": "1.0.0",
   "scripts": {
-    "generate:users-json": "ts-node js-scripts/users-resume.ts",
-    "generate-json": "env-cmd ts-node js-scripts/generate-address-value-maps.ts",
+    "generate-json-mainnet": "network=1 env-cmd ts-node js-scripts/generate-address-value-maps.ts",
+    "generate-json-polygon": "network=137 env-cmd ts-node js-scripts/generate-address-value-maps.ts",
+    "generate-json-optimism": "network=10 env-cmd ts-node js-scripts/generate-address-value-maps.ts",
+    "generate-json-avalanche": "network=43114 env-cmd ts-node js-scripts/generate-address-value-maps.ts",
+    "generate-json-arbitrum": "network=42161 env-cmd ts-node js-scripts/generate-address-value-maps.ts",
+    "generate-json-harmony": "network=1666600000 env-cmd ts-node js-scripts/generate-address-value-maps.ts",
+    "generate-json-fantom": "network=250 env-cmd ts-node js-scripts/generate-address-value-maps.ts",
     "generate-json-formatted": "env-cmd ts-node js-scripts/format.ts",
     "generate-tree": "ts-node js-scripts/generate-merkle-root.ts",
+    "generate:users-json": "ts-node js-scripts/users-resume.ts",
     "lint": "prettier ./",
     "lint:fix": "npm run lint -- --write"
   },

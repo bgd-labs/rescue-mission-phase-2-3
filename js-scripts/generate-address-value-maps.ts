@@ -3,6 +3,7 @@ import fs from 'fs';
 import { ChainId } from '@aave/contract-helpers';
 import { fetchLabel } from './label-map';
 import { AaveV2Avalanche, AaveV2Ethereum, AaveV2EthereumAMM, AaveV2Polygon, AaveV3Arbitrum, AaveV3Avalanche, AaveV3Ethereum, AaveV3Fantom, AaveV3Harmony, AaveV3Optimism, AaveV3Polygon } from "@bgd-labs/aave-address-book";
+import { JSON_RPC_PROVIDER, AAVE_V1_LENDING_POOL, AAVE_V1_LENDING_POOL_CORE, AaveMarket, ContractType, amountsFilePath } from '../js-scripts/common/constants';
 import { IERC20__factory } from './typechain/IERC20__factory';
 import { LendingPoolFactory as v2LendingPoolFactory } from './typechain/v2_LendingPool__factory';
 import { LendingPool__factory as v1LendingPoolFactory } from './typechain/v1_LendingPool__factory';
@@ -12,6 +13,7 @@ import { Pool } from './typechain/Pool';
 import { Pool__factory } from './typechain/Pool__factory';
 import { LendingPool as v1LendingPool } from './typechain/v1_LendingPool';
 import { LendingPool as v2LendingPool } from './typechain/v2_LendingPool';
+import { getContractCreationBlock } from './common/helper';
 import TOKENS_ETH from './assets/ethTokens.json';
 import TOKENS_POL from './assets/polTokens.json';
 import TOKENS_AVA from './assets/avaTokens.json';
@@ -31,23 +33,6 @@ import V3_OPT_A_TOKENS from './assets/v3OptATokens.json';
 import V3_ARB_A_TOKENS from './assets/v3ArbATokens.json';
 import V3_HAR_A_TOKENS from './assets/v3HarATokens.json';
 import V3_FAN_A_TOKENS from './assets/v3FanATokens.json';
-const amountsFilePath = `./js-scripts/maps/amountsByContract.txt`;
-
-const JSON_RPC_PROVIDER = {
-  [ChainId.mainnet]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-  [ChainId.polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
-  [ChainId.optimism]: `https://opt-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
-  [ChainId.arbitrum_one]: `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
-  [ChainId.avalanche]: process.env.RPC_AVALANCHE,
-  [ChainId.harmony]: process.env.RPC_HARMONY,
-  [ChainId.fantom]: process.env.RPC_FANTOM,
-};
-
-enum AaveMarket { v1, v2, v2Amm, v3 };
-enum ContractType { aToken, Pool, PoolCore };
-
-const AAVE_V1_LENDING_POOL = '0x398eC7346DcD622eDc5ae82352F02bE94C62d119';
-const AAVE_V1_LENDING_POOL_CORE = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 
 async function fetchTxns(
   token: string,
@@ -227,8 +212,9 @@ async function fetchTxns(
     }
   }
 
+  const fromBlockNumber = await getContractCreationBlock(to, provider, network);
   const currentBlockNumber = await provider.getBlockNumber();
-  let events = await getPastLogs(0, currentBlockNumber);
+  let events = await getPastLogs(fromBlockNumber, currentBlockNumber);
   if (validateEvent) events = await validateEvent(events, network);
 
   // Write events map of address value to json
