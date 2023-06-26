@@ -6,5 +6,5 @@ import fs from 'fs';
 const v2PolAusdcPath = `./js-scripts/maps/polygon/v2_ausdcRescueMerkleTree.json`;
 fs.writeFileSync(
   v2PolAusdcPath,
-  JSON.stringify(parseBalanceMap(v2PolAusdcRescueMap, 6, 'polygon_v2_ausdc')),
+  JSON.stringify(parseBalanceMap(v2PolAusdcRescueMap, 6, 'polygon_v2_ausdc'))
 );

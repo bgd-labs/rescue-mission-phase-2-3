@@ -1,9 +1,9 @@
 import polygonAusdcRescueMap from './maps/polygon/v2_ausdcRescueMap.json';
-import { normalize } from '@aave/math-utils';
+import {normalize} from '@aave/math-utils';
 import fs from 'fs';
 
 const format = (
-  jsonObj: Record<string, { amount: string; label?: string }>,
+  jsonObj: Record<string, {amount: string; label?: string}>,
   name: string,
   decimals: number,
   network: string,

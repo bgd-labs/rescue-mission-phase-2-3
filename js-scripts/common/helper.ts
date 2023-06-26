@@ -1,8 +1,16 @@
 import {ChainId} from '@aave/contract-helpers';
-import {JSON_RPC_PROVIDER} from '../common/constants';
-import {providers} from 'ethers';
+import {AaveMarket, ContractType, JSON_RPC_PROVIDER, amountsFilePath} from '../common/constants';
+import {fetchLabel} from '../label-map';
+import {BigNumber as BN} from 'bignumber.js';
+import {ethers, BigNumber, providers} from 'ethers';
+import {getPastLogs} from '../query-logs';
+import fs from 'fs';
 
-export async function getContractCreationBlock(contractAddress: string, provider: providers.StaticJsonRpcProvider, network: keyof typeof JSON_RPC_PROVIDER): Promise<number> {
+async function getContractCreationBlock(
+  contractAddress: string,
+  provider: providers.StaticJsonRpcProvider,
+  network: keyof typeof JSON_RPC_PROVIDER
+): Promise<number> {
   const MAX_NB_RETRY = 10;
   const RETRY_DELAY_MS = 2000;
   let retryLeft = MAX_NB_RETRY;
@@ -16,26 +24,24 @@ export async function getContractCreationBlock(contractAddress: string, provider
         );
       } else if (network === ChainId.polygon) {
         response = await fetch(
-          `https://api.polygonscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}`
+          `https://api.polygonscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_POLYGON}`
         );
       } else if (network === ChainId.arbitrum_one) {
         response = await fetch(
-          `https://api.arbiscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}`
+          `https://api.arbiscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_ARBITRUM}`
         );
       } else if (network === ChainId.optimism) {
         response = await fetch(
-          `https://api-optimistic.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}`
+          `https://api-optimistic.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_OPTIMISM}`
         );
       } else if (network === ChainId.fantom) {
         response = await fetch(
-          `https://api.ftmscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}`
+          `https://api.ftmscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_FANTOM}`
         );
       } else if (network === ChainId.avalanche) {
         response = await fetch(
-          `https://api.snowtrace.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}`
+          `https://api.snowtrace.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_AVALANCHE}`
         );
-      } else if (network === ChainId.harmony) {
-        return 0;
       } else {
         throw Error('Invalid Network');
       }
@@ -44,17 +50,144 @@ export async function getContractCreationBlock(contractAddress: string, provider
       if (txHash === undefined) throw Error();
       const receipt = await provider.getTransactionReceipt(txHash);
       return receipt.blockNumber;
-    }
-    catch (err) {
-      await sleep(RETRY_DELAY_MS)
-    }
-    finally {
+    } catch (err) {
+      await sleep(RETRY_DELAY_MS);
+    } finally {
       retryLeft -= 1;
     }
   }
   return 0;
 }
 
-function sleep(delay: number){
+export async function generateAndSaveMap(
+  mappedContracts: Record<string, {amount: string; txHash: string[]}>[],
+  name: string,
+  network: string
+): Promise<void> {
+  const aggregatedMapping: Record<string, {amount: string; txns: string[]; label?: string}> = {};
+  const labels = require('../labels/labels.json');
+
+  for (let mappedContract of mappedContracts) {
+    for (let address of Object.keys(mappedContract)) {
+      if (address === ethers.constants.AddressZero) continue;
+      if (aggregatedMapping[address]) {
+        const aggregatedValue = BigNumber.from(mappedContract[address].amount.toString())
+          .add(aggregatedMapping[address].amount)
+          .toString();
+        aggregatedMapping[address].amount = aggregatedValue;
+        aggregatedMapping[address].txns = [
+          ...aggregatedMapping[address].txns,
+          ...mappedContract[address].txHash,
+        ];
+      } else {
+        aggregatedMapping[address] = {} as any;
+        aggregatedMapping[address].amount = mappedContract[address].amount.toString();
+        aggregatedMapping[address].txns = [...mappedContract[address].txHash];
+        const label = await fetchLabel(address, labels);
+        if (label) {
+          aggregatedMapping[address].label = label;
+        }
+      }
+    }
+  }
+
+  const path = `./js-scripts/maps/${network}/${name}RescueMap.json`;
+  if (Object.keys(aggregatedMapping).length > 0) {
+    fs.writeFileSync(path, JSON.stringify(aggregatedMapping, null, 2));
+  }
+}
+
+export async function fetchTxns(
+  token: string,
+  to: string,
+  network: keyof typeof JSON_RPC_PROVIDER,
+  name: string,
+  toType: ContractType,
+  aaveMarket: AaveMarket
+): Promise<Record<string, {amount: string; txHash: string[]}>> {
+  const provider = new providers.StaticJsonRpcProvider(JSON_RPC_PROVIDER[network]);
+
+  const fromBlockNumber = await getContractCreationBlock(to, provider, network);
+  const currentBlockNumber = await provider.getBlockNumber();
+
+  const events = await getPastLogs(
+    fromBlockNumber,
+    currentBlockNumber,
+    token,
+    to,
+    network,
+    provider,
+    toType,
+    aaveMarket
+  );
+
+  // Write events map of address value to json
+  const addressValueMap: Record<string, {amount: string; txHash: string[]}> = {};
+  let totalValue = BigNumber.from(0);
+  let latestBlockNumber = 0;
+
+  for (let e of events) {
+    if (e) {
+      let value = BigNumber.from(e.data);
+      if (value.gt(0)) {
+        if (e.block_number >= latestBlockNumber) {
+          latestBlockNumber = e.block_number;
+        }
+
+        const from = ethers.utils.getAddress(e.topic1.slice(-40));
+        if (from === ethers.constants.AddressZero) continue;
+        totalValue = totalValue.add(value);
+        if (addressValueMap[from]) {
+          const aggregatedValue = value.add(addressValueMap[from].amount).toString();
+          addressValueMap[from].amount = aggregatedValue;
+          addressValueMap[from].txHash.push(e.tx_hash);
+        } else {
+          addressValueMap[from] = {
+            amount: value.toString(),
+            txHash: [e.tx_hash],
+          };
+        }
+      }
+    }
+  }
+  console.log('totalValue ', totalValue.toString());
+
+  // write total amount on txt
+  if (totalValue.gt(0)) {
+    fs.appendFileSync(
+      amountsFilePath,
+      `total amount for ${name} chainId: ${network} in token decimals: ${await convertWeiToTokenDecimal(
+        provider,
+        totalValue,
+        token
+      )} latestBlock: ${latestBlockNumber}\r\n`,
+      {flag: 'a+'}
+    );
+  }
+  return addressValueMap;
+}
+
+export function sleep(delay: number) {
   return new Promise((resolve) => setTimeout(resolve, delay));
+}
+
+export async function getTokenDecimals(
+  provider: providers.StaticJsonRpcProvider,
+  tokenAddress: string
+): Promise<number> {
+  const tokenAbi = ['function decimals() view returns (uint256)'];
+  const tokenContract = new ethers.Contract(tokenAddress, tokenAbi, provider);
+  const data: BigNumber = await tokenContract.decimals();
+  return data.toNumber();
+}
+
+export async function convertWeiToTokenDecimal(
+  provider: providers.StaticJsonRpcProvider,
+  tokenAmount: ethers.BigNumber,
+  tokenAddress: string
+): Promise<string> {
+  const tokenAmountBN = new BN(tokenAmount.toString());
+  const decimals = await getTokenDecimals(provider, tokenAddress);
+  const tokenAmountWhole = tokenAmountBN.dividedBy(new BN(10).pow(decimals));
+  return tokenAmountWhole.toString();
 }

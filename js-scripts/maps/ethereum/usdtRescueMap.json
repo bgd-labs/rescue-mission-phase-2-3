@@ -1,0 +1,57 @@
+{
+  "0x1F422acC3aDe6e7C5E9a98C5ed888166949Eb5Ec": {
+    "amount": "3000000000",
+    "txns": [
+      "0xa0f382fd1692050409d0d414cc50909ac1db44a2d8959a745cdb91541c1ddb26"
+    ]
+  },
+  "0xDFd5293D8e347dFe59E90eFd55b2956a1343963d": {
+    "amount": "94500000",
+    "txns": [
+      "0x48db09878a9c68279f532bfc2a4d56c96cdc7d4076629425a8b0806809cb52d4"
+    ]
+  },
+  "0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE": {
+    "amount": "7000000",
+    "txns": [
+      "0x3e3d09b8eff836fb504579338c30ca9034805b8466daf1fc50d1e994092f314c"
+    ],
+    "label": "Binance "
+  },
+  "0xd806826c605AAd41f243a94dDcA892Fd1526cfc7": {
+    "amount": "10000000000",
+    "txns": [
+      "0xf52d927a5c6e3b7e49ae4ab40823c165c890cab180d57fe34c8459756129cd6d"
+    ]
+  },
+  "0x4556FE954B637BBb3F76b0C740248c23d832dA14": {
+    "amount": "1010000000",
+    "txns": [
+      "0xcf5fd1e52deb479dd458194a3011501dc6967831fa6a0161b46b038524317cdc"
+    ]
+  },
+  "0x5c9898D393f02d0C6c7332d42a94cfC4dF3D5100": {
+    "amount": "20000000000",
+    "txns": [
+      "0x7c12016bbc3c8c81920a06ee656a0b0743709b6fcf593384764920e749d91bdf"
+    ]
+  },
+  "0x56DAa3C5f21C6b120d01428c513665a231CBfD57": {
+    "amount": "600057405",
+    "txns": [
+      "0xfd3e78762753adebc77f0d0bd215e66c687748f636430a969b0a3f4c78866f51"
+    ]
+  },
+  "0xCEBCb0F85ef2A48d802ec73dD57B98fEaE0A2d30": {
+    "amount": "1500000",
+    "txns": [
+      "0x42754b790e77a59c3a24705914e1d3f98626fb2f96174cf0de3e20376df4409d"
+    ]
+  },
+  "0x2aed748d96253cf3A50d175A31D5Ef0a6Bebc8b8": {
+    "amount": "10000",
+    "txns": [
+      "0x7fb794a6fff8ab87f4a45f8988d189ad1ee6de9fc237df96f2774257984f8c7a"
+    ]
+  }
+}
