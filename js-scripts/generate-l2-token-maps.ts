@@ -1,5 +1,12 @@
 import {ChainId} from '@aave/contract-helpers';
-import {AaveV2Avalanche, AaveV2Polygon, AaveV3Arbitrum, AaveV3Avalanche, AaveV3Fantom, AaveV3Optimism, AaveV3Polygon} from '@bgd-labs/aave-address-book';
+import {
+  AaveV2Avalanche,
+  AaveV2Polygon,
+  AaveV3Arbitrum,
+  AaveV3Fantom,
+  AaveV3Optimism,
+  AaveV3Polygon,
+} from '@bgd-labs/aave-address-book';
 import {AaveMarket, ContractType} from '../js-scripts/common/constants';
 import {fetchTxns, generateAndSaveMap} from './common/helper';
 import TOKENS_POL from './assets/polTokens.json';
@@ -96,7 +103,7 @@ async function generatePolTokensMap() {
 
 async function generateAvaTokensMap() {
   const tokenList = Object.entries(TOKENS_AVA);
-  const tokensStuckInV2Pool = [TOKENS_AVA.USDC, TOKENS_AVA.USDT];
+  const tokensStuckInV2Pool = [TOKENS_AVA['USDC.e'], TOKENS_AVA['USDT.e']];
 
   tokenList.forEach(async (token) => {
     const tokenName = token[0];
@@ -129,17 +136,10 @@ async function generateAvaTokensMap() {
               AaveMarket.v3
             )
           : {},
+
         // token sent to ava v3 pool contract
-        tokenAddress
-          ? fetchTxns(
-              tokenAddress,
-              AaveV3Avalanche.POOL,
-              ChainId.avalanche,
-              `v3${tokenName}-v3Pool`,
-              ContractType.Pool,
-              AaveMarket.v3
-            )
-          : {},
+        // ignored because funds were send by Platypus Finance Exploiter and was rescued before by governance
+
         // tokens sent to ava v2 pool contract
         tokenStuckInV2Pool
           ? fetchTxns(
@@ -254,8 +254,8 @@ async function generateFanTokensMap() {
               AaveMarket.v3
             )
           : {},
-          // token sent to fan v3 pool contract
-          tokenAddress
+        // token sent to fan v3 pool contract
+        tokenAddress
           ? fetchTxns(
               tokenAddress,
               AaveV3Fantom.POOL,

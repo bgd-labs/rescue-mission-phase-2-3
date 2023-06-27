@@ -18,19 +18,19 @@ export enum AaveMarket {
   v2,
   v2Amm,
   v3,
-};
+}
 
 export enum ContractType {
   aToken,
   Pool,
   PoolCore,
-};
+}
 
 export interface PoolEvents {
   supplyEvent: EventFilter;
   repayEvent: EventFilter;
   liqCallEvent: EventFilter;
   flashloanEvent: EventFilter;
-};
+}
 
 export const amountsFilePath = `./js-scripts/maps/amountsByContract.txt`;
