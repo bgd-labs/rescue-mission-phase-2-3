@@ -134,15 +134,15 @@ export async function fetchTxns(
           latestBlockNumber = e.block_number;
         }
 
-        const from = ethers.utils.getAddress(e.topic1.slice(-40));
-        if (from === ethers.constants.AddressZero) continue;
+        const txReceipt = await provider.getTransactionReceipt(e.tx_hash);
+        if (txReceipt.from === ethers.constants.AddressZero) continue;
         totalValue = totalValue.add(value);
-        if (addressValueMap[from]) {
-          const aggregatedValue = value.add(addressValueMap[from].amount).toString();
-          addressValueMap[from].amount = aggregatedValue;
-          addressValueMap[from].txHash.push(e.tx_hash);
+        if (addressValueMap[txReceipt.from]) {
+          const aggregatedValue = value.add(addressValueMap[txReceipt.from].amount).toString();
+          addressValueMap[txReceipt.from].amount = aggregatedValue;
+          addressValueMap[txReceipt.from].txHash.push(e.tx_hash);
         } else {
-          addressValueMap[from] = {
+          addressValueMap[txReceipt.from] = {
             amount: value.toString(),
             txHash: [e.tx_hash],
           };

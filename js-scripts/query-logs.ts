@@ -1,4 +1,4 @@
-import {providers, ethers} from 'ethers';
+import {providers} from 'ethers';
 import {ChainId} from '@aave/contract-helpers';
 import {
   AaveV2Avalanche,
@@ -31,7 +31,7 @@ import {LendingPool as v2LendingPool} from './typechain/v2_LendingPool';
 import {sleep} from './common/helper';
 import {QueryParameter, DuneClient, ExecutionState} from '@cowprotocol/ts-dune-client';
 
-const MAX_REQUEST = 10;
+const MAX_REQUEST = 7;
 let CURRENT_REQUEST_COUNT = 0;
 
 export async function getPastLogs(
@@ -43,7 +43,7 @@ export async function getPastLogs(
   provider: providers.StaticJsonRpcProvider,
   toType: ContractType,
   aaveMarket: AaveMarket
-): Promise<{topic1: string; data: string; tx_hash: string; block_number: number}[]> {
+): Promise<{data: string; tx_hash: string; block_number: number}[]> {
   if (fromBlock <= toBlock) {
     try {
       const contract = IERC20__factory.connect(token, provider);
@@ -128,6 +128,7 @@ async function getDuneExecutionResult(
 ): Promise<{topic1: string; data: string; tx_hash: string; block_number: number}[]> {
   try {
     const response = await client.getResult(executionId);
+    console.log(`execution id ${executionId} status: `, response.state);
     if (response.state == ExecutionState.COMPLETED) {
       return response.result?.rows as {
         topic1: string;

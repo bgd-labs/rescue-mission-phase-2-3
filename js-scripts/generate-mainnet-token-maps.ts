@@ -82,8 +82,8 @@ async function generateMainnetTokensMap() {
               tokenAddress,
               v1AToken,
               ChainId.mainnet,
-              `${tokenName}-v1Pool`,
-              ContractType.Pool,
+              `${tokenName}-v1a${tokenName}`,
+              ContractType.aToken,
               AaveMarket.v1
             )
           : {},
@@ -93,7 +93,7 @@ async function generateMainnetTokensMap() {
               tokenAddress,
               v2AmmAToken,
               ChainId.mainnet,
-              `${tokenName}-v2amm${tokenName}`,
+              `${tokenName}-v2amm-a${tokenName}`,
               ContractType.aToken,
               AaveMarket.v2Amm
             )
@@ -160,7 +160,7 @@ async function generateMainnetTokensMap() {
               tokenAddress,
               AAVE_V1_LENDING_POOL_CORE,
               ChainId.mainnet,
-              `${tokenName}-v1Pool`,
+              `${tokenName}-v1PoolCore`,
               ContractType.PoolCore,
               AaveMarket.v1
             )
