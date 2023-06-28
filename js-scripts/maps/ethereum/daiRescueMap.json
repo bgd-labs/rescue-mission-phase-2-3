@@ -4,18 +4,5 @@
     "txns": [
       "0xfc5d1db7d647a18e65a66b5786b34ac62f9c5cc0d7da0462b08a82f8d6dafa8f"
     ]
-  },
-  "0xCf59D5CFf92F7c0A32047335c2E554431f0E6B5B": {
-    "amount": "1000000001000000",
-    "txns": [
-      "0x9fe16997e34e8c022d93987331e08e19e119e7ac59d4f24a5a93cd7d98ff86e9",
-      "0x9315de05f3f1824a1edcc4eb74091a2cf4671d7f465febf5db57938f1fa3eaa3"
-    ]
-  },
-  "0xC7854f8Bc57176a079D3A17B5c2c8630CF420fB5": {
-    "amount": "1000",
-    "txns": [
-      "0xe81666f44f6df75301b5d8d0986748f9f7d5998285abf61b7379f0b3e93fe536"
-    ]
   }
 }

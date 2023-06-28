@@ -1,0 +1,23 @@
+{
+  "merkleRoot": "0xf6792060f920340a1c5d8caada0adb7bcdaac606ba7a1d6e1e7a3bec5125f4e5",
+  "tokenTotal": "2522.408895 avalanche_usdc.e",
+  "tokenTotalInWei": "2522408895",
+  "claims": {
+    "0x358Dbc0B83186591F3202400ffCD70c14C1FF9aE": {
+      "index": 0,
+      "amountInWei": "2521408895",
+      "amount": "2521.408895 avalanche_usdc.e",
+      "proof": [
+        "0x581f07722c4d96a3c05eb387c0669dda9022add1de131de236a404fd19d67062"
+      ]
+    },
+    "0xe7d0977990B81cf52417D7964C8EB86e2793f8e7": {
+      "index": 1,
+      "amountInWei": "1000000",
+      "amount": "1 avalanche_usdc.e",
+      "proof": [
+        "0xce1305b046f54ba7ede78ae534eaf66597e38286a7fc7d9cb587fe053359e263"
+      ]
+    }
+  }
+}

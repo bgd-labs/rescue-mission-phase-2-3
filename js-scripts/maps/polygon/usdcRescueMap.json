@@ -1,59 +1,8 @@
 {
-  "0x4229Ce7a38B02c5dbF04B55B95fC60E257770c16": {
-    "amount": "5947362",
-    "txns": [
-      "0xdf27e05b0bf6ba0cca797d7e7359050ac2c60731eba67c2a1fb655625c60b754"
-    ]
-  },
-  "0xd6aaB0F9aE043D3651Ad2d31c0ecCA310a9C0BEE": {
+  "0xe7d0977990B81cf52417D7964C8EB86e2793f8e7": {
     "amount": "1000000",
     "txns": [
-      "0x415894c1aae05eb7cbfceaea306ebb1ed0886f0830b113d5e09cb951bd4f0713"
-    ]
-  },
-  "0x90249ed4d69D70E709fFCd8beE2c5A566f65dADE": {
-    "amount": "3603064",
-    "txns": [
-      "0x6b7d6049b3767afdb24285e9f023968722cad43bfd258f968bd451afd159ede5"
-    ]
-  },
-  "0x74b7840d022d4A7F1C39b99194370A889d69cCc5": {
-    "amount": "300000",
-    "txns": [
-      "0xf2f7814abf44b296d0d605c0767f6de48b85b0627c2fab724b9cf98796d81cb9",
-      "0xa90047fd78484d1786120595cfc2bf23e487d04535f299337464b2a5a74c68dc",
-      "0xd9b069e5762c6539338701fa67e9cd60807e3a8ed56464d05a16322f0bace992"
-    ]
-  },
-  "0x00A09297F06B3790a37cFfB2de91A0FCCf0D5bAc": {
-    "amount": "328973",
-    "txns": [
-      "0x4a3344414398c26c3db3b2883b67d0b337061a2d033ec308e8d91e558995a7b1"
-    ]
-  },
-  "0x0Fe7C52CCa17038196fD566e7096DA9114e84a57": {
-    "amount": "497790659",
-    "txns": [
-      "0x5b51f2ec1829b39d151a0c8047e6b20de0e25c62a814d137f5bf9c3fc9f6f9ff"
-    ]
-  },
-  "0xbeC27F85c675fcbE40747EF92abEfDFa9d4523EB": {
-    "amount": "1218052",
-    "txns": [
-      "0x7be2971f9f538d782bc478e4cf6a77cd5f09db176b23c6cfe2636ac584dba13f"
-    ]
-  },
-  "0xABd10bF9fA809B49a5FB325aeb017D6Ddf484F65": {
-    "amount": "136057",
-    "txns": [
-      "0x0eed50cf586393fe66ec11e2518d404f1cc8a95a1366b8a1a4034e8e1edba8ab",
-      "0xf0bfd19f7f4ff085ae5107cbf5e7043d29a4041a194d78520c87f1675823c953"
-    ]
-  },
-  "0x2E5EbbDeb2773b3632069068B044C5B116AC1936": {
-    "amount": "14106892",
-    "txns": [
-      "0xd4b66707a36cbf0706690dc0b6b8aeff5e1e88dc651b505f838be1c500a4897f"
+      "0x90f1f46848f0f56eaebb6fa89cd7df4be2f07ff4e8e4e80b4257e4820e16335d"
     ]
   },
   "0x77B34173A36b01822B4Db9432C6511d11B01852D": {
@@ -63,16 +12,23 @@
       "0xed905854bf1abb6bce84f4bade2b7b64cca55fa8b23def549606df96af218524"
     ]
   },
+  "0x6139D4bbbf5c1280aF1EAA2BBD2Ffaae28E9033E": {
+    "amount": "136057",
+    "txns": [
+      "0xf0bfd19f7f4ff085ae5107cbf5e7043d29a4041a194d78520c87f1675823c953",
+      "0x0eed50cf586393fe66ec11e2518d404f1cc8a95a1366b8a1a4034e8e1edba8ab"
+    ]
+  },
   "0x4719b1FFF4499F41A14Bc098Cc440fba6E6a9Cd3": {
     "amount": "2000000000",
     "txns": [
       "0x0bd3157cef80a2fd48e89ca0715aade25394512ece0246ddd51d8c344fc6f4f6"
     ]
   },
-  "0x1a13F4Ca1d028320A707D99520AbFefca3998b7F": {
-    "amount": "1000000",
+  "0x2E5EbbDeb2773b3632069068B044C5B116AC1936": {
+    "amount": "14106892",
     "txns": [
-      "0x90f1f46848f0f56eaebb6fa89cd7df4be2f07ff4e8e4e80b4257e4820e16335d"
+      "0xd4b66707a36cbf0706690dc0b6b8aeff5e1e88dc651b505f838be1c500a4897f"
     ]
   }
 }
