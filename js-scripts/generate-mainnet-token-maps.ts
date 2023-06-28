@@ -33,20 +33,6 @@ async function generateMainnetTokensMap() {
     ]);
   await generateAndSaveMap(aRaiMappedContracts, `v2_aRai`, 'ethereum');
 
-  // v1 aDAI token sent to v1 aDAI contract
-  const aDaiMappedContracts: Record<string, {amount: string; txHash: string[]}>[] =
-    await Promise.all([
-      fetchTxns(
-        V1_ETH_A_TOKENS.DAI,
-        V1_ETH_A_TOKENS.DAI,
-        ChainId.mainnet,
-        `v1aDAI-v1aDAI`,
-        ContractType.aToken,
-        AaveMarket.v1
-      ),
-    ]);
-  await generateAndSaveMap(aDaiMappedContracts, `v1_aDai`, 'ethereum');
-
   // v1 aWBTC token sent to v1 Pool contract
   const aWbtcMappedContracts: Record<string, {amount: string; txHash: string[]}>[] =
     await Promise.all([
@@ -76,17 +62,6 @@ async function generateMainnetTokensMap() {
 
     const mappedContracts: Record<string, {amount: string; txHash: string[]}>[] = await Promise.all(
       [
-        // underlying token sent to eth v1 aToken contract
-        v1AToken
-          ? fetchTxns(
-              tokenAddress,
-              v1AToken,
-              ChainId.mainnet,
-              `${tokenName}-v1a${tokenName}`,
-              ContractType.aToken,
-              AaveMarket.v1
-            )
-          : {},
         // underlying token sent to eth v2 amm aToken contract
         v2AmmAToken
           ? fetchTxns(
