@@ -4,6 +4,7 @@ import {fetchLabel} from '../label-map';
 import {BigNumber as BN} from 'bignumber.js';
 import {ethers, BigNumber, providers} from 'ethers';
 import {getPastLogs} from '../query-logs';
+import TOKENS_TO_IGNORE from '../assets/tokensToIgnore.json';
 import fs from 'fs';
 
 async function getContractCreationBlock(
@@ -59,7 +60,7 @@ async function getContractCreationBlock(
   return 0;
 }
 
-export async function generateAndSaveMap(
+async function generateAndSaveMap(
   mappedContracts: Record<string, {amount: string; txHash: string[]}>[],
   name: string,
   network: string
@@ -97,7 +98,7 @@ export async function generateAndSaveMap(
   }
 }
 
-export async function fetchTxns(
+async function fetchTxns(
   token: string,
   to: string,
   network: keyof typeof JSON_RPC_PROVIDER,
@@ -154,24 +155,30 @@ export async function fetchTxns(
 
   // write total amount on txt
   if (totalValue.gt(0)) {
+    const totalValueInDecimals = await convertWeiToTokenDecimal(provider, totalValue, token);
+
+    // tag assets where total transfers are worth less than $1000 and ignore them
+    if (!TOKENS_TO_IGNORE.find((asset) => asset.name === name && asset.chainId === network)) {
+      fs.appendFileSync(
+        amountsFilePath,
+        `total amount for ${name} chainId: ${network} in token decimals: ${totalValueInDecimals} latestBlock: ${latestBlockNumber} isBeingRescued: true \r\n`
+      );
+      return addressValueMap;
+    }
     fs.appendFileSync(
       amountsFilePath,
-      `total amount for ${name} chainId: ${network} in token decimals: ${await convertWeiToTokenDecimal(
-        provider,
-        totalValue,
-        token
-      )} latestBlock: ${latestBlockNumber}\r\n`,
-      {flag: 'a+'}
+      `total amount for ${name} chainId: ${network} in token decimals: ${totalValueInDecimals} latestBlock: ${latestBlockNumber} isBeingRescued: false \r\n`
     );
   }
-  return addressValueMap;
+
+  return {};
 }
 
-export function sleep(delay: number) {
+function sleep(delay: number) {
   return new Promise((resolve) => setTimeout(resolve, delay));
 }
 
-export async function getTokenDecimals(
+async function getTokenDecimals(
   provider: providers.StaticJsonRpcProvider,
   tokenAddress: string
 ): Promise<number> {
@@ -181,7 +188,7 @@ export async function getTokenDecimals(
   return data.toNumber();
 }
 
-export async function convertWeiToTokenDecimal(
+async function convertWeiToTokenDecimal(
   provider: providers.StaticJsonRpcProvider,
   tokenAmount: ethers.BigNumber,
   tokenAddress: string
@@ -191,3 +198,23 @@ export async function convertWeiToTokenDecimal(
   const tokenAmountWhole = tokenAmountBN.dividedBy(new BN(10).pow(decimals));
   return tokenAmountWhole.toString();
 }
+
+function getNetworkName(network: keyof typeof JSON_RPC_PROVIDER): string {
+  if (network == ChainId.mainnet) {
+    return 'ethereum';
+  } else if (network == ChainId.polygon) {
+    return 'polygon';
+  } else if (network == ChainId.arbitrum_one) {
+    return 'arbitrum';
+  } else if (network == ChainId.optimism) {
+    return 'optimism';
+  } else if (network == ChainId.fantom) {
+    return 'fantom';
+  } else if (network == ChainId.avalanche) {
+    return 'avalanche';
+  } else {
+    throw Error('Invalid network');
+  }
+}
+
+export {generateAndSaveMap, fetchTxns, sleep, getTokenDecimals, getNetworkName};
