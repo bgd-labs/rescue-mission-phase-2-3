@@ -37,11 +37,40 @@ type MerkleTree = {
 type UsersJson = Record<string, UserInfo[]>;
 
 const merkleTree: Record<string, string> = {
-  V2_POL_A_USDC: './js-scripts/maps/polygon/v2_ausdcRescueMerkleTree.json',
+  V2_ETH_A_RAI: './js-scripts/maps/ethereum/merkleTree/v2_araiRescueMerkleTree.json',
+  V1_ETH_A_BTC: './js-scripts/maps/ethereum/merkleTree/v1_awbtcRescueMerkleTree.json',
+  ETH_USDT: './js-scripts/maps/ethereum/merkleTree/usdtRescueMerkleTree.json',
+  ETH_DAI: './js-scripts/maps/ethereum/merkleTree/daiRescueMerkleTree.json',
+  ETH_GUSD: './js-scripts/maps/ethereum/merkleTree/gusdRescueMerkleTree.json',
+  ETH_LINK: './js-scripts/maps/ethereum/merkleTree/linkRescueMerkleTree.json',
+  ETH_HOT: './js-scripts/maps/ethereum/merkleTree/hotRescueMerkleTree.json',
+  ETH_USDC: './js-scripts/maps/ethereum/merkleTree/usdcRescueMerkleTree.json',
+  POL_WBTC: './js-scripts/maps/polygon/merkleTree/wbtcRescueMerkleTree.json',
+  V2_POL_A_DAI: './js-scripts/maps/polygon/merkleTree/v2_adaiRescueMerkleTree.json',
+  V2_POL_A_USDC: './js-scripts/maps/polygon/merkleTree/v2_ausdcRescueMerkleTree.json',
+  POL_USDC: './js-scripts/maps/polygon/merkleTree/usdcRescueMerkleTree.json',
+  AVA_USDT_E: './js-scripts/maps/avalanche/merkleTree/usdt.eRescueMerkleTree.json',
+  AVA_USDC_E: './js-scripts/maps/avalanche/merkleTree/usdc.eRescueMerkleTree.json',
 };
 
 const distributionIds: Record<string, number> = {
-  V2_POL_A_USDC: 1,
+  // ethereum
+  V2_ETH_A_RAI: 1,
+  V1_ETH_A_BTC: 2,
+  ETH_USDT: 3,
+  ETH_DAI: 4,
+  ETH_GUSD: 5,
+  ETH_LINK: 6,
+  ETH_HOT: 7,
+  ETH_USDC: 8,
+  // polygon
+  POL_WBTC: 1,
+  V2_POL_A_DAI: 2,
+  V2_POL_A_USDC: 3,
+  POL_USDC: 4,
+  // avalanche
+  AVA_USDT_E: 1,
+  AVA_USDC_E: 2,
 };
 
 const getMerkleTreeJson = (path: string): MerkleTree => {

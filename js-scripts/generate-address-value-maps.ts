@@ -9,9 +9,12 @@ import {
   generateFanTokensMap,
 } from './generate-l2-token-maps';
 
-// Phase 2
-async function phase2() {
-  fs.writeFileSync(amountsFilePath, '');
+// Phase 2, 3
+async function phase_2_3() {
+  fs.appendFileSync(
+    amountsFilePath,
+    `Last run: ${new Date().toUTCString()} Network: ${process.env.network}`
+  );
   if (process.env.network === 'mainnet') {
     await generateMainnetTokensMap();
   } else if (process.env.network === 'l2') {
@@ -21,6 +24,7 @@ async function phase2() {
     await generateOptTokensMap();
     await generateFanTokensMap();
   }
+  fs.appendFileSync(amountsFilePath, '\n');
 }
 
-phase2();
+phase_2_3();
