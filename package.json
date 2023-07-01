@@ -5,7 +5,7 @@
     "generate-json-mainnet": "network=mainnet env-cmd ts-node js-scripts/generate-address-value-maps.ts",
     "generate-json-l2": "network=l2 env-cmd ts-node js-scripts/generate-address-value-maps.ts",
     "generate-json-formatted": "env-cmd ts-node js-scripts/format.ts",
-    "generate-tree": "ts-node js-scripts/generate-merkle-root.ts",
+    "generate-tree": "env-cmd ts-node js-scripts/generate-merkle-root.ts",
     "generate:users-json": "ts-node js-scripts/users-resume.ts",
     "lint": "prettier ./",
     "lint:fix": "npm run lint -- --write"
