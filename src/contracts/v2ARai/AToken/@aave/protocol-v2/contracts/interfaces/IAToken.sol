@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: agpl-3.0
 pragma solidity 0.6.12;
 
-import {IERC20} from 'protocol-v2/contracts/dependencies/openzeppelin/contracts/IERC20.sol';
-import {IScaledBalanceToken} from 'protocol-v2/contracts/interfaces/IScaledBalanceToken.sol';
-import {IInitializableAToken} from 'protocol-v2/contracts/interfaces/IInitializableAToken.sol';
-import {IAaveIncentivesController} from 'protocol-v2/contracts/interfaces/IAaveIncentivesController.sol';
+import {IERC20} from '../dependencies/openzeppelin/contracts/IERC20.sol';
+import {IScaledBalanceToken} from './IScaledBalanceToken.sol';
+import {IAaveIncentivesController} from './IAaveIncentivesController.sol';
 
-interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
+interface IAToken is IERC20, IScaledBalanceToken {
   /**
    * @dev Emitted after the mint action
    * @param from The address performing the mint
@@ -14,6 +13,40 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
    * @param index The new liquidity index of the reserve
    **/
   event Mint(address indexed from, uint256 value, uint256 index);
+
+  /**
+   * @dev Emitted when an aToken is initialized
+   * @param underlyingAsset The address of the underlying asset
+   * @param pool The address of the associated lending pool
+   * @param treasury The address of the treasury
+   * @param incentivesController The address of the incentives controller for this aToken
+   * @param aTokenDecimals the decimals of the underlying
+   * @param aTokenName the name of the aToken
+   * @param aTokenSymbol the symbol of the aToken
+   * @param params A set of encoded parameters for additional initialization
+   **/
+  event Initialized(
+    address indexed underlyingAsset,
+    address indexed pool,
+    address treasury,
+    address incentivesController,
+    uint8 aTokenDecimals,
+    string aTokenName,
+    string aTokenSymbol,
+    bytes params
+  );
+
+  /**
+   * @dev Emitted during the token rescue
+   * @param tokenRescued The token which is being rescued
+   * @param receiver The recipient which will receive the rescued token
+   * @param amountRescued The amount being rescued
+   **/
+  event TokensRescued(
+    address indexed tokenRescued,
+    address indexed receiver,
+    uint256 amountRescued
+  );
 
   /**
    * @dev Mints `amount` aTokens to `user`
@@ -45,14 +78,6 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
    * @param index The new liquidity index of the reserve
    **/
   event BalanceTransfer(address indexed from, address indexed to, uint256 value, uint256 index);
-
-  /**
-   * @dev Emitted during the token rescue
-   * @param tokenRescued The token which is being rescued
-   * @param receiver The recipient which will receive the rescued token
-   * @param amountRescued The amount being rescued
-   **/
-  event TokensRescued(address indexed tokenRescued, address indexed receiver, uint256 amountRescued);
 
   /**
    * @dev Burns aTokens from `user` and sends the equivalent amount of underlying to `receiverOfUnderlying`
@@ -90,28 +115,16 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
   /**
    * @dev Transfers the underlying asset to `target`. Used by the LendingPool to transfer
    * assets in borrow(), withdraw() and flashLoan()
-   * @param user The recipient of the underlying
+   * @param user The recipient of the aTokens
    * @param amount The amount getting transferred
    * @return The amount transferred
    **/
   function transferUnderlyingTo(address user, uint256 amount) external returns (uint256);
 
   /**
-   * @dev Invoked to execute actions on the aToken side after a repayment.
-   * @param user The user executing the repayment
-   * @param amount The amount getting repaid
-   **/
-  function handleRepayment(address user, uint256 amount) external;
-
-  /**
    * @dev Returns the address of the incentives controller contract
    **/
   function getIncentivesController() external view returns (IAaveIncentivesController);
-
-  /**
-   * @dev Returns the address of the underlying asset of this aToken (E.g. WETH for aWETH)
-   **/
-  function UNDERLYING_ASSET_ADDRESS() external view returns (address);
 
   /**
    * @notice Rescue and transfer tokens locked in this contract

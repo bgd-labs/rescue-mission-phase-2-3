@@ -1,26 +1,22 @@
 // SPDX-License-Identifier: agpl-3.0
 pragma solidity 0.6.12;
 
-import {IERC20} from 'protocol-v2/contracts/protocol/tokenization/AToken.sol';
-import {SafeERC20} from 'protocol-v2/contracts/dependencies/openzeppelin/contracts/SafeERC20.sol';
-import {ILendingPool} from 'protocol-v2/contracts/interfaces/ILendingPool.sol';
-import {IAToken} from '../../interfaces/v2/IAToken.sol';
-import {WadRayMath} from 'protocol-v2/contracts/protocol/libraries/math/WadRayMath.sol';
-import {Errors} from 'protocol-v2/contracts/protocol/libraries/helpers/Errors.sol';
-import {VersionedInitializable} from 'protocol-v2/contracts/protocol/libraries/aave-upgradeability/VersionedInitializable.sol';
-import {IncentivizedERC20} from 'protocol-v2/contracts/protocol/tokenization/IncentivizedERC20.sol';
-import {IAaveIncentivesController} from 'protocol-v2/contracts/interfaces/IAaveIncentivesController.sol';
+import {IERC20} from '../../dependencies/openzeppelin/contracts/IERC20.sol';
+import {SafeERC20} from '../../dependencies/openzeppelin/contracts/SafeERC20.sol';
+import {ILendingPool} from '../../interfaces/ILendingPool.sol';
+import {IAToken} from '../../interfaces/IAToken.sol';
+import {WadRayMath} from '../libraries/math/WadRayMath.sol';
+import {Errors} from '../libraries/helpers/Errors.sol';
+import {VersionedInitializable} from '../libraries/aave-upgradeability/VersionedInitializable.sol';
+import {IncentivizedERC20} from './IncentivizedERC20.sol';
+import {IAaveIncentivesController} from '../../interfaces/IAaveIncentivesController.sol';
 
 /**
  * @title Aave ERC20 AToken
  * @dev Implementation of the interest bearing token for the Aave protocol
  * @author Aave
  */
-contract AToken is
-  VersionedInitializable,
-  IncentivizedERC20('ATOKEN_IMPL', 'ATOKEN_IMPL', 0),
-  IAToken
-{
+contract AToken is VersionedInitializable, IncentivizedERC20, IAToken {
   using WadRayMath for uint256;
   using SafeERC20 for IERC20;
 
@@ -30,55 +26,44 @@ contract AToken is
   bytes32 public constant PERMIT_TYPEHASH =
     keccak256('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)');
 
-  uint256 public constant ATOKEN_REVISION = 0x3;
+  uint256 public constant UINT_MAX_VALUE = uint256(-1);
+  uint256 public constant ATOKEN_REVISION = 0x2;
+  address public immutable UNDERLYING_ASSET_ADDRESS;
+  address public immutable RESERVE_TREASURY_ADDRESS;
+  ILendingPool public immutable POOL;
 
   /// @dev owner => next valid nonce to submit with permit()
   mapping(address => uint256) public _nonces;
 
   bytes32 public DOMAIN_SEPARATOR;
 
-  ILendingPool internal _pool;
-  address internal _treasury;
-  address internal _underlyingAsset;
-  IAaveIncentivesController internal _incentivesController;
-
-  modifier onlyPoolAdmin {
-    require(
-      _msgSender() == ILendingPool(_pool).getAddressesProvider().getPoolAdmin(),
-      Errors.CALLER_NOT_POOL_ADMIN
-    );
+  modifier onlyLendingPool {
+    require(_msgSender() == address(POOL), Errors.CT_CALLER_MUST_BE_LENDING_POOL);
     _;
   }
 
-  modifier onlyLendingPool {
-    require(_msgSender() == address(_pool), Errors.CT_CALLER_MUST_BE_LENDING_POOL);
-    _;
+  constructor(
+    ILendingPool pool,
+    address underlyingAssetAddress,
+    address reserveTreasuryAddress,
+    string memory tokenName,
+    string memory tokenSymbol,
+    address incentivesController
+  ) public IncentivizedERC20(tokenName, tokenSymbol, 18, incentivesController) {
+    POOL = pool;
+    UNDERLYING_ASSET_ADDRESS = underlyingAssetAddress;
+    RESERVE_TREASURY_ADDRESS = reserveTreasuryAddress;
   }
 
   function getRevision() internal pure virtual override returns (uint256) {
     return ATOKEN_REVISION;
   }
 
-  /**
-   * @dev Initializes the aToken
-   * @param pool The address of the lending pool where this aToken will be used
-   * @param treasury The address of the Aave treasury, receiving the fees on this aToken
-   * @param underlyingAsset The address of the underlying asset of this aToken (E.g. WETH for aWETH)
-   * @param incentivesController The smart contract managing potential incentives distribution
-   * @param aTokenDecimals The decimals of the aToken, same as the underlying asset's
-   * @param aTokenName The name of the aToken
-   * @param aTokenSymbol The symbol of the aToken
-   */
   function initialize(
-    ILendingPool pool,
-    address treasury,
-    address underlyingAsset,
-    IAaveIncentivesController incentivesController,
-    uint8 aTokenDecimals,
-    string calldata aTokenName,
-    string calldata aTokenSymbol,
-    bytes calldata params
-  ) external override initializer {
+    uint8 underlyingAssetDecimals,
+    string calldata tokenName,
+    string calldata tokenSymbol
+  ) external virtual initializer {
     uint256 chainId;
 
     //solium-disable-next-line
@@ -89,31 +74,26 @@ contract AToken is
     DOMAIN_SEPARATOR = keccak256(
       abi.encode(
         EIP712_DOMAIN,
-        keccak256(bytes(aTokenName)),
+        keccak256(bytes(tokenName)),
         keccak256(EIP712_REVISION),
         chainId,
         address(this)
       )
     );
 
-    _setName(aTokenName);
-    _setSymbol(aTokenSymbol);
-    _setDecimals(aTokenDecimals);
-
-    _pool = pool;
-    _treasury = treasury;
-    _underlyingAsset = underlyingAsset;
-    _incentivesController = incentivesController;
+    _setName(tokenName);
+    _setSymbol(tokenSymbol);
+    _setDecimals(underlyingAssetDecimals);
 
     emit Initialized(
-      underlyingAsset,
-      address(pool),
-      treasury,
-      address(incentivesController),
-      aTokenDecimals,
-      aTokenName,
-      aTokenSymbol,
-      params
+      UNDERLYING_ASSET_ADDRESS,
+      address(POOL),
+      RESERVE_TREASURY_ADDRESS,
+      address(_incentivesController),
+      underlyingAssetDecimals,
+      tokenName,
+      tokenSymbol,
+      ''
     );
   }
 
@@ -135,7 +115,7 @@ contract AToken is
     require(amountScaled != 0, Errors.CT_INVALID_BURN_AMOUNT);
     _burn(user, amountScaled);
 
-    IERC20(_underlyingAsset).safeTransfer(receiverOfUnderlying, amount);
+    IERC20(UNDERLYING_ASSET_ADDRESS).safeTransfer(receiverOfUnderlying, amount);
 
     emit Transfer(user, address(0), amount);
     emit Burn(user, receiverOfUnderlying, amount, index);
@@ -177,16 +157,14 @@ contract AToken is
       return;
     }
 
-    address treasury = _treasury;
-
     // Compared to the normal mint, we don't check for rounding errors.
     // The amount to mint can easily be very small since it is a fraction of the interest ccrued.
     // In that case, the treasury will experience a (very small) loss, but it
     // wont cause potentially valid transactions to fail.
-    _mint(treasury, amount.rayDiv(index));
+    _mint(RESERVE_TREASURY_ADDRESS, amount.rayDiv(index));
 
-    emit Transfer(address(0), treasury, amount);
-    emit Mint(treasury, amount, index);
+    emit Transfer(address(0), RESERVE_TREASURY_ADDRESS, amount);
+    emit Mint(RESERVE_TREASURY_ADDRESS, amount, index);
   }
 
   /**
@@ -219,7 +197,7 @@ contract AToken is
     override(IncentivizedERC20, IERC20)
     returns (uint256)
   {
-    return super.balanceOf(user).rayMul(_pool.getReserveNormalizedIncome(_underlyingAsset));
+    return super.balanceOf(user).rayMul(POOL.getReserveNormalizedIncome(UNDERLYING_ASSET_ADDRESS));
   }
 
   /**
@@ -260,7 +238,14 @@ contract AToken is
       return 0;
     }
 
-    return currentSupplyScaled.rayMul(_pool.getReserveNormalizedIncome(_underlyingAsset));
+    return currentSupplyScaled.rayMul(POOL.getReserveNormalizedIncome(UNDERLYING_ASSET_ADDRESS));
+  }
+
+  /**
+   * @dev Returns the address of the incentives controller contract
+   **/
+  function getIncentivesController() external view override returns (IAaveIncentivesController) {
+    return _incentivesController;
   }
 
   /**
@@ -269,41 +254,6 @@ contract AToken is
    **/
   function scaledTotalSupply() public view virtual override returns (uint256) {
     return super.totalSupply();
-  }
-
-  /**
-   * @dev Returns the address of the Aave treasury, receiving the fees on this aToken
-   **/
-  function RESERVE_TREASURY_ADDRESS() public view returns (address) {
-    return _treasury;
-  }
-
-  /**
-   * @dev Returns the address of the underlying asset of this aToken (E.g. WETH for aWETH)
-   **/
-  function UNDERLYING_ASSET_ADDRESS() public override view returns (address) {
-    return _underlyingAsset;
-  }
-
-  /**
-   * @dev Returns the address of the lending pool where this aToken is used
-   **/
-  function POOL() public view returns (ILendingPool) {
-    return _pool;
-  }
-
-  /**
-   * @dev For internal usage in the logic of the parent contract IncentivizedERC20
-   **/
-  function _getIncentivesController() internal view override returns (IAaveIncentivesController) {
-    return _incentivesController;
-  }
-
-  /**
-   * @dev Returns the address of the incentives controller contract
-   **/
-  function getIncentivesController() external view override returns (IAaveIncentivesController) {
-    return _getIncentivesController();
   }
 
   /**
@@ -319,16 +269,9 @@ contract AToken is
     onlyLendingPool
     returns (uint256)
   {
-    IERC20(_underlyingAsset).safeTransfer(target, amount);
+    IERC20(UNDERLYING_ASSET_ADDRESS).safeTransfer(target, amount);
     return amount;
   }
-
-  /**
-   * @dev Invoked to execute actions on the aToken side after a repayment.
-   * @param user The user executing the repayment
-   * @param amount The amount getting repaid
-   **/
-  function handleRepayment(address user, uint256 amount) external override onlyLendingPool {}
 
   /**
    * @dev implements the permit function as for
@@ -381,10 +324,7 @@ contract AToken is
     uint256 amount,
     bool validate
   ) internal {
-    address underlyingAsset = _underlyingAsset;
-    ILendingPool pool = _pool;
-
-    uint256 index = pool.getReserveNormalizedIncome(underlyingAsset);
+    uint256 index = POOL.getReserveNormalizedIncome(UNDERLYING_ASSET_ADDRESS);
 
     uint256 fromBalanceBefore = super.balanceOf(from).rayMul(index);
     uint256 toBalanceBefore = super.balanceOf(to).rayMul(index);
@@ -392,7 +332,14 @@ contract AToken is
     super._transfer(from, to, amount.rayDiv(index));
 
     if (validate) {
-      pool.finalizeTransfer(underlyingAsset, from, to, amount, fromBalanceBefore, toBalanceBefore);
+      POOL.finalizeTransfer(
+        UNDERLYING_ASSET_ADDRESS,
+        from,
+        to,
+        amount,
+        fromBalanceBefore,
+        toBalanceBefore
+      );
     }
 
     emit BalanceTransfer(from, to, amount, index);
@@ -410,11 +357,5 @@ contract AToken is
     uint256 amount
   ) internal override {
     _transfer(from, to, amount, true);
-  }
-
-  /// @inheritdoc IAToken
-  function rescueTokens(address token, address to, uint256 amount) external override onlyPoolAdmin {
-    IERC20(token).safeTransfer(to, amount);
-    emit TokensRescued(token, to, amount);
   }
 }
