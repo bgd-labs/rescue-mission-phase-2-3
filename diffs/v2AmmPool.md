@@ -63,9 +63,18 @@ index af4db24..7b321d0 100644
  /**
   * @title DefaultReserveInterestRateStrategy contract
 diff --git a/./etherscan/v2AmmPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol b/./src/contracts/v2AmmPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
-index 8e38650..9280fc6 100644
+index 8e38650..0061585 100644
 --- a/./etherscan/v2AmmPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
 +++ b/./src/contracts/v2AmmPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
+@@ -49,7 +49,7 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
+   using PercentageMath for uint256;
+   using SafeERC20 for IERC20;
+ 
+-  uint256 public constant LENDINGPOOL_REVISION = 0x2;
++  uint256 public constant LENDINGPOOL_REVISION = 0x3;
+ 
+   modifier whenNotPaused() {
+     _whenNotPaused();
 @@ -61,6 +61,11 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
      _;
    }

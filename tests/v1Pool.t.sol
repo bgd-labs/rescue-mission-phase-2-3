@@ -4,7 +4,7 @@ pragma solidity ^0.5.0;
 import {Vm} from 'forge-std/Vm.sol';
 import {LendingPool, LendingPoolAddressesProvider, ERC20} from '../src/contracts/v1Pool/LendingPool/LendingPool.sol';
 
-contract v1PoolTest {
+contract V1PoolTest {
   address constant LINK_TOKEN = 0x514910771AF9Ca656af840dff83E8264EcF986CA;
   address constant WBTC_A_TOKEN = 0xFC4B8ED459e00e5400be803A9BB3954234FD50e3;
   address constant SHORT_EXECUTOR = 0xEE56e2B3D491590B5b31738cC34d5232F378a8D5;
