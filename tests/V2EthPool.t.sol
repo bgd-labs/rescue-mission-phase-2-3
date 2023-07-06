@@ -4,7 +4,6 @@ pragma experimental ABIEncoderV2;
 
 import {Test} from 'forge-std/Test.sol';
 import {LendingPool, ILendingPoolAddressesProvider, IERC20} from '../src/contracts/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol';
-import {LendingPoolAddressesProvider} from '../src/contracts/v2EthPool/LendingPool/contracts/protocol/configuration/LendingPoolAddressesProvider.sol';
 import {AaveGovernanceV2} from 'aave-address-book/AaveGovernanceV2.sol';
 
 contract V2EthPoolTest is Test {
@@ -84,7 +83,7 @@ contract V2EthPoolTest is Test {
 
   function _updatePool() internal {
     vm.startPrank(AaveGovernanceV2.SHORT_EXECUTOR);
-    LendingPoolAddressesProvider(LENDING_POOL_ADDRESSES_PROVIDER).setLendingPoolImpl(
+    ILendingPoolAddressesProvider(LENDING_POOL_ADDRESSES_PROVIDER).setLendingPoolImpl(
       address(NEW_POOL_IMPL)
     );
     vm.stopPrank();
