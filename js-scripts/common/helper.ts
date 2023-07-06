@@ -21,7 +21,7 @@ async function getContractCreationBlock(
       let response: Response;
       if (network === ChainId.mainnet) {
         response = await fetch(
-          `https://api.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_ETHEREUM}`
+          `https://api.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_MAINNET}`
         );
       } else if (network === ChainId.polygon) {
         response = await fetch(
