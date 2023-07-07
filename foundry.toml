@@ -7,7 +7,8 @@ libs = ['lib']
 remappings = [
   'solidity-utils/=lib/solidity-utils/src/',
   'protocol-v2/=lib/protocol-v2/',
-  'aave-address-bool/=lib/aave-address-bool/'
+  'aave-address-bool/=lib/aave-address-bool/',
+  'rescue-mission-phase-1/=lib/rescue-mission-phase-1/src/'
 ]
 fs_permissions = [{ access = "write", path = "./reports" }]
 
