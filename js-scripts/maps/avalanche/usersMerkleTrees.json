@@ -1,0 +1,33 @@
+{
+  "0x1f8b517e8E3CbB26125416a958Dbb44C7A5387d4": [
+    {
+      "tokenAmount": "1772.206585 avalanche_usdt.e",
+      "tokenAmountInWei": "1772206585",
+      "proof": [],
+      "index": 0,
+      "distributionId": 1
+    }
+  ],
+  "0x358Dbc0B83186591F3202400ffCD70c14C1FF9aE": [
+    {
+      "tokenAmount": "2521.408895 avalanche_usdc.e",
+      "tokenAmountInWei": "2521408895",
+      "proof": [
+        "0x581f07722c4d96a3c05eb387c0669dda9022add1de131de236a404fd19d67062"
+      ],
+      "index": 0,
+      "distributionId": 2
+    }
+  ],
+  "0xe7d0977990B81cf52417D7964C8EB86e2793f8e7": [
+    {
+      "tokenAmount": "1 avalanche_usdc.e",
+      "tokenAmountInWei": "1000000",
+      "proof": [
+        "0xce1305b046f54ba7ede78ae534eaf66597e38286a7fc7d9cb587fe053359e263"
+      ],
+      "index": 1,
+      "distributionId": 2
+    }
+  ]
+}
