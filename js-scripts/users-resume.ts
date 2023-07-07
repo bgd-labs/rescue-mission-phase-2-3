@@ -36,7 +36,7 @@ type MerkleTree = {
 
 type UsersJson = Record<string, UserInfo[]>;
 
-const merkleTree: Record<string, string> = {
+const ethMerkleTree: Record<string, string> = {
   V2_ETH_A_RAI: './js-scripts/maps/ethereum/merkleTree/v2_araiRescueMerkleTree.json',
   V1_ETH_A_BTC: './js-scripts/maps/ethereum/merkleTree/v1_awbtcRescueMerkleTree.json',
   ETH_USDT: './js-scripts/maps/ethereum/merkleTree/usdtRescueMerkleTree.json',
@@ -45,24 +45,30 @@ const merkleTree: Record<string, string> = {
   ETH_LINK: './js-scripts/maps/ethereum/merkleTree/linkRescueMerkleTree.json',
   ETH_HOT: './js-scripts/maps/ethereum/merkleTree/hotRescueMerkleTree.json',
   ETH_USDC: './js-scripts/maps/ethereum/merkleTree/usdcRescueMerkleTree.json',
+};
+
+const polMerkleTree: Record<string, string> = {
   POL_WBTC: './js-scripts/maps/polygon/merkleTree/wbtcRescueMerkleTree.json',
   V2_POL_A_DAI: './js-scripts/maps/polygon/merkleTree/v2_adaiRescueMerkleTree.json',
   V2_POL_A_USDC: './js-scripts/maps/polygon/merkleTree/v2_ausdcRescueMerkleTree.json',
   POL_USDC: './js-scripts/maps/polygon/merkleTree/usdcRescueMerkleTree.json',
+};
+
+const avaMerkleTree: Record<string, string> = {
   AVA_USDT_E: './js-scripts/maps/avalanche/merkleTree/usdt.eRescueMerkleTree.json',
   AVA_USDC_E: './js-scripts/maps/avalanche/merkleTree/usdc.eRescueMerkleTree.json',
 };
 
 const distributionIds: Record<string, number> = {
   // ethereum
-  V2_ETH_A_RAI: 1,
-  V1_ETH_A_BTC: 2,
-  ETH_USDT: 3,
-  ETH_DAI: 4,
-  ETH_GUSD: 5,
-  ETH_LINK: 6,
-  ETH_HOT: 7,
-  ETH_USDC: 8,
+  V2_ETH_A_RAI: 4,
+  V1_ETH_A_BTC: 5,
+  ETH_USDT: 6,
+  ETH_DAI: 7,
+  ETH_GUSD: 8,
+  ETH_LINK: 9,
+  ETH_HOT: 10,
+  ETH_USDC: 11,
   // polygon
   POL_WBTC: 1,
   V2_POL_A_DAI: 2,
@@ -84,9 +90,20 @@ const getMerkleTreeJson = (path: string): MerkleTree => {
   }
 };
 
-const generateUsersJson = (): void => {
+const generateUsersJson = (network: string): void => {
   const usersJson: UsersJson = {};
   const lightUsersJson: LightUserInfo = {};
+  let merkleTree: Record<string, string>;
+
+  if (network === 'ethereum') {
+    merkleTree = ethMerkleTree;
+  } else if (network === 'polygon') {
+    merkleTree = polMerkleTree;
+  } else if (network === 'avalanche') {
+    merkleTree = avaMerkleTree;
+  } else {
+    throw Error('Invalid network');
+  }
 
   for (const token of Object.keys(merkleTree)) {
     const merkleTreeJson = getMerkleTreeJson(merkleTree[token]);
@@ -113,8 +130,13 @@ const generateUsersJson = (): void => {
     }
   }
 
-  fs.writeFileSync('./js-scripts/maps/usersMerkleTrees.json', JSON.stringify(usersJson));
-  fs.writeFileSync('./js-scripts/maps/usersAmounts.json', JSON.stringify(lightUsersJson));
+  fs.writeFileSync(`./js-scripts/maps/${network}/usersMerkleTrees.json`, JSON.stringify(usersJson));
+  fs.writeFileSync(
+    `./js-scripts/maps/${network}/usersAmounts.json`,
+    JSON.stringify(lightUsersJson)
+  );
 };
 
-generateUsersJson();
+generateUsersJson('ethereum');
+generateUsersJson('polygon');
+generateUsersJson('avalanche');
