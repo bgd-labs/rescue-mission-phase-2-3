@@ -29,11 +29,7 @@ contract V2AmmPoolTest is Test {
   function testRescueUsdt() public {
     _updatePool();
     vm.startPrank(AaveGovernanceV2.SHORT_EXECUTOR);
-    LendingPool(LENDING_POOL).rescueTokens(
-      USDT_TOKEN,
-      MERKLE_DISTRIBUTOR,
-      RESCUE_AMOUNT
-    );
+    LendingPool(LENDING_POOL).rescueTokens(USDT_TOKEN, MERKLE_DISTRIBUTOR, RESCUE_AMOUNT);
     assertEq(IERC20(USDT_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), RESCUE_AMOUNT);
     vm.stopPrank();
   }

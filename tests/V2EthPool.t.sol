@@ -36,11 +36,7 @@ contract V2EthPoolTest is Test {
   function testRescueDai() public {
     _updatePool();
     vm.startPrank(AaveGovernanceV2.SHORT_EXECUTOR);
-    LendingPool(LENDING_POOL).rescueTokens(
-      DAI_TOKEN,
-      MERKLE_DISTRIBUTOR,
-      DAI_RESCUE_AMOUNT
-    );
+    LendingPool(LENDING_POOL).rescueTokens(DAI_TOKEN, MERKLE_DISTRIBUTOR, DAI_RESCUE_AMOUNT);
     assertEq(IERC20(DAI_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), DAI_RESCUE_AMOUNT);
     vm.stopPrank();
   }
@@ -48,11 +44,7 @@ contract V2EthPoolTest is Test {
   function testRescueGusd() public {
     _updatePool();
     vm.startPrank(AaveGovernanceV2.SHORT_EXECUTOR);
-    LendingPool(LENDING_POOL).rescueTokens(
-      GUSD_TOKEN,
-      MERKLE_DISTRIBUTOR,
-      GUSD_RESCUE_AMOUNT
-    );
+    LendingPool(LENDING_POOL).rescueTokens(GUSD_TOKEN, MERKLE_DISTRIBUTOR, GUSD_RESCUE_AMOUNT);
     assertEq(IERC20(GUSD_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), GUSD_RESCUE_AMOUNT);
     vm.stopPrank();
   }
@@ -60,11 +52,7 @@ contract V2EthPoolTest is Test {
   function testRescueHot() public {
     _updatePool();
     vm.startPrank(AaveGovernanceV2.SHORT_EXECUTOR);
-    LendingPool(LENDING_POOL).rescueTokens(
-      HOT_TOKEN,
-      MERKLE_DISTRIBUTOR,
-      HOT_RESCUE_AMOUNT
-    );
+    LendingPool(LENDING_POOL).rescueTokens(HOT_TOKEN, MERKLE_DISTRIBUTOR, HOT_RESCUE_AMOUNT);
     assertEq(IERC20(HOT_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), HOT_RESCUE_AMOUNT);
     vm.stopPrank();
   }
@@ -72,11 +60,7 @@ contract V2EthPoolTest is Test {
   function testRescueUsdc() public {
     _updatePool();
     vm.startPrank(AaveGovernanceV2.SHORT_EXECUTOR);
-    LendingPool(LENDING_POOL).rescueTokens(
-      USDC_TOKEN,
-      MERKLE_DISTRIBUTOR,
-      USDC_RESCUE_AMOUNT
-    );
+    LendingPool(LENDING_POOL).rescueTokens(USDC_TOKEN, MERKLE_DISTRIBUTOR, USDC_RESCUE_AMOUNT);
     assertEq(IERC20(USDC_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), USDC_RESCUE_AMOUNT);
     vm.stopPrank();
   }

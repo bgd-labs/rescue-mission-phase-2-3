@@ -25,13 +25,9 @@ contract V2AvaPoolTest is Test {
   }
 
   function testUpdateV2EthPool() public {
-    assert(
-      LendingPool(address(AaveV2Avalanche.POOL)).LENDINGPOOL_REVISION() == 2
-    );
+    assert(LendingPool(address(AaveV2Avalanche.POOL)).LENDINGPOOL_REVISION() == 2);
     _updatePool();
-    assert(
-      LendingPool(address(AaveV2Avalanche.POOL)).LENDINGPOOL_REVISION() == 3
-    );
+    assert(LendingPool(address(AaveV2Avalanche.POOL)).LENDINGPOOL_REVISION() == 3);
   }
 
   function testRescueUsdcE() public {
@@ -60,9 +56,7 @@ contract V2AvaPoolTest is Test {
 
   function _updatePool() internal {
     vm.startPrank(OWNER);
-    AaveV2Avalanche.POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(
-      address(NEW_POOL_IMPL)
-    );
+    AaveV2Avalanche.POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(address(NEW_POOL_IMPL));
     vm.stopPrank();
   }
 }

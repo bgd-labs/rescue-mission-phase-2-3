@@ -32,11 +32,7 @@ contract V1PoolTest {
   function testRescueAWbtc() public {
     _updatePool();
     vm.startPrank(SHORT_EXECUTOR);
-    LendingPool(LENDING_POOL).rescueTokens(
-      WBTC_A_TOKEN,
-      MERKLE_DISTRIBUTOR,
-      A_WBTC_RESCUE_AMOUNT
-    );
+    LendingPool(LENDING_POOL).rescueTokens(WBTC_A_TOKEN, MERKLE_DISTRIBUTOR, A_WBTC_RESCUE_AMOUNT);
     assert(ERC20(WBTC_A_TOKEN).balanceOf(MERKLE_DISTRIBUTOR) == A_WBTC_RESCUE_AMOUNT);
     vm.stopPrank();
   }
@@ -44,11 +40,7 @@ contract V1PoolTest {
   function testRescueLink() public {
     _updatePool();
     vm.startPrank(SHORT_EXECUTOR);
-    LendingPool(LENDING_POOL).rescueTokens(
-      LINK_TOKEN,
-      MERKLE_DISTRIBUTOR,
-      LINK_RESCUE_AMOUNT
-    );
+    LendingPool(LENDING_POOL).rescueTokens(LINK_TOKEN, MERKLE_DISTRIBUTOR, LINK_RESCUE_AMOUNT);
     assert(ERC20(LINK_TOKEN).balanceOf(MERKLE_DISTRIBUTOR) == LINK_RESCUE_AMOUNT);
     vm.stopPrank();
   }

@@ -55,7 +55,10 @@ contract V2EthATokenTest is Test {
       MERKLE_DISTRIBUTOR,
       USDT_RESCUE_AMOUNT
     );
-    assertEq(IERC20(AaveV2EthereumAssets.USDT_UNDERLYING).balanceOf(MERKLE_DISTRIBUTOR), USDT_RESCUE_AMOUNT);
+    assertEq(
+      IERC20(AaveV2EthereumAssets.USDT_UNDERLYING).balanceOf(MERKLE_DISTRIBUTOR),
+      USDT_RESCUE_AMOUNT
+    );
     vm.stopPrank();
   }
 
@@ -67,7 +70,10 @@ contract V2EthATokenTest is Test {
       MERKLE_DISTRIBUTOR,
       A_RAI_RESCUE_AMOUNT
     );
-    assertEq(IERC20(AaveV2EthereumAssets.RAI_A_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), A_RAI_RESCUE_AMOUNT);
+    assertEq(
+      IERC20(AaveV2EthereumAssets.RAI_A_TOKEN).balanceOf(MERKLE_DISTRIBUTOR),
+      A_RAI_RESCUE_AMOUNT
+    );
     vm.stopPrank();
   }
 
