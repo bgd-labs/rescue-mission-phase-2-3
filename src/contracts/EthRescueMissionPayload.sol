@@ -27,46 +27,46 @@ contract EthRescueMissionPayload {
     ILendingPoolAddressesProvider(0xAcc030EF66f9dFEAE9CbB0cd1B25654b82cFA8d5);
 
   bytes32 public constant A_RAI_MERKLE_ROOT =
-    0x46cf998dfa113fd51bc43bf8931a5b20d45a75471dde5df7b06654e94333a463;
+    0x3942426a49eecabdd3994e883ab25e0ec73c4f96f0b1f1b1b2f4c66f45878b26;
 
   bytes32 public constant A_BTC_MERKLE_ROOT =
-    0x46cf998dfa113fd51bc43bf8931a5b20d45a75471dde5df7b06654e94333a463;
+    0xd5ab3ec5814e366baaeab62582f7ae7ddf2c6a5eaa7fee4cfb37905392238b5b;
 
   bytes32 public constant USDT_MERKLE_ROOT =
-    0x46cf998dfa113fd51bc43bf8931a5b20d45a75471dde5df7b06654e94333a463;
+    0xc9f3d60e49d204c9efb8dc934df208af1b1dc466e167072153cb39984b0a47a2;
 
   bytes32 public constant DAI_MERKLE_ROOT =
-    0x46cf998dfa113fd51bc43bf8931a5b20d45a75471dde5df7b06654e94333a463;
+    0xa5b01627e5dab7e836e128ecbf10060a4e7a6dd0318871a22a26f3cba7f80f27;
 
   bytes32 public constant GUSD_MERKLE_ROOT =
-    0x46cf998dfa113fd51bc43bf8931a5b20d45a75471dde5df7b06654e94333a463;
+    0x4f887bd38b304046ea11e902fee4b378504e854ff62dc0fb4f0c8cae5a07aa6b;
 
   bytes32 public constant LINK_MERKLE_ROOT =
-    0x46cf998dfa113fd51bc43bf8931a5b20d45a75471dde5df7b06654e94333a463;
+    0xdce06a9eace958878e687245785c4e81f49ea8d0f48f4b8a491eedc67cd2e3ba;
 
   bytes32 public constant HOT_MERKLE_ROOT =
-    0x46cf998dfa113fd51bc43bf8931a5b20d45a75471dde5df7b06654e94333a463;
+    0x88c3cca89fd60d12d1bbb174584eebf65a4013fa6d32a0e8e1578393740af3c9;
 
   bytes32 public constant USDC_MERKLE_ROOT =
-    0x46cf998dfa113fd51bc43bf8931a5b20d45a75471dde5df7b06654e94333a463;
+    0x55bd519868fb1519bfe6229b6a662a61401ecd8a4ef45254ed692a5a2ee29560;
 
-  uint256 public constant A_RAI_RESCUE_AMOUNT = 8007719287288096435418;
+  uint256 public constant A_RAI_RESCUE_AMOUNT = 1_481_160740870074804020;
 
-  uint256 public constant A_BTC_RESCUE_AMOUNT = 841600717506653731350931;
+  uint256 public constant A_BTC_RESCUE_AMOUNT = 192454215;
 
-  uint256 public constant USDT_RESCUE_AMOUNT_AMM_POOL = 19845132947543342156792;
+  uint256 public constant USDT_RESCUE_AMOUNT_AMM_POOL = 20_600_057405;
 
-  uint256 public constant USDT_RESCUE_AMOUNT_A_USDT = 19845132947543342156792;
+  uint256 public constant USDT_RESCUE_AMOUNT_A_USDT = 11_010e6;
 
-  uint256 DAI_RESCUE_AMOUNT = 8007719287288096435418;
+  uint256 public constant DAI_RESCUE_AMOUNT = 22_000;
 
-  uint256 public constant GUSD_RESCUE_AMOUNT = 841600717506653731350931;
+  uint256 public constant GUSD_RESCUE_AMOUNT = 19_994_86;
 
-  uint256 public constant LINK_RESCUE_AMOUNT = 19845132947543342156792;
+  uint256 public constant LINK_RESCUE_AMOUNT = 4084e18;
 
-  uint256 HOT_RESCUE_AMOUNT = 8007719287288096435418;
+  uint256 public constant HOT_RESCUE_AMOUNT = 1_046_391e18;
 
-  uint256 public constant USDC_RESCUE_AMOUNT = 841600717506653731350931;
+  uint256 public constant USDC_RESCUE_AMOUNT = 1_089_889717;
 
   constructor(
     AaveMerkleDistributor aaveMerkleDistributor,
@@ -119,8 +119,8 @@ contract EthRescueMissionPayload {
   function _updateContractsWithRescueFunction() internal {
     // Set new pool implementaion with rescue function for Aave V1, V2, V2 Amm pools
     V1_LENDING_POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V1_POOL_IMPL);
-    V1_LENDING_POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V2_POOL_IMPL);
-    V1_LENDING_POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V2_AMM_POOL_IMPL);
+    V2_LENDING_POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V2_POOL_IMPL);
+    V2_AMM_LENDING_POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V2_AMM_POOL_IMPL);
 
     // update aToken impl for aRai and aUsdt with rescue function
     AaveV2Ethereum.POOL_CONFIGURATOR.updateAToken(
