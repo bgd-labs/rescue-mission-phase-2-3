@@ -29,7 +29,7 @@ contract V2EthATokenTest is Test {
       ILendingPool(address(AaveV2Ethereum.POOL)),
       AaveV2EthereumAssets.RAI_UNDERLYING,
       address(AaveV2Ethereum.COLLECTOR),
-      'Aave interest bearing RAI 1',
+      'Aave interest bearing RAI',
       'aRAI',
       AaveV2Ethereum.DEFAULT_INCENTIVES_CONTROLLER
     );

@@ -13,7 +13,7 @@ contract V2AmmPoolTest is Test {
   LendingPool NEW_POOL_IMPL;
   address constant MERKLE_DISTRIBUTOR = address(1653);
   address constant USDT_TOKEN = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
-  uint256 constant RESCUE_AMOUNT = 20_600_057405;
+  uint256 constant USDT_RESCUE_AMOUNT = 20_600_057405;
 
   function setUp() public {
     vm.createSelectFork('mainnet', 17591311);
@@ -29,8 +29,8 @@ contract V2AmmPoolTest is Test {
   function testRescueUsdt() public {
     _updatePool();
     vm.startPrank(AaveGovernanceV2.SHORT_EXECUTOR);
-    LendingPool(LENDING_POOL).rescueTokens(USDT_TOKEN, MERKLE_DISTRIBUTOR, RESCUE_AMOUNT);
-    assertEq(IERC20(USDT_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), RESCUE_AMOUNT);
+    LendingPool(LENDING_POOL).rescueTokens(USDT_TOKEN, MERKLE_DISTRIBUTOR, USDT_RESCUE_AMOUNT);
+    assertEq(IERC20(USDT_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), USDT_RESCUE_AMOUNT);
     vm.stopPrank();
   }
 
