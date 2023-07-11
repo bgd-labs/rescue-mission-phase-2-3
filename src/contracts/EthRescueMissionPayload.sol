@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
+import {AaveV2Ethereum, AaveV2EthereumAssets, ILendingPoolAddressesProvider} from 'aave-address-book/AaveV2Ethereum.sol';
 import {AaveV2EthereumAMM} from 'aave-address-book/AaveV2EthereumAMM.sol';
-import {ILendingPoolAddressesProvider} from './interfaces/ILendingPoolAddressesProvider.sol';
 import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkleDistributor.sol';
 import {IRescue} from './interfaces/IRescue.sol';
 
@@ -19,12 +18,8 @@ contract EthRescueMissionPayload {
   address public constant V1_BTC_A_TOKEN = 0xFC4B8ED459e00e5400be803A9BB3954234FD50e3;
   address public constant HOT_TOKEN = 0x6c6EE5e31d828De241282B9606C8e98Ea48526E2;
 
-  ILendingPoolAddressesProvider public constant V1_LENDING_POOL_ADDRESSES_PROVIDER =
+  ILendingPoolAddressesProvider public constant V1_POOL_ADDRESSES_PROVIDER =
     ILendingPoolAddressesProvider(0x24a42fD28C976A61Df5D00D0599C34c4f90748c8);
-  ILendingPoolAddressesProvider public constant V2_LENDING_POOL_ADDRESSES_PROVIDER =
-    ILendingPoolAddressesProvider(0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5);
-  ILendingPoolAddressesProvider public constant V2_AMM_LENDING_POOL_ADDRESSES_PROVIDER =
-    ILendingPoolAddressesProvider(0xAcc030EF66f9dFEAE9CbB0cd1B25654b82cFA8d5);
 
   bytes32 public constant A_RAI_MERKLE_ROOT =
     0x3942426a49eecabdd3994e883ab25e0ec73c4f96f0b1f1b1b2f4c66f45878b26;
@@ -62,7 +57,7 @@ contract EthRescueMissionPayload {
 
   uint256 public constant GUSD_RESCUE_AMOUNT = 19_994_86;
 
-  uint256 public constant LINK_RESCUE_AMOUNT = 4084e18;
+  uint256 public constant LINK_RESCUE_AMOUNT = 4_084e18;
 
   uint256 public constant HOT_RESCUE_AMOUNT = 1_046_391e18;
 
@@ -118,9 +113,9 @@ contract EthRescueMissionPayload {
 
   function _updateContractsWithRescueFunction() internal {
     // Set new pool implementaion with rescue function for Aave V1, V2, V2 Amm pools
-    V1_LENDING_POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V1_POOL_IMPL);
-    V2_LENDING_POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V2_POOL_IMPL);
-    V2_AMM_LENDING_POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V2_AMM_POOL_IMPL);
+    V1_POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V1_POOL_IMPL);
+    AaveV2Ethereum.POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V2_POOL_IMPL);
+    AaveV2EthereumAMM.POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V2_AMM_POOL_IMPL);
 
     // update aToken impl for aRai and aUsdt with rescue function
     AaveV2Ethereum.POOL_CONFIGURATOR.updateAToken(
