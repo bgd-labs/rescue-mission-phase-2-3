@@ -6,8 +6,7 @@ import {Test} from 'forge-std/Test.sol';
 import {AToken, ILendingPool, IAaveIncentivesController, IERC20} from '../src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol';
 import {AaveGovernanceV2} from 'aave-address-book/AaveGovernanceV2.sol';
 import {AaveV2Polygon, AaveV2PolygonAssets} from 'aave-address-book/AaveV2Polygon.sol';
-import {LendingPoolConfigurator} from 'protocol-v2/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
-import {ILendingPoolConfigurator} from 'protocol-v2/contracts/interfaces/ILendingPoolConfigurator.sol';
+import {ILendingPoolConfigurator} from '../src/contracts/interfaces/ILendingPoolConfigurator.sol';
 
 contract V2PolATokenTest is Test {
   AToken NEW_A_TOKEN_IMPL;
@@ -74,7 +73,7 @@ contract V2PolATokenTest is Test {
 
   function _updateAUsdc() internal {
     vm.startPrank(AaveGovernanceV2.POLYGON_BRIDGE_EXECUTOR);
-    LendingPoolConfigurator(address(AaveV2Polygon.POOL_CONFIGURATOR)).updateAToken(
+    ILendingPoolConfigurator(address(AaveV2Polygon.POOL_CONFIGURATOR)).updateAToken(
       ILendingPoolConfigurator.UpdateATokenInput({
         asset: AaveV2PolygonAssets.USDC_UNDERLYING,
         treasury: address(AaveV2Polygon.COLLECTOR),
@@ -90,7 +89,7 @@ contract V2PolATokenTest is Test {
 
   function _updateADai() internal {
     vm.startPrank(AaveGovernanceV2.POLYGON_BRIDGE_EXECUTOR);
-    LendingPoolConfigurator(address(AaveV2Polygon.POOL_CONFIGURATOR)).updateAToken(
+    ILendingPoolConfigurator(address(AaveV2Polygon.POOL_CONFIGURATOR)).updateAToken(
       ILendingPoolConfigurator.UpdateATokenInput({
         asset: AaveV2PolygonAssets.DAI_UNDERLYING,
         treasury: address(AaveV2Polygon.COLLECTOR),

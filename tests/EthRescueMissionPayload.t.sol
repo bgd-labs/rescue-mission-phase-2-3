@@ -9,15 +9,13 @@ import {LendingPool as V2AmmLendingPool} from '../src/contracts/v2AmmPool/Lendin
 import {AToken as V2AToken, ILendingPool as IV2LendingPool, IERC20} from '../src/contracts/v2EthAToken/AToken/@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 
-interface IOwnable {
-  function transferOwnership(address newOwner) external;
-}
-
 contract EthRescueMissionPayloadTest is TestWithExecutor {
   // artifacts
   string constant v1PoolArtifact = 'out/LendingPool.sol/LendingPool.json';
-  string constant aaveMerkleDistributorArtifact = 'out/AaveMerkleDistributor.sol/AaveMerkleDistributor.json';
-  string constant ethRescueMissionPayloadlArtifact = 'out/EthRescueMissionPayload.sol/EthRescueMissionPayload.json';
+  string constant aaveMerkleDistributorArtifact =
+    'out/AaveMerkleDistributor.sol/AaveMerkleDistributor.json';
+  string constant ethRescueMissionPayloadlArtifact =
+    'out/EthRescueMissionPayload.sol/EthRescueMissionPayload.json';
 
   uint256 public constant A_RAI_RESCUE_AMOUNT = 1_481_160740870074804020;
   uint256 public constant A_BTC_RESCUE_AMOUNT = 192454215;
@@ -41,7 +39,7 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
     _selectPayloadExecutor(GovHelpers.SHORT_EXECUTOR);
   }
 
-  function testProposal() public {
+  function testPayload() public {
     // Execute proposal
     _executor.execute(payload);
 
@@ -82,7 +80,7 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
     V2LendingPool v2LendingPool = new V2LendingPool();
     V2AmmLendingPool v2AmmLendingPool = new V2AmmLendingPool();
 
-    V2AToken RAI_A_TOKEN_IMPL = new V2AToken(
+    V2AToken raiAToken = new V2AToken(
       IV2LendingPool(address(AaveV2Ethereum.POOL)),
       AaveV2EthereumAssets.RAI_UNDERLYING,
       address(AaveV2Ethereum.COLLECTOR),
@@ -90,7 +88,7 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
       'aRAI',
       AaveV2Ethereum.DEFAULT_INCENTIVES_CONTROLLER
     );
-    V2AToken USDT_A_TOKEN_IMPL = new V2AToken(
+    V2AToken usdtAToken = new V2AToken(
       IV2LendingPool(address(AaveV2Ethereum.POOL)),
       AaveV2EthereumAssets.USDT_UNDERLYING,
       address(AaveV2Ethereum.COLLECTOR),
@@ -106,9 +104,13 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
         v1LendingPoolAddress,
         address(v2LendingPool),
         address(v2AmmLendingPool),
-        address(RAI_A_TOKEN_IMPL),
-        address(USDT_A_TOKEN_IMPL)
+        address(raiAToken),
+        address(usdtAToken)
       )
     );
   }
+}
+
+interface IOwnable {
+  function transferOwnership(address newOwner) external;
 }
