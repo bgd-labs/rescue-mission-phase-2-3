@@ -5,8 +5,12 @@ script = 'scripts'
 out = 'out'
 libs = ['lib']
 remappings = [
+  'solidity-utils/=lib/solidity-utils/src/',
+  'protocol-v2/=lib/protocol-v2/',
+  'aave-address-bool/=lib/aave-address-bool/',
+  'rescue-mission-phase-1/=lib/rescue-mission-phase-1/src/'
 ]
-fs_permissions = [{ access = "write", path = "./reports" }]
+fs_permissions = [{ access = "write", path = "./reports" }, { access = "read", path = "out"}]
 
 [rpc_endpoints]
 mainnet = "${RPC_MAINNET}"
