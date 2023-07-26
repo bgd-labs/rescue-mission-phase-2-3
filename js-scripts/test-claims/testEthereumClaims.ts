@@ -12,7 +12,7 @@ import V2PoolReserveLogic from '../../out/contracts/protocol/libraries/logic/Res
 import V2PoolGenericLogic from '../../out/contracts/protocol/libraries/logic/GenericLogic.sol/GenericLogic.json';
 import V2PoolValidationLogic from '../../out/contracts/protocol/libraries/logic/ValidationLogic.sol/ValidationLogic.json';
 
-const TENDERLY_FORK_URL = process.env.TENDERLY_FORK_URL;
+const TENDERLY_FORK_URL = process.env.TENDERLY_FORK_URL_MAINNET;
 if (!TENDERLY_FORK_URL)
   throw new Error('missing TENDERLY_FORK_URL');
 
