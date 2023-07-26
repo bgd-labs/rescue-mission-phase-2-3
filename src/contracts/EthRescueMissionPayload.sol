@@ -53,7 +53,7 @@ contract EthRescueMissionPayload {
 
   uint256 public constant USDT_RESCUE_AMOUNT_A_USDT = 11_010e6;
 
-  uint256 public constant DAI_RESCUE_AMOUNT = 22_000;
+  uint256 public constant DAI_RESCUE_AMOUNT = 22_000e18;
 
   uint256 public constant GUSD_RESCUE_AMOUNT = 19_994_86;
 
