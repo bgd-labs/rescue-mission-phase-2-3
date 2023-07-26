@@ -7,6 +7,7 @@
     "generate-json-formatted": "env-cmd ts-node js-scripts/format.ts",
     "generate-tree": "env-cmd ts-node js-scripts/generate-merkle-root.ts",
     "generate:users-json": "ts-node js-scripts/users-resume.ts",
+    "test-eth-claims": "env-cmd ts-node js-scripts/test-claims/testEthereumClaims.ts",
     "lint": "prettier ./",
     "lint:fix": "npm run lint -- --write"
   },
@@ -24,7 +25,7 @@
   "devDependencies": {
     "@aave/contract-helpers": "^1.3.2",
     "@aave/math-utils": "^1.3.2",
-    "@bgd-labs/aave-address-book": "^1.23.0",
+    "@bgd-labs/aave-address-book": "^1.30.0",
     "@cowprotocol/ts-dune-client": "^0.0.2",
     "@openzeppelin/contracts": "^4.6.0",
     "@supercharge/promise-pool": "^2.1.0",
