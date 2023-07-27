@@ -23,3 +23,26 @@ diff-contracts :;
 	make git-diff before=etherscan/v2AvaPool after=src/contracts/v2AvaPool out=v2AvaPool
 	make git-diff before=etherscan/v2EthAToken after=src/contracts/v2EthAToken out=v2EthAToken
 	make git-diff before=etherscan/v2PolAToken after=src/contracts/v2PolAToken out=v2PolAToken
+
+storage-diff:
+	forge inspect etherscan/v1Pool/LendingPool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v1Pool_layout.md
+	forge inspect src/contracts/v1Pool/LendingPool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v1Pool_layout.md
+	make git-diff before=reports/v1Pool_layout.md after=reports/rescue_v1Pool_layout.md out=v1Pool_layout_diff
+	forge inspect etherscan/v2AmmPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v2AmmPool_layout.md
+	forge inspect src/contracts/v2AmmPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v2AmmPool_layout.md
+	make git-diff before=reports/v2AmmPool_layout.md after=reports/rescue_v2AmmPool_layout.md out=v2AmmPool_layout_diff
+	forge inspect etherscan/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v2EthPool_layout.md
+	forge inspect src/contracts/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v2EthPool_layout.md
+	make git-diff before=reports/v2EthPool_layout.md after=reports/rescue_v2EthPool_layout.md out=v2EthPool_layout_diff
+	forge inspect etherscan/v2PolPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v2PolPool_layout.md
+	forge inspect src/contracts/v2PolPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v2PolPool_layout.md
+	make git-diff before=reports/v2PolPool_layout.md after=reports/rescue_v2PolPool_layout.md out=v2PolPool_layout_diff
+	forge inspect etherscan/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v2AvaPool_layout.md
+	forge inspect src/contracts/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v2AvaPool_layout.md
+	make git-diff before=reports/v2AvaPool_layout.md after=reports/rescue_v2AvaPool_layout.md out=v2AvaPool_layout_diff
+	forge inspect etherscan/v2EthAToken/AToken/\@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol:AToken storage-layout --pretty > reports/v2EthAToken_layout.md
+	forge inspect src/contracts/v2EthAToken/AToken/\@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol:AToken storage-layout --pretty > reports/rescue_v2EthAToken_layout.md
+	make git-diff before=reports/v2EthAToken_layout.md after=reports/rescue_v2EthAToken_layout.md out=v2EthAToken_layout_diff
+	forge inspect etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol:AToken storage-layout --pretty > reports/v2PolAToken_layout.md
+	forge inspect src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol:AToken storage-layout --pretty > reports/rescue_v2PolAToken_layout.md
+	make git-diff before=reports/v2PolAToken_layout.md after=reports/rescue_v2PolAToken_layout.md out=v2PolAToken_layout_diff
