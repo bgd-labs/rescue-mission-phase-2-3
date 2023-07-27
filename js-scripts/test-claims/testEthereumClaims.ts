@@ -6,15 +6,14 @@ import AaveMerkleDistributor from '../../out/AaveMerkleDistributor.sol/AaveMerkl
 import V1LendingPool from '../../out/LendingPool.sol/LendingPool.json';
 import V2LendingPool from '../../out/contracts/protocol/lendingpool/LendingPool.sol/LendingPool.json';
 import V2AmmLendingPool from '../../out/lendingpool/LendingPool.sol/LendingPool.json';
-import V2AToken from "../../out/protocol/tokenization/AToken.sol/AToken.json";
+import V2AToken from '../../out/protocol/tokenization/AToken.sol/AToken.json';
 import EthRescueMissionPayload from '../../out/EthRescueMissionPayload.sol/EthRescueMissionPayload.json';
 import V2PoolReserveLogic from '../../out/contracts/protocol/libraries/logic/ReserveLogic.sol/ReserveLogic.json';
 import V2PoolGenericLogic from '../../out/contracts/protocol/libraries/logic/GenericLogic.sol/GenericLogic.json';
 import V2PoolValidationLogic from '../../out/contracts/protocol/libraries/logic/ValidationLogic.sol/ValidationLogic.json';
 
 const TENDERLY_FORK_URL = process.env.TENDERLY_FORK_URL_MAINNET;
-if (!TENDERLY_FORK_URL)
-  throw new Error('missing TENDERLY_FORK_URL');
+if (!TENDERLY_FORK_URL) throw new Error('missing TENDERLY_FORK_URL');
 
 type Info = {
   tokenAmount: string;
@@ -50,28 +49,30 @@ function linkLibraries(
     bytecode,
     linkReferences,
   }: {
-    bytecode: string
-    linkReferences: { [fileName: string]: { [contractName: string]: { length: number; start: number }[] } }
+    bytecode: string;
+    linkReferences: {
+      [fileName: string]: {[contractName: string]: {length: number; start: number}[]};
+    };
   },
-  libraries: { [libraryName: string]: string }
+  libraries: {[libraryName: string]: string}
 ): string {
   Object.keys(linkReferences).forEach((fileName) => {
     Object.keys(linkReferences[fileName]).forEach((contractName) => {
       if (!libraries.hasOwnProperty(contractName)) {
-        throw new Error(`Missing link library name ${contractName}`)
+        throw new Error(`Missing link library name ${contractName}`);
       }
-      const address = ethers.utils.getAddress(libraries[contractName]).toLowerCase().slice(2)
-      linkReferences[fileName][contractName].forEach(({ start: byteStart, length: byteLength }) => {
-        const start = 2 + byteStart * 2
-        const length = byteLength * 2
+      const address = ethers.utils.getAddress(libraries[contractName]).toLowerCase().slice(2);
+      linkReferences[fileName][contractName].forEach(({start: byteStart, length: byteLength}) => {
+        const start = 2 + byteStart * 2;
+        const length = byteLength * 2;
         bytecode = bytecode
           .slice(0, start)
           .concat(address)
-          .concat(bytecode.slice(start + length, bytecode.length))
-      })
-    })
-  })
-  return bytecode
+          .concat(bytecode.slice(start + length, bytecode.length));
+      });
+    });
+  });
+  return bytecode;
 }
 
 const provider = new providers.StaticJsonRpcProvider(TENDERLY_FORK_URL);
@@ -83,9 +84,7 @@ const giveEth = async (addresses: string[]) => {
   await provider.send('tenderly_addBalance', [
     addresses,
     //amount in wei will be added for all wallets
-    ethers.utils.hexValue(
-      ethers.utils.parseUnits('1000', 'ether').toHexString(),
-    ),
+    ethers.utils.hexValue(ethers.utils.parseUnits('1000', 'ether').toHexString()),
   ]);
 };
 
@@ -126,7 +125,7 @@ const deploy = async () => {
     linkLibraries(
       {
         bytecode: V2PoolValidationLogic.bytecode.object,
-        linkReferences: V2PoolValidationLogic.bytecode.linkReferences
+        linkReferences: V2PoolValidationLogic.bytecode.linkReferences,
       },
       {GenericLogic: v2GenericLogicContract.address}
     ),
@@ -136,16 +135,16 @@ const deploy = async () => {
   console.log('[v2ValidationLogicContract]:', v2ValidationLogicContract.address);
 
   // we need to manually link the libraries :)
-  const v2PoolFactory= new ethers.ContractFactory(
+  const v2PoolFactory = new ethers.ContractFactory(
     V2LendingPool.abi,
     linkLibraries(
       {
         bytecode: V2LendingPool.bytecode.object,
-        linkReferences: V2LendingPool.bytecode.linkReferences
+        linkReferences: V2LendingPool.bytecode.linkReferences,
       },
       {
         ReserveLogic: v2ReserveLogicContract.address,
-        ValidationLogic: v2ValidationLogicContract.address
+        ValidationLogic: v2ValidationLogicContract.address,
       }
     ),
     provider.getSigner(AAVE_WHALE)
@@ -159,11 +158,11 @@ const deploy = async () => {
     linkLibraries(
       {
         bytecode: V2AmmLendingPool.bytecode.object,
-        linkReferences: V2AmmLendingPool.bytecode.linkReferences
+        linkReferences: V2AmmLendingPool.bytecode.linkReferences,
       },
       {
         ReserveLogic: v2ReserveLogicContract.address,
-        ValidationLogic: v2ValidationLogicContract.address
+        ValidationLogic: v2ValidationLogicContract.address,
       }
     ),
     provider.getSigner(AAVE_WHALE)
@@ -189,7 +188,7 @@ const deploy = async () => {
     V2_COLLECTOR,
     'Aave interest bearing RAI',
     'aRAI',
-    V2_REWARDS_CONTROLLER,
+    V2_REWARDS_CONTROLLER
   );
   console.log(`[V2ATokenRai]: ${v2ATokenRaiContract.address}`);
 
@@ -205,7 +204,7 @@ const deploy = async () => {
     V2_COLLECTOR,
     'Aave interest bearing USDT',
     'aUSDt',
-    V2_REWARDS_CONTROLLER,
+    V2_REWARDS_CONTROLLER
   );
   console.log(`[V2ATokenUsdt]: ${v2ATokenUsdtContract.address}`);
 
@@ -216,7 +215,7 @@ const deploy = async () => {
   const payloadFactory = new ethers.ContractFactory(
     EthRescueMissionPayload.abi,
     EthRescueMissionPayload.bytecode,
-    provider.getSigner(AAVE_WHALE),
+    provider.getSigner(AAVE_WHALE)
   );
 
   const payloadContract = await payloadFactory.deploy(
@@ -239,7 +238,7 @@ const deploy = async () => {
   const govContractAaveWhale = new ethers.Contract(
     GOV_V2,
     GovV2Abi,
-    provider.getSigner(AAVE_WHALE),
+    provider.getSigner(AAVE_WHALE)
   );
   const proposalTx = await govContractAaveWhale.create(
     SHORT_EXECUTOR,
@@ -248,7 +247,7 @@ const deploy = async () => {
     ['execute()'],
     ['0x'],
     [true],
-    '0x22f22ad910127d3ca76dc642f94db34397f94ca969485a216b9d82387808cdfa',
+    '0x22f22ad910127d3ca76dc642f94db34397f94ca969485a216b9d82387808cdfa'
   );
   await proposalTx.wait();
   console.log('proposal created');
@@ -262,10 +261,7 @@ const deploy = async () => {
   let currentBlockNumber = await provider.getBlockNumber();
   let currentBlock = await provider.getBlock(currentBlockNumber);
   await provider.send('evm_increaseTime', [
-    ethers.BigNumber.from(creationTimestamp)
-      .sub(currentBlock.timestamp)
-      .add(1)
-      .toNumber(),
+    ethers.BigNumber.from(creationTimestamp).sub(currentBlock.timestamp).add(1).toNumber(),
   ]);
 
   const proposalCount = await govContractAaveWhale.getProposalsCount();
@@ -273,30 +269,20 @@ const deploy = async () => {
   console.log('proposalId', proposalId);
 
   // get proposals
-  const proposal = await govContractAaveWhale.getProposalById(
-    proposalId,
-  );
+  const proposal = await govContractAaveWhale.getProposalById(proposalId);
   const votingDelay = await govContractAaveWhale.getVotingDelay();
 
   currentBlockNumber = await provider.getBlockNumber();
   currentBlock = await provider.getBlock(currentBlockNumber);
-  await provider.send('evm_increaseBlocks', [
-    BigNumber.from(votingDelay).add(1).toHexString(),
-  ]);
+  await provider.send('evm_increaseBlocks', [BigNumber.from(votingDelay).add(1).toHexString()]);
 
   // vote on proposals
-  const voteTx = await govContractAaveWhale.submitVote(
-    proposalId,
-    true,
-  );
+  const voteTx = await govContractAaveWhale.submitVote(proposalId, true);
   await voteTx.wait();
 
   // forward time to end of vote for proposal
   await provider.send('evm_increaseBlocks', [
-    BigNumber.from(proposal.endBlock)
-      .sub(BigNumber.from(proposal.startBlock))
-      .add(1)
-      .toHexString(),
+    BigNumber.from(proposal.endBlock).sub(BigNumber.from(proposal.startBlock)).add(1).toHexString(),
   ]);
 
   // queue proposal
@@ -304,16 +290,11 @@ const deploy = async () => {
   await queueShortTx.wait();
 
   // forward time for proposal execution
-  const shortQueuedProposal = await govContractAaveWhale.getProposalById(
-    proposalId,
-  );
+  const shortQueuedProposal = await govContractAaveWhale.getProposalById(proposalId);
   currentBlockNumber = await provider.getBlockNumber();
   currentBlock = await provider.getBlock(currentBlockNumber);
   await provider.send('evm_increaseTime', [
-    BigNumber.from(shortQueuedProposal.executionTime)
-      .sub(currentBlock.timestamp)
-      .add(1)
-      .toNumber(),
+    BigNumber.from(shortQueuedProposal.executionTime).sub(currentBlock.timestamp).add(1).toNumber(),
   ]);
 
   // execute proposal
@@ -322,19 +303,19 @@ const deploy = async () => {
   console.log('Proposal executed');
 
   return {
-    provider
+    provider,
   };
 };
 
 const testEthereumClaims = async () => {
-  const { provider } = await deploy();
+  const {provider} = await deploy();
   const claims = getMerkleTreeJson('./js-scripts/maps/ethereum/usersMerkleTrees.json');
 
   for (const account of Object.keys(claims)) {
     const merkleDistributorContract = new ethers.Contract(
       AAVE_MERKLE_DISTRIBUTOR,
       AaveMerkleDistributor.abi,
-      provider.getSigner(account),
+      provider.getSigner(account)
     );
 
     await giveEth([account]);
