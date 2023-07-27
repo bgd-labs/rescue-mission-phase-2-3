@@ -1,8 +1,8 @@
 ```diff
-diff --git a/./etherscan/v1Pool/LendingPool/LendingPool.sol b/./src/contracts/v1Pool/LendingPool/LendingPool.sol
+diff --git a/etherscan/v1Pool/LendingPool/LendingPool.sol b/src/contracts/v1Pool/LendingPool/LendingPool.sol
 index 8516bfa..01d204f 100644
---- a/./etherscan/v1Pool/LendingPool/LendingPool.sol
-+++ b/./src/contracts/v1Pool/LendingPool/LendingPool.sol
+--- a/etherscan/v1Pool/LendingPool/LendingPool.sol
++++ b/src/contracts/v1Pool/LendingPool/LendingPool.sol
 @@ -1,19 +1,3 @@
 -/**
 - *Submitted for verification at Etherscan.io on 2021-04-02

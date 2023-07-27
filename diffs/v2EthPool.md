@@ -1,8 +1,8 @@
 ```diff
-diff --git a/./etherscan/v2EthPool/LendingPool/contracts/interfaces/ILendingPool.sol b/./src/contracts/v2EthPool/LendingPool/contracts/interfaces/ILendingPool.sol
+diff --git a/etherscan/v2EthPool/LendingPool/contracts/interfaces/ILendingPool.sol b/src/contracts/v2EthPool/LendingPool/contracts/interfaces/ILendingPool.sol
 index 64f726c..5be5521 100644
---- a/./etherscan/v2EthPool/LendingPool/contracts/interfaces/ILendingPool.sol
-+++ b/./src/contracts/v2EthPool/LendingPool/contracts/interfaces/ILendingPool.sol
+--- a/etherscan/v2EthPool/LendingPool/contracts/interfaces/ILendingPool.sol
++++ b/src/contracts/v2EthPool/LendingPool/contracts/interfaces/ILendingPool.sol
 @@ -167,6 +167,18 @@ interface ILendingPool {
      uint256 variableBorrowIndex
    );
@@ -37,10 +37,10 @@ index 64f726c..5be5521 100644
    /**
     * @dev Returns the user account data across all the reserves
     * @param user The address of the user
-diff --git a/./etherscan/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol b/./src/contracts/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
+diff --git a/etherscan/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol b/src/contracts/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
 index ddbc433..5eeef1b 100644
---- a/./etherscan/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
-+++ b/./src/contracts/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
+--- a/etherscan/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
++++ b/src/contracts/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
 @@ -53,7 +53,7 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
    uint256 public constant MAX_STABLE_RATE_BORROW_SIZE_PERCENT = 2500;
    uint256 public constant FLASHLOAN_PREMIUM_TOTAL = 9;

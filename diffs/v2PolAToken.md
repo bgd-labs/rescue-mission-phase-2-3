@@ -1,8 +1,8 @@
 ```diff
-diff --git a/./etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol b/./src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol
+diff --git a/etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol b/src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol
 index cf0ea26..e942cdf 100644
---- a/./etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol
-+++ b/./src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol
+--- a/etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol
++++ b/src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol
 @@ -46,6 +46,18 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
     **/
    event BalanceTransfer(address indexed from, address indexed to, uint256 value, uint256 index);
@@ -35,10 +35,10 @@ index cf0ea26..e942cdf 100644
 +   */
 +  function rescueTokens(address token, address to, uint256 amount) external;
  }
-diff --git a/./etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol b/./src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol
+diff --git a/etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol b/src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol
 index fec453e..64f0a63 100644
---- a/./etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol
-+++ b/./src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol
+--- a/etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol
++++ b/src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol
 @@ -30,7 +30,7 @@ contract AToken is
    bytes32 public constant PERMIT_TYPEHASH =
      keccak256('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)');
