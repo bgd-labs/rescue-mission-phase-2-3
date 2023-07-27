@@ -6,6 +6,12 @@ import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkle
 import {ILendingPoolConfigurator} from './interfaces/ILendingPoolConfigurator.sol';
 import {IRescue} from './interfaces/IRescue.sol';
 
+/**
+* @title PolRescueMissionPayload
+* @author BGD
+* @notice This payload contract initializes the distribution on the distributor, updates the contracts with
+*         rescue function and transfers the tokens to rescue to the merkle distributor contract.
+*/
 contract PolRescueMissionPayload {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
   address public immutable V2_POOL_IMPL;
@@ -31,6 +37,11 @@ contract PolRescueMissionPayload {
 
   uint256 public constant USDC_RESCUE_AMOUNT = 4_515_242949;
 
+  /**
+   * @param aaveMerkleDistributor distributor contract which will distribute the tokens to rescue.
+   * @param v2PoolImpl address of the new aave v2 lending pool contract with rescue function.
+   * @param v2ATokenImpl address of the new aave v2 aToken contract with rescue function.
+   */
   constructor(
     AaveMerkleDistributor aaveMerkleDistributor,
     address v2PoolImpl,

@@ -4,6 +4,12 @@ pragma solidity ^0.8.0;
 import {AaveV2Avalanche} from 'aave-address-book/AaveV2Avalanche.sol';
 import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkleDistributor.sol';
 
+/**
+* @title AvaRescueMissionPayload_Guardian_1
+* @author BGD
+* @notice This payload contract initializes the distribution on the distributor, updates the contracts with
+*         rescue function - this payload should be executed by the owner of the addresses provider.
+*/
 contract AvaRescueMissionPayload_Guardian_1 {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
   address public immutable V2_POOL_IMPL;
@@ -22,6 +28,10 @@ contract AvaRescueMissionPayload_Guardian_1 {
 
   uint256 public constant USDCe_RESCUE_AMOUNT = 2_522_408895;
 
+  /**
+   * @param aaveMerkleDistributor distributor contract which will distribute the tokens to rescue.
+   *  @param v2PoolImpl address of the new aave v2 lending pool contract with rescue function.
+   */
   constructor(AaveMerkleDistributor aaveMerkleDistributor, address v2PoolImpl) {
     AAVE_MERKLE_DISTRIBUTOR = aaveMerkleDistributor;
     V2_POOL_IMPL = v2PoolImpl;
