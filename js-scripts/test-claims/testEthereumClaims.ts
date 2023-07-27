@@ -269,7 +269,7 @@ const deploy = async () => {
   console.log('proposalId', proposalId);
 
   // get proposals
-  const proposal = await govContractAaveWhale.getProposalById(proposalId);
+  let proposal = await govContractAaveWhale.getProposalById(proposalId);
   const votingDelay = await govContractAaveWhale.getVotingDelay();
 
   currentBlockNumber = await provider.getBlockNumber();
@@ -286,20 +286,20 @@ const deploy = async () => {
   ]);
 
   // queue proposal
-  const queueShortTx = await govContractAaveWhale.queue(proposalId);
-  await queueShortTx.wait();
+  const queueTx = await govContractAaveWhale.queue(proposalId);
+  await queueTx.wait();
 
   // forward time for proposal execution
-  const shortQueuedProposal = await govContractAaveWhale.getProposalById(proposalId);
   currentBlockNumber = await provider.getBlockNumber();
   currentBlock = await provider.getBlock(currentBlockNumber);
+  proposal = await govContractAaveWhale.getProposalById(proposalId);
   await provider.send('evm_increaseTime', [
-    BigNumber.from(shortQueuedProposal.executionTime).sub(currentBlock.timestamp).add(1).toNumber(),
+    BigNumber.from(proposal.executionTime).sub(currentBlock.timestamp).add(1).toNumber(),
   ]);
 
   // execute proposal
-  const executeShortTx = await govContractAaveWhale.execute(proposalId);
-  await executeShortTx.wait();
+  const executeTx = await govContractAaveWhale.execute(proposalId);
+  await executeTx.wait();
   console.log('Proposal executed');
 
   return {
