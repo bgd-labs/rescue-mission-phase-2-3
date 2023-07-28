@@ -24,10 +24,7 @@ import polygonAdaiRescueMap from './maps/polygon/v2_adaiRescueMap.json';
 import polygonUsdcRescueMap from './maps/polygon/usdcRescueMap.json';
 import avalancheUsdtERescueMap from './maps/avalanche/usdt.eRescueMap.json';
 import avalancheUsdcERescueMap from './maps/avalanche/usdc.eRescueMap.json';
-
 import fs from 'fs';
-
-const v2PolAusdcPath = `./js-scripts/maps/polygon/v2_ausdcRescueMerkleTree.json`;
 
 async function generateMerkleRoot(
   jsonObj: Record<string, {amount: string; txns: string[]; label?: string}>,

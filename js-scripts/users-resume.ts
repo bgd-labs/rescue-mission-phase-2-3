@@ -10,16 +10,6 @@ type UserInfo = {
   tokenAmount: string;
 };
 
-type FoundryJson = {
-  account: string;
-  tokens: {
-    proof: string[];
-    merkleTreeIndex: number;
-    distributionId: number;
-    amount: string;
-  }[];
-};
-
 type Claim = {
   index: number;
   amountInWei: string;
