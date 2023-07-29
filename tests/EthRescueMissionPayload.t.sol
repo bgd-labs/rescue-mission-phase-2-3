@@ -21,7 +21,7 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
   uint256 public constant A_BTC_RESCUE_AMOUNT = 192454215;
   uint256 public constant USDT_RESCUE_AMOUNT_AMM_POOL = 20_600_057405;
   uint256 public constant USDT_RESCUE_AMOUNT_A_USDT = 11_010e6;
-  uint256 public constant DAI_RESCUE_AMOUNT = 22_000;
+  uint256 public constant DAI_RESCUE_AMOUNT = 22_000e18;
   uint256 public constant GUSD_RESCUE_AMOUNT = 19_994_86;
   uint256 public constant LINK_RESCUE_AMOUNT = 4084e18;
   uint256 public constant HOT_RESCUE_AMOUNT = 1_046_391e18;
@@ -34,12 +34,14 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
   address public aaveMerkleDistributor;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 17591311);
+    vm.createSelectFork('mainnet', 17591311);
     _deployContracts();
     _selectPayloadExecutor(GovHelpers.SHORT_EXECUTOR);
   }
 
   function testPayload() public {
+    uint256 USDT_BALANCE_BEFORE = IERC20(AaveV2EthereumAssets.USDT_UNDERLYING).balanceOf(aaveMerkleDistributor);
+
     // Execute proposal
     _executor.execute(payload);
 
@@ -48,8 +50,9 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
       A_RAI_RESCUE_AMOUNT
     );
     assertEq(IERC20(WBTC_A_TOKEN).balanceOf(aaveMerkleDistributor), A_BTC_RESCUE_AMOUNT);
+
     assertEq(
-      IERC20(AaveV2EthereumAssets.USDT_UNDERLYING).balanceOf(aaveMerkleDistributor),
+      IERC20(AaveV2EthereumAssets.USDT_UNDERLYING).balanceOf(aaveMerkleDistributor) - USDT_BALANCE_BEFORE,
       USDT_RESCUE_AMOUNT_A_USDT + USDT_RESCUE_AMOUNT_AMM_POOL
     );
     assertEq(
@@ -72,9 +75,7 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
   }
 
   function _deployContracts() internal {
-    aaveMerkleDistributor = deployCode(aaveMerkleDistributorArtifact);
-    // give ownership of distributor to short executor
-    IOwnable(aaveMerkleDistributor).transferOwnership(GovHelpers.SHORT_EXECUTOR);
+    aaveMerkleDistributor = 0xa88c6D90eAe942291325f9ae3c66f3563B93FE10;
 
     address v1LendingPoolAddress = deployCode(v1PoolArtifact);
     V2LendingPool v2LendingPool = new V2LendingPool();
@@ -109,8 +110,4 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
       )
     );
   }
-}
-
-interface IOwnable {
-  function transferOwnership(address newOwner) external;
 }
