@@ -48,3 +48,4 @@ storage-diff:
 	make git-diff before=reports/v2PolAToken_layout.md after=reports/rescue_v2PolAToken_layout.md out=v2PolAToken_layout_diff
 
 deploy-eth-contracts :; forge script scripts/EthDeploy.s.sol:EthDeploy --rpc-url ${RPC_MAINNET} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --etherscan-api-key ${ETHERSCAN_API_KEY_MAINNET} --gas-estimate-multiplier 100 --verify -vvvv
+deploy-pol-contracts :; forge script scripts/PolDeploy.s.sol:PolDeploy --rpc-url ${RPC_POLYGON} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --etherscan-api-key ${ETHERSCAN_API_KEY_POLYGON} --gas-estimate-multiplier 100 --verify -vvvv
