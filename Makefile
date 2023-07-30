@@ -49,3 +49,4 @@ storage-diff:
 
 deploy-eth-contracts :; forge script scripts/EthDeploy.s.sol:EthDeploy --rpc-url ${RPC_MAINNET} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --etherscan-api-key ${ETHERSCAN_API_KEY_MAINNET} --gas-estimate-multiplier 100 --verify -vvvv
 deploy-pol-contracts :; forge script scripts/PolDeploy.s.sol:PolDeploy --rpc-url ${RPC_POLYGON} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --etherscan-api-key ${ETHERSCAN_API_KEY_POLYGON} --gas-estimate-multiplier 100 --verify -vvvv
+deploy-ava-contracts :; forge script scripts/AvaDeploy.s.sol:AvaDeploy --rpc-url ${RPC_AVALANCHE} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --etherscan-api-key ${ETHERSCAN_API_KEY_AVALANCHE} --gas-estimate-multiplier 100 --verify -vvvv

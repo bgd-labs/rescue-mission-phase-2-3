@@ -37,6 +37,7 @@ contract PolDeploy is Test {
       abi.encode(aaveMerkleDistributor, address(lendingPool), address(aToken))
     );
 
+    console.log('merkle distributor address', aaveMerkleDistributor);
     console.log('v2LendingPool address', address(lendingPool));
     console.log('aToken address', address(aToken));
     console.log('payload address', payload);
