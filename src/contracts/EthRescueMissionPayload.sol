@@ -6,6 +6,12 @@ import {AaveV2EthereumAMM} from 'aave-address-book/AaveV2EthereumAMM.sol';
 import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkleDistributor.sol';
 import {IRescue} from './interfaces/IRescue.sol';
 
+/**
+* @title EthRescueMissionPayload
+* @author BGD
+* @notice This payload contract initializes the distribution on the distributor, updates the contracts with
+*         rescue function and transfers the tokens to rescue to the merkle distributor contract.
+*/
 contract EthRescueMissionPayload {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
   address public immutable V1_POOL_IMPL;
@@ -53,7 +59,7 @@ contract EthRescueMissionPayload {
 
   uint256 public constant USDT_RESCUE_AMOUNT_A_USDT = 11_010e6;
 
-  uint256 public constant DAI_RESCUE_AMOUNT = 22_000;
+  uint256 public constant DAI_RESCUE_AMOUNT = 22_000e18;
 
   uint256 public constant GUSD_RESCUE_AMOUNT = 19_994_86;
 
@@ -63,6 +69,14 @@ contract EthRescueMissionPayload {
 
   uint256 public constant USDC_RESCUE_AMOUNT = 1_089_889717;
 
+  /**
+   * @param aaveMerkleDistributor distributor contract which will distribute the tokens to rescue.
+   * @param v1PoolImpl address of the new aave v1 lending pool contract with rescue function.
+   * @param v2PoolImpl address of the new aave v2 lending pool contract with rescue function.
+   * @param v2AmmPoolImpl address of the new aave v2 amm lending pool contract with rescue function.
+   * @param v2RaiATokenImpl address of the new aave v2 aToken contract for rai with rescue function.
+   * @param v2UsdtATokenImpl address of the new aave v2 aToken contract for usdt with rescue function.
+   */
   constructor(
     AaveMerkleDistributor aaveMerkleDistributor,
     address v1PoolImpl,

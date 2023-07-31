@@ -1,8 +1,8 @@
 ```diff
-diff --git a/./etherscan/v2EthAToken/AToken/@aave/protocol-v2/contracts/interfaces/IAToken.sol b/./src/contracts/v2EthAToken/AToken/@aave/protocol-v2/contracts/interfaces/IAToken.sol
+diff --git a/etherscan/v2EthAToken/AToken/@aave/protocol-v2/contracts/interfaces/IAToken.sol b/src/contracts/v2EthAToken/AToken/@aave/protocol-v2/contracts/interfaces/IAToken.sol
 index cbe1cbb..bbeaf10 100644
---- a/./etherscan/v2EthAToken/AToken/@aave/protocol-v2/contracts/interfaces/IAToken.sol
-+++ b/./src/contracts/v2EthAToken/AToken/@aave/protocol-v2/contracts/interfaces/IAToken.sol
+--- a/etherscan/v2EthAToken/AToken/@aave/protocol-v2/contracts/interfaces/IAToken.sol
++++ b/src/contracts/v2EthAToken/AToken/@aave/protocol-v2/contracts/interfaces/IAToken.sol
 @@ -36,6 +36,18 @@ interface IAToken is IERC20, IScaledBalanceToken {
      bytes params
    );
@@ -35,10 +35,10 @@ index cbe1cbb..bbeaf10 100644
 +   */
 +  function rescueTokens(address token, address to, uint256 amount) external;
  }
-diff --git a/./etherscan/v2EthAToken/AToken/@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol b/./src/contracts/v2EthAToken/AToken/@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol
+diff --git a/etherscan/v2EthAToken/AToken/@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol b/src/contracts/v2EthAToken/AToken/@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol
 index 545d68b..e4c4989 100644
---- a/./etherscan/v2EthAToken/AToken/@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol
-+++ b/./src/contracts/v2EthAToken/AToken/@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol
+--- a/etherscan/v2EthAToken/AToken/@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol
++++ b/src/contracts/v2EthAToken/AToken/@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol
 @@ -27,7 +27,7 @@ contract AToken is VersionedInitializable, IncentivizedERC20, IAToken {
      keccak256('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)');
  

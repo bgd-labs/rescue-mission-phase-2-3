@@ -10,16 +10,6 @@ type UserInfo = {
   tokenAmount: string;
 };
 
-type FoundryJson = {
-  account: string;
-  tokens: {
-    proof: string[];
-    merkleTreeIndex: number;
-    distributionId: number;
-    amount: string;
-  }[];
-};
-
 type Claim = {
   index: number;
   amountInWei: string;
@@ -70,13 +60,13 @@ const distributionIds: Record<string, number> = {
   ETH_HOT: 10,
   ETH_USDC: 11,
   // polygon
-  POL_WBTC: 1,
-  V2_POL_A_DAI: 2,
-  V2_POL_A_USDC: 3,
-  POL_USDC: 4,
+  POL_WBTC: 0,
+  V2_POL_A_DAI: 1,
+  V2_POL_A_USDC: 2,
+  POL_USDC: 3,
   // avalanche
-  AVA_USDT_E: 1,
-  AVA_USDC_E: 2,
+  AVA_USDT_E: 0,
+  AVA_USDC_E: 1,
 };
 
 const getMerkleTreeJson = (path: string): MerkleTree => {

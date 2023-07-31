@@ -5,6 +5,13 @@ import {AaveV2Avalanche} from 'aave-address-book/AaveV2Avalanche.sol';
 import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkleDistributor.sol';
 import {IRescue} from './interfaces/IRescue.sol';
 
+/**
+* @title AvaRescueMissionPayload_Guardian_2
+* @author BGD
+* @notice This payload contract should be called after distribution is initialized and the contracts are updated with
+*         with rescue function - the payload should be executed by the pool admin to transfer the tokens to rescue to
+*         the merkle distributor contract.
+*/
 contract AvaRescueMissionPayload_Guardian_2 {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
 
@@ -14,6 +21,9 @@ contract AvaRescueMissionPayload_Guardian_2 {
   uint256 public constant USDTe_RESCUE_AMOUNT = 1_772_206585;
   uint256 public constant USDCe_RESCUE_AMOUNT = 2_522_408895;
 
+  /**
+   * @param aaveMerkleDistributor distributor contract which will distribute the tokens to rescue.
+   */
   constructor(AaveMerkleDistributor aaveMerkleDistributor) {
     AAVE_MERKLE_DISTRIBUTOR = aaveMerkleDistributor;
   }

@@ -1,8 +1,8 @@
 ```diff
-diff --git a/./etherscan/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol b/./src/contracts/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol
+diff --git a/etherscan/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol b/src/contracts/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol
 index 64f726c..5be5521 100644
---- a/./etherscan/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol
-+++ b/./src/contracts/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol
+--- a/etherscan/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol
++++ b/src/contracts/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol
 @@ -167,6 +167,18 @@ interface ILendingPool {
      uint256 variableBorrowIndex
    );
@@ -37,10 +37,10 @@ index 64f726c..5be5521 100644
    /**
     * @dev Returns the user account data across all the reserves
     * @param user The address of the user
-diff --git a/./etherscan/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol b/./src/contracts/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
+diff --git a/etherscan/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol b/src/contracts/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
 index 8e38650..7877372 100644
---- a/./etherscan/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
-+++ b/./src/contracts/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
+--- a/etherscan/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
++++ b/src/contracts/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
 @@ -49,7 +49,7 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
    using PercentageMath for uint256;
    using SafeERC20 for IERC20;
