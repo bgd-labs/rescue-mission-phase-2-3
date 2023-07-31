@@ -1,7 +1,7 @@
 # Aave Rescue Mission Phase 2 and 3 ⛑️
 
 Repository containing all the code needed for phase 2 and 3 to rescue tokens sent directly to contracts of the Aave ecosystem.
-This phase will affect the tokens locked on smart contracts around the liquidity pools - v1 Pool, v2 Pool, AMM pool, aToken across Ethereum, Polygon, Avalanche, Optimism, Fantom, Arbitrum networks.
+This phase will affect the tokens locked on smart contracts around the liquidity pools - v1 Pool, v2 Pool, AMM pool, v3Pool, aTokens across Ethereum, Polygon, Avalanche, Optimism, Fantom, Arbitrum networks.
 
 The following table represents the tokens to rescue from various different contracts of Aave:
 
