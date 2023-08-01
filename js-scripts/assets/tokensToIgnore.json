@@ -91,6 +91,10 @@
     "name": "DAI-v3Pool",
     "chainId": 137
   },
+  {
+    "name": "USDC-v3aUSDC",
+    "chainId": 137
+  },
 
   {
     "name": "DAI-v2aDAI",
@@ -101,15 +105,15 @@
     "chainId": 43114
   },
   {
-    "name": "v3WETH-v3aWETH",
+    "name": "WETH-v3aWETH",
     "chainId": 42161
   },
   {
-    "name": "v3DAI-v3Pool",
+    "name": "DAI-v3Pool",
     "chainId": 250
   },
   {
-    "name": "v3WFTM-v3Pool",
+    "name": "WFTM-v3Pool",
     "chainId": 250
   }
 ]

@@ -1,20 +1,18 @@
 import {providers} from 'ethers';
 import {ChainId} from '@aave/contract-helpers';
 import {
-  AaveV2Avalanche,
-  AaveV2Ethereum,
-  AaveV2EthereumAMM,
-  AaveV2Polygon,
-  AaveV3Arbitrum,
-  AaveV3Avalanche,
-  AaveV3Ethereum,
-  AaveV3Fantom,
-  AaveV3Optimism,
-  AaveV3Polygon,
-} from '@bgd-labs/aave-address-book';
-import {
   JSON_RPC_PROVIDER,
   AAVE_V1_LENDING_POOL,
+  AAVE_V2_AVA_POOL,
+  AAVE_V2_POL_POOL,
+  AAVE_V3_POL_POOL,
+  AAVE_V3_OPT_POOL,
+  AAVE_V3_AVA_POOL,
+  AAVE_V3_ARB_POOL,
+  AAVE_V3_FAN_POOL,
+  AAVE_V3_ETH_POOL,
+  AAVE_V2_ETH_POOL,
+  AAVE_V2_AMM_POOL,
   AaveMarket,
   ContractType,
   PoolEvents,
@@ -178,22 +176,22 @@ function getV3ATokensEventsToFilterOut(
   let v3PoolContract: Pool | L2Pool;
   switch (network) {
     case ChainId.mainnet:
-      v3PoolContract = Pool__factory.connect(AaveV3Ethereum.POOL, provider);
+      v3PoolContract = Pool__factory.connect(AAVE_V3_ETH_POOL, provider);
       break;
     case ChainId.polygon:
-      v3PoolContract = L2Pool__factory.connect(AaveV3Polygon.POOL, provider);
+      v3PoolContract = L2Pool__factory.connect(AAVE_V3_POL_POOL, provider);
       break;
     case ChainId.avalanche:
-      v3PoolContract = L2Pool__factory.connect(AaveV3Avalanche.POOL, provider);
+      v3PoolContract = L2Pool__factory.connect(AAVE_V3_AVA_POOL, provider);
       break;
     case ChainId.optimism:
-      v3PoolContract = L2Pool__factory.connect(AaveV3Optimism.POOL, provider);
+      v3PoolContract = L2Pool__factory.connect(AAVE_V3_OPT_POOL, provider);
       break;
     case ChainId.arbitrum_one:
-      v3PoolContract = L2Pool__factory.connect(AaveV3Arbitrum.POOL, provider);
+      v3PoolContract = L2Pool__factory.connect(AAVE_V3_ARB_POOL, provider);
       break;
     case ChainId.fantom:
-      v3PoolContract = L2Pool__factory.connect(AaveV3Fantom.POOL, provider);
+      v3PoolContract = L2Pool__factory.connect(AAVE_V3_FAN_POOL, provider);
       break;
     default:
       throw Error(`Invalid network for v3 market. network: ${network}`);
@@ -223,14 +221,14 @@ function getV2ATokensEventsToFilterOut(
   switch (network) {
     case ChainId.mainnet:
       v2PoolContract = isAmm
-        ? (v2PoolContract = v2LendingPoolFactory.connect(AaveV2EthereumAMM.POOL, provider))
-        : (v2PoolContract = v2LendingPoolFactory.connect(AaveV2Ethereum.POOL, provider));
+        ? (v2PoolContract = v2LendingPoolFactory.connect(AAVE_V2_AMM_POOL, provider))
+        : (v2PoolContract = v2LendingPoolFactory.connect(AAVE_V2_ETH_POOL, provider));
       break;
     case ChainId.polygon:
-      v2PoolContract = v2LendingPoolFactory.connect(AaveV2Polygon.POOL, provider);
+      v2PoolContract = v2LendingPoolFactory.connect(AAVE_V2_POL_POOL, provider);
       break;
     case ChainId.avalanche:
-      v2PoolContract = v2LendingPoolFactory.connect(AaveV2Avalanche.POOL, provider);
+      v2PoolContract = v2LendingPoolFactory.connect(AAVE_V2_AVA_POOL, provider);
       break;
     default:
       throw Error(`Invalid network for v2 market. network: ${network}`);

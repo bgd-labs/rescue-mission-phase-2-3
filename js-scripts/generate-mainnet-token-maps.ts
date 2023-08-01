@@ -1,10 +1,11 @@
 import {ChainId} from '@aave/contract-helpers';
-import {AaveV2Ethereum, AaveV2EthereumAMM} from '@bgd-labs/aave-address-book';
 import {
   AAVE_V1_LENDING_POOL,
   AAVE_V1_LENDING_POOL_CORE,
   AaveMarket,
   ContractType,
+  AAVE_V2_ETH_POOL,
+  AAVE_V2_AMM_POOL,
 } from '../js-scripts/common/constants';
 import TOKENS_ETH from './assets/ethTokens.json';
 import V1_ETH_A_TOKENS from './assets/v1EthATokens.json';
@@ -100,7 +101,7 @@ async function generateMainnetTokensMap() {
         tokenStuckInV2Pool
           ? fetchTxns(
               tokenAddress,
-              AaveV2Ethereum.POOL,
+              AAVE_V2_ETH_POOL,
               ChainId.mainnet,
               `${tokenName}-v2Pool`,
               ContractType.Pool,
@@ -111,7 +112,7 @@ async function generateMainnetTokensMap() {
         tokenStuckInV2AmmPool
           ? fetchTxns(
               tokenAddress,
-              AaveV2EthereumAMM.POOL,
+              AAVE_V2_AMM_POOL,
               ChainId.mainnet,
               `${tokenName}-v2AmmPool`,
               ContractType.Pool,
