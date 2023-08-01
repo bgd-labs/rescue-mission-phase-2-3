@@ -49,6 +49,10 @@ const avaMerkleTree: Record<string, string> = {
   AVA_USDC_E: './js-scripts/maps/avalanche/merkleTree/usdc.eRescueMerkleTree.json',
 };
 
+const optMerkleTree: Record<string, string> = {
+  OPT_USDC: './js-scripts/maps/optimism/merkleTree/usdcRescueMerkleTree.json',
+};
+
 const distributionIds: Record<string, number> = {
   // ethereum
   V2_ETH_A_RAI: 4,
@@ -67,6 +71,8 @@ const distributionIds: Record<string, number> = {
   // avalanche
   AVA_USDT_E: 0,
   AVA_USDC_E: 1,
+  // optimism
+  OPT_USDC: 0,
 };
 
 const getMerkleTreeJson = (path: string): MerkleTree => {
@@ -91,6 +97,8 @@ const generateUsersJson = (network: string): void => {
     merkleTree = polMerkleTree;
   } else if (network === 'avalanche') {
     merkleTree = avaMerkleTree;
+  } else if (network === 'optimism') {
+    merkleTree = optMerkleTree;
   } else {
     throw Error('Invalid network');
   }
@@ -130,3 +138,4 @@ const generateUsersJson = (network: string): void => {
 generateUsersJson('ethereum');
 generateUsersJson('polygon');
 generateUsersJson('avalanche');
+generateUsersJson('optimism');
