@@ -21,9 +21,7 @@ contract OptRescueMissionPayload {
   /**
    * @param aaveMerkleDistributor distributor contract which will distribute the tokens to rescue.
    */
-  constructor(
-    AaveMerkleDistributor aaveMerkleDistributor
-  ) {
+  constructor(AaveMerkleDistributor aaveMerkleDistributor) {
     AAVE_MERKLE_DISTRIBUTOR = aaveMerkleDistributor;
   }
 
