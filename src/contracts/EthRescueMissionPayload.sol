@@ -53,7 +53,7 @@ contract EthRescueMissionPayload {
 
   uint256 public constant A_RAI_RESCUE_AMOUNT = 1_481_160740870074804020;
 
-  uint256 public constant A_BTC_RESCUE_AMOUNT = 192454215;
+  uint256 public constant A_BTC_RESCUE_AMOUNT = 1_92454215;
 
   uint256 public constant USDT_RESCUE_AMOUNT_AMM_POOL = 20_600_057405;
 
