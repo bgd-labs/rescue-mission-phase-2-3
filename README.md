@@ -5,23 +5,23 @@ This phase will affect the tokens locked on smart contracts around the liquidity
 
 The following table represents the tokens to rescue from various different contracts of Aave:
 
-| Tokens to Rescue | Contract where tokens are stuck | Amount | Network |
-| --- | --- | --- | --- |
-| AAVE V2 A_RAI | AAVE V2 A_RAI | 1481.16074087007480402 | ETHEREUM |
-| AAVE V2 A_WBTC | AAVE V1 POOL | 1.92454215 | ETHEREUM |
-| USDT | AAVE V2 AMM_POOL | 20600.057405 | ETHEREUM |
-| DAI | AAVE V2 POOL | 22000 | ETHEREUM |
-| GUSD | AAVE V2 POOL | 19994.86 | ETHEREUM |
-| LINK | AAVE v1 POOL | 4084 | ETHEREUM |
-| USDT | AAVE V2 A_USDT | 11010 | ETHEREUM |
-| HOT | AAVE V2 POOL | 1046391 | ETHEREUM |
-| USDC | AAVE V2 POOL | 1089.889717 | ETHEREUM |
-| WBTC | AAVE V2 POOL | 0.22994977 | POLYGON |
-| AAVE V2 A_DAI | AAVE V2 A_DAI | 4250.580268097645600939 | POLYGON |
-| AAVE V2 A_USDC | AAVE V2 A_USDC | 514131.378018 | POLYGON |
-| USDC | AAVE V2 POOL | 4515.242949 | POLYGON |
-| USDT.e | AAVE V2 POOL | 1772.206585 | AVALANCHE |
-| USDC.e | AAVE V2 POOL | 2522.408895 | AVALANCHE |
+| Tokens to Rescue | Contract where tokens are stuck | Amount                  | Network   |
+| ---------------- | ------------------------------- | ----------------------- | --------- |
+| AAVE V2 A_RAI    | AAVE V2 A_RAI                   | 1481.16074087007480402  | ETHEREUM  |
+| AAVE V2 A_WBTC   | AAVE V1 POOL                    | 1.92454215              | ETHEREUM  |
+| USDT             | AAVE V2 AMM_POOL                | 20600.057405            | ETHEREUM  |
+| DAI              | AAVE V2 POOL                    | 22000                   | ETHEREUM  |
+| GUSD             | AAVE V2 POOL                    | 19994.86                | ETHEREUM  |
+| LINK             | AAVE v1 POOL                    | 4084                    | ETHEREUM  |
+| USDT             | AAVE V2 A_USDT                  | 11010                   | ETHEREUM  |
+| HOT              | AAVE V2 POOL                    | 1046391                 | ETHEREUM  |
+| USDC             | AAVE V2 POOL                    | 1089.889717             | ETHEREUM  |
+| WBTC             | AAVE V2 POOL                    | 0.22994977              | POLYGON   |
+| AAVE V2 A_DAI    | AAVE V2 A_DAI                   | 4250.580268097645600939 | POLYGON   |
+| AAVE V2 A_USDC   | AAVE V2 A_USDC                  | 514131.378018           | POLYGON   |
+| USDC             | AAVE V2 POOL                    | 4515.242949             | POLYGON   |
+| USDT.e           | AAVE V2 POOL                    | 1772.206585             | AVALANCHE |
+| USDC.e           | AAVE V2 POOL                    | 2522.408895             | AVALANCHE |
 
 ## About:
 
@@ -115,26 +115,26 @@ On ethereum we will use the same merkle distributor as in phase one while deploy
 ## Payloads:
 
 - [Ethereum Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/test/claims/src/contracts/EthRescueMissionPayload.sol):
-    - Updates v1 pool with rescue function
-    - Updates v2 pool with rescue function
-    - Updates v2 amm pool with rescue function
-    - Updates v2 aRai contract with rescue function
-    - Updates v2 aUsdt contract with rescue function
-    - Registers MerkleRoot for each token on the merkle distributor contract.
-    - Transfers aRai, aBtc, Usdt, Usdc, Dai, Gusd, Link, Hot tokens to the merkle distributor from the aave contracts where funds were stuck
+  - Updates v1 pool with rescue function
+  - Updates v2 pool with rescue function
+  - Updates v2 amm pool with rescue function
+  - Updates v2 aRai contract with rescue function
+  - Updates v2 aUsdt contract with rescue function
+  - Registers MerkleRoot for each token on the merkle distributor contract.
+  - Transfers aRai, aBtc, Usdt, Usdc, Dai, Gusd, Link, Hot tokens to the merkle distributor from the aave contracts where funds were stuck
 - [Polygon Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/test/claims/src/contracts/PolRescueMissionPayload.sol):
-    - Updates v2 pool with rescue function
-    - Updates v2 aDai contract with rescue function
-    - Updates v2 aUdsc contract with rescue function
-    - Registers MerkleRoot for each token on the merkle distributor contract.
-    - Transfers Wbtc, aDai, aUsdc, Usdc tokens to the merkle distributor contract.
+  - Updates v2 pool with rescue function
+  - Updates v2 aDai contract with rescue function
+  - Updates v2 aUdsc contract with rescue function
+  - Registers MerkleRoot for each token on the merkle distributor contract.
+  - Transfers Wbtc, aDai, aUsdc, Usdc tokens to the merkle distributor contract.
 - [Avalanche Payload 1](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/test/claims/src/contracts/AvaRescueMissionPayload_Guardian_1.sol):
-    - This payload should be called by the owner of addresses provider (guardian).
-    - Updates v2 pool with rescue function
-    - Registers MerkleRoot for each token on the merkle distributor contract.
+  - This payload should be called by the owner of addresses provider (guardian).
+  - Updates v2 pool with rescue function
+  - Registers MerkleRoot for each token on the merkle distributor contract.
 - [Avalanche Payload 2](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/test/claims/src/contracts/AvaRescueMissionPayload_Guardian_2.sol):
-    - This payload should be called by the pool admin (guardian).
-    - Transfers Usdc.e Usdt.e to the merkle distributor contract.
+  - This payload should be called by the pool admin (guardian).
+  - Transfers Usdc.e Usdt.e to the merkle distributor contract.
 
 ## Tests:
 
@@ -153,4 +153,5 @@ npm run test-ava-claims
 ```
 
 ## License
+
 Copyright © 2023, [BGD Labs](https://bgdlabs.com/). Released under the [MIT License](./LICENSE).

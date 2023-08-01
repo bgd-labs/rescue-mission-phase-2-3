@@ -40,7 +40,9 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
   }
 
   function testPayload() public {
-    uint256 USDT_BALANCE_BEFORE = IERC20(AaveV2EthereumAssets.USDT_UNDERLYING).balanceOf(aaveMerkleDistributor);
+    uint256 USDT_BALANCE_BEFORE = IERC20(AaveV2EthereumAssets.USDT_UNDERLYING).balanceOf(
+      aaveMerkleDistributor
+    );
 
     // Execute proposal
     _executor.execute(payload);
@@ -52,7 +54,8 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
     assertEq(IERC20(WBTC_A_TOKEN).balanceOf(aaveMerkleDistributor), A_BTC_RESCUE_AMOUNT);
 
     assertEq(
-      IERC20(AaveV2EthereumAssets.USDT_UNDERLYING).balanceOf(aaveMerkleDistributor) - USDT_BALANCE_BEFORE,
+      IERC20(AaveV2EthereumAssets.USDT_UNDERLYING).balanceOf(aaveMerkleDistributor) -
+        USDT_BALANCE_BEFORE,
       USDT_RESCUE_AMOUNT_A_USDT + USDT_RESCUE_AMOUNT_AMM_POOL
     );
     assertEq(

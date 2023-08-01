@@ -7,11 +7,11 @@ import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkle
 import {IRescue} from './interfaces/IRescue.sol';
 
 /**
-* @title EthRescueMissionPayload
-* @author BGD
-* @notice This payload contract initializes the distribution on the distributor, updates the contracts with
-*         rescue function and transfers the tokens to rescue to the merkle distributor contract.
-*/
+ * @title EthRescueMissionPayload
+ * @author BGD
+ * @notice This payload contract initializes the distribution on the distributor, updates the contracts with
+ *         rescue function and transfers the tokens to rescue to the merkle distributor contract.
+ */
 contract EthRescueMissionPayload {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
   address public immutable V1_POOL_IMPL;

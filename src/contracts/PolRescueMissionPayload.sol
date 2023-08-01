@@ -7,11 +7,11 @@ import {ILendingPoolConfigurator} from './interfaces/ILendingPoolConfigurator.so
 import {IRescue} from './interfaces/IRescue.sol';
 
 /**
-* @title PolRescueMissionPayload
-* @author BGD
-* @notice This payload contract initializes the distribution on the distributor, updates the contracts with
-*         rescue function and transfers the tokens to rescue to the merkle distributor contract.
-*/
+ * @title PolRescueMissionPayload
+ * @author BGD
+ * @notice This payload contract initializes the distribution on the distributor, updates the contracts with
+ *         rescue function and transfers the tokens to rescue to the merkle distributor contract.
+ */
 contract PolRescueMissionPayload {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
   address public immutable V2_POOL_IMPL;

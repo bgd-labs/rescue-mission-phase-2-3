@@ -2,12 +2,11 @@
 pragma solidity >=0.6.12;
 pragma experimental ABIEncoderV2;
 
-import "forge-std/Test.sol";
+import 'forge-std/Test.sol';
 import {LendingPool} from '../src/contracts/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol';
 import {AaveV2Avalanche} from 'aave-address-book/AaveV2Avalanche.sol';
 
 contract AvaDeploy is Test {
-
   // artifacts
   string constant aaveMerkleDistributorArtifact =
     'out/AaveMerkleDistributor.sol/AaveMerkleDistributor.json';
@@ -43,7 +42,7 @@ contract AvaDeploy is Test {
 
     console.log('merkle distributor address', aaveMerkleDistributor);
     console.log('v2LendingPool address', address(lendingPool));
-    console.log('payload 1 address',payload_1);
+    console.log('payload 1 address', payload_1);
     console.log('payload 2 address', payload_2);
 
     vm.stopBroadcast();
