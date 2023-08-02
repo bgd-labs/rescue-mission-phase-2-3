@@ -22,6 +22,7 @@ The following table represents the tokens to rescue from various different contr
 | USDC             | AAVE V2 POOL                    | 4515.242949             | POLYGON   |
 | USDT.e           | AAVE V2 POOL                    | 1772.206585             | AVALANCHE |
 | USDC.e           | AAVE V2 POOL                    | 2522.408895             | AVALANCHE |
+| USDC             | AAVE V3 POOL                    | 44428.421035            | OPTIMISM  |
 
 ## About:
 
