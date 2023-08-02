@@ -1,44 +1,21 @@
 ```diff
 diff --git a/etherscan/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol b/src/contracts/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol
-index 64f726c..5be5521 100644
+index 64f726c..94d1799 100644
 --- a/etherscan/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol
 +++ b/src/contracts/v2AvaPool/LendingPool/contracts/interfaces/ILendingPool.sol
-@@ -167,6 +167,18 @@ interface ILendingPool {
-     uint256 variableBorrowIndex
-   );
+@@ -4,8 +4,9 @@ pragma experimental ABIEncoderV2;
  
-+  /**
-+   * @dev Emitted during the token rescue
-+   * @param tokenRescued The token which is being rescued
-+   * @param receiver The recipient which will receive the rescued token
-+   * @param amountRescued The amount being rescued
-+   **/
-+  event TokensRescued(
-+    address indexed tokenRescued,
-+    address indexed receiver,
-+    uint256 amountRescued
-+  );
-+
-   /**
-    * @dev Deposits an `amount` of underlying asset into the reserve, receiving in return overlying aTokens.
-    * - E.g. User deposits 100 USDC and gets in return 100 aUSDC
-@@ -315,6 +327,14 @@ interface ILendingPool {
-     uint16 referralCode
-   ) external;
+ import {ILendingPoolAddressesProvider} from './ILendingPoolAddressesProvider.sol';
+ import {DataTypes} from '../protocol/libraries/types/DataTypes.sol';
++import {IRescue} from '../../../../interfaces/IRescue.sol';
  
-+  /**
-+   * @notice Rescue and transfer tokens locked in this contract
-+   * @param token The address of the token
-+   * @param to The address of the recipient
-+   * @param amount The amount of token to transfer
-+   **/
-+  function rescueTokens(address token, address to, uint256 amount) external;
-+
+-interface ILendingPool {
++interface ILendingPool is IRescue {
    /**
-    * @dev Returns the user account data across all the reserves
-    * @param user The address of the user
+    * @dev Emitted on deposit()
+    * @param reserve The address of the underlying asset of the reserve
 diff --git a/etherscan/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol b/src/contracts/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
-index 8e38650..7877372 100644
+index 8e38650..df1bdb8 100644
 --- a/etherscan/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
 +++ b/src/contracts/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol
 @@ -49,7 +49,7 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
@@ -76,11 +53,16 @@ index 8e38650..7877372 100644
    function getRevision() internal pure override returns (uint256) {
      return LENDINGPOOL_REVISION;
    }
-@@ -563,6 +575,12 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
+@@ -563,6 +575,17 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
      }
    }
  
-+  /// @inheritdoc ILendingPool
++  /**
++   * @notice Rescue and transfer tokens locked in this contract
++   * @param token The address of the token
++   * @param to The address of the recipient
++   * @param amount The amount of token to transfer
++   **/
 +  function rescueTokens(address token, address to, uint256 amount) external override onlyPoolAdmin {
 +    IERC20(token).safeTransfer(to, amount);
 +    emit TokensRescued(token, to, amount);

@@ -1,42 +1,21 @@
 ```diff
 diff --git a/etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol b/src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol
-index cf0ea26..e942cdf 100644
+index cf0ea26..219c179 100644
 --- a/etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol
 +++ b/src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/interfaces/IAToken.sol
-@@ -46,6 +46,18 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
-    **/
-   event BalanceTransfer(address indexed from, address indexed to, uint256 value, uint256 index);
+@@ -5,8 +5,9 @@ import {IERC20} from '../dependencies/openzeppelin/contracts/IERC20.sol';
+ import {IScaledBalanceToken} from './IScaledBalanceToken.sol';
+ import {IInitializableAToken} from './IInitializableAToken.sol';
+ import {IAaveIncentivesController} from './IAaveIncentivesController.sol';
++import {IRescue} from '../../../../../../interfaces/IRescue.sol';
  
-+  /**
-+   * @dev Emitted during the token rescue
-+   * @param tokenRescued The token which is being rescued
-+   * @param receiver The recipient which will receive the rescued token
-+   * @param amountRescued The amount being rescued
-+   **/
-+  event TokensRescued(
-+    address indexed tokenRescued,
-+    address indexed receiver,
-+    uint256 amountRescued
-+  );
-+
+-interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
++interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken, IRescue {
    /**
-    * @dev Burns aTokens from `user` and sends the equivalent amount of underlying to `receiverOfUnderlying`
-    * @param user The owner of the aTokens, getting them burned
-@@ -104,4 +116,12 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
-    * @dev Returns the address of the underlying asset of this aToken (E.g. WETH for aWETH)
-    **/
-   function UNDERLYING_ASSET_ADDRESS() external view returns (address);
-+
-+  /**
-+   * @notice Rescue and transfer tokens locked in this contract
-+   * @param token The address of the token
-+   * @param to The address of the recipient
-+   * @param amount The amount of token to transfer
-+   */
-+  function rescueTokens(address token, address to, uint256 amount) external;
- }
+    * @dev Emitted after the mint action
+    * @param from The address performing the mint
 diff --git a/etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol b/src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol
-index fec453e..64f0a63 100644
+index fec453e..f747682 100644
 --- a/etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol
 +++ b/src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol
 @@ -30,7 +30,7 @@ contract AToken is
@@ -63,11 +42,16 @@ index fec453e..64f0a63 100644
    modifier onlyLendingPool {
      require(_msgSender() == address(_pool), Errors.CT_CALLER_MUST_BE_LENDING_POOL);
      _;
-@@ -359,6 +367,12 @@ contract AToken is
+@@ -359,6 +367,17 @@ contract AToken is
      _approve(owner, spender, value);
    }
  
-+  /// @inheritdoc IAToken
++  /**
++   * @notice Rescue and transfer tokens locked in this contract
++   * @param token The address of the token
++   * @param to The address of the recipient
++   * @param amount The amount of token to transfer
++   **/
 +  function rescueTokens(address token, address to, uint256 amount) external override onlyPoolAdmin {
 +    IERC20(token).safeTransfer(to, amount);
 +    emit TokensRescued(token, to, amount);
