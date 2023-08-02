@@ -5,8 +5,9 @@ import {IERC20} from '../dependencies/openzeppelin/contracts/IERC20.sol';
 import {IScaledBalanceToken} from './IScaledBalanceToken.sol';
 import {IInitializableAToken} from './IInitializableAToken.sol';
 import {IAaveIncentivesController} from './IAaveIncentivesController.sol';
+import {IRescue} from '../../../../../../interfaces/IRescue.sol';
 
-interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
+interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken, IRescue {
   /**
    * @dev Emitted after the mint action
    * @param from The address performing the mint
@@ -45,18 +46,6 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
    * @param index The new liquidity index of the reserve
    **/
   event BalanceTransfer(address indexed from, address indexed to, uint256 value, uint256 index);
-
-  /**
-   * @dev Emitted during the token rescue
-   * @param tokenRescued The token which is being rescued
-   * @param receiver The recipient which will receive the rescued token
-   * @param amountRescued The amount being rescued
-   **/
-  event TokensRescued(
-    address indexed tokenRescued,
-    address indexed receiver,
-    uint256 amountRescued
-  );
 
   /**
    * @dev Burns aTokens from `user` and sends the equivalent amount of underlying to `receiverOfUnderlying`
@@ -116,12 +105,4 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
    * @dev Returns the address of the underlying asset of this aToken (E.g. WETH for aWETH)
    **/
   function UNDERLYING_ASSET_ADDRESS() external view returns (address);
-
-  /**
-   * @notice Rescue and transfer tokens locked in this contract
-   * @param token The address of the token
-   * @param to The address of the recipient
-   * @param amount The amount of token to transfer
-   */
-  function rescueTokens(address token, address to, uint256 amount) external;
 }
