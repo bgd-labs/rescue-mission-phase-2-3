@@ -10,6 +10,7 @@
     "test-eth-claims": "env-cmd ts-node js-scripts/test-claims/testEthereumClaims.ts",
     "test-pol-claims": "env-cmd ts-node js-scripts/test-claims/testPolygonClaims.ts",
     "test-ava-claims": "env-cmd ts-node js-scripts/test-claims/testAvalancheClaims.ts",
+    "test-opt-claims": "env-cmd ts-node js-scripts/test-claims/testOptimismClaims.ts",
     "lint": "prettier ./",
     "lint:fix": "npm run lint -- --write"
   },
