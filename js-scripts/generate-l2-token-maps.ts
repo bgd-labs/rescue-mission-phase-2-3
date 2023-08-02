@@ -1,13 +1,14 @@
 import {ChainId} from '@aave/contract-helpers';
 import {
-  AaveV2Avalanche,
-  AaveV2Polygon,
-  AaveV3Arbitrum,
-  AaveV3Fantom,
-  AaveV3Optimism,
-  AaveV3Polygon,
-} from '@bgd-labs/aave-address-book';
-import {AaveMarket, ContractType} from '../js-scripts/common/constants';
+  AaveMarket,
+  ContractType,
+  AAVE_V2_AVA_POOL,
+  AAVE_V2_POL_POOL,
+  AAVE_V3_POL_POOL,
+  AAVE_V3_OPT_POOL,
+  AAVE_V3_ARB_POOL,
+  AAVE_V3_FAN_POOL,
+} from '../js-scripts/common/constants';
 import {fetchTxns, generateAndSaveMap} from './common/helper';
 import TOKENS_POL from './assets/polTokens.json';
 import TOKENS_AVA from './assets/avaTokens.json';
@@ -77,7 +78,7 @@ async function generatePolTokensMap() {
         tokenStuckInV2Pool
           ? fetchTxns(
               tokenAddress,
-              AaveV2Polygon.POOL,
+              AAVE_V2_POL_POOL,
               ChainId.polygon,
               `${tokenName}-v2Pool`,
               ContractType.Pool,
@@ -88,7 +89,7 @@ async function generatePolTokensMap() {
         tokenAddress
           ? fetchTxns(
               tokenAddress,
-              AaveV3Polygon.POOL,
+              AAVE_V3_POL_POOL,
               ChainId.polygon,
               `${tokenName}-v3Pool`,
               ContractType.Pool,
@@ -144,7 +145,7 @@ async function generateAvaTokensMap() {
         tokenStuckInV2Pool
           ? fetchTxns(
               tokenAddress,
-              AaveV2Avalanche.POOL,
+              AAVE_V2_AVA_POOL,
               ChainId.avalanche,
               `${tokenName}-v2Pool`,
               ContractType.Pool,
@@ -173,7 +174,7 @@ async function generateOptTokensMap() {
               tokenAddress,
               v3AToken,
               ChainId.optimism,
-              `v3${tokenName}-v3a${tokenName}`,
+              `${tokenName}-v3a${tokenName}`,
               ContractType.aToken,
               AaveMarket.v3
             )
@@ -182,9 +183,9 @@ async function generateOptTokensMap() {
         tokenAddress
           ? fetchTxns(
               tokenAddress,
-              AaveV3Optimism.POOL,
+              AAVE_V3_OPT_POOL,
               ChainId.optimism,
-              `v3${tokenName}-v3Pool`,
+              `${tokenName}-v3Pool`,
               ContractType.Pool,
               AaveMarket.v3
             )
@@ -211,7 +212,7 @@ async function generateArbTokensMap() {
               tokenAddress,
               v3AToken,
               ChainId.arbitrum_one,
-              `v3${tokenName}-v3a${tokenName}`,
+              `${tokenName}-v3a${tokenName}`,
               ContractType.aToken,
               AaveMarket.v3
             )
@@ -220,9 +221,9 @@ async function generateArbTokensMap() {
         tokenAddress
           ? fetchTxns(
               tokenAddress,
-              AaveV3Arbitrum.POOL,
+              AAVE_V3_ARB_POOL,
               ChainId.arbitrum_one,
-              `v3${tokenName}-v3Pool`,
+              `${tokenName}-v3Pool`,
               ContractType.Pool,
               AaveMarket.v3
             )
@@ -249,7 +250,7 @@ async function generateFanTokensMap() {
               tokenAddress,
               v3AToken,
               ChainId.fantom,
-              `v3${tokenName}-v3a${tokenName}`,
+              `${tokenName}-v3a${tokenName}`,
               ContractType.aToken,
               AaveMarket.v3
             )
@@ -258,9 +259,9 @@ async function generateFanTokensMap() {
         tokenAddress
           ? fetchTxns(
               tokenAddress,
-              AaveV3Fantom.POOL,
+              AAVE_V3_FAN_POOL,
               ChainId.fantom,
-              `v3${tokenName}-v3Pool`,
+              `${tokenName}-v3Pool`,
               ContractType.Pool,
               AaveMarket.v3
             )

@@ -6,12 +6,12 @@ import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkle
 import {IRescue} from './interfaces/IRescue.sol';
 
 /**
-* @title AvaRescueMissionPayload_Guardian_2
-* @author BGD
-* @notice This payload contract should be called after distribution is initialized and the contracts are updated with
-*         with rescue function - the payload should be executed by the pool admin to transfer the tokens to rescue to
-*         the merkle distributor contract.
-*/
+ * @title AvaRescueMissionPayload_Guardian_2
+ * @author BGD
+ * @notice This payload contract should be called after distribution is initialized and the contracts are updated with
+ *         with rescue function - the payload should be executed by the pool admin to transfer the tokens to rescue to
+ *         the merkle distributor contract.
+ */
 contract AvaRescueMissionPayload_Guardian_2 {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
 

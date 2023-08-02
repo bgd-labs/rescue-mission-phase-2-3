@@ -573,7 +573,12 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
     }
   }
 
-  /// @inheritdoc ILendingPool
+  /**
+   * @notice Rescue and transfer tokens locked in this contract
+   * @param token The address of the token
+   * @param to The address of the recipient
+   * @param amount The amount of token to transfer
+   **/
   function rescueTokens(address token, address to, uint256 amount) external override onlyPoolAdmin {
     IERC20(token).safeTransfer(to, amount);
     emit TokensRescued(token, to, amount);

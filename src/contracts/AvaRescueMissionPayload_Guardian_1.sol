@@ -5,11 +5,11 @@ import {AaveV2Avalanche} from 'aave-address-book/AaveV2Avalanche.sol';
 import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkleDistributor.sol';
 
 /**
-* @title AvaRescueMissionPayload_Guardian_1
-* @author BGD
-* @notice This payload contract initializes the distribution on the distributor, updates the contracts with
-*         rescue function - this payload should be executed by the owner of the addresses provider.
-*/
+ * @title AvaRescueMissionPayload_Guardian_1
+ * @author BGD
+ * @notice This payload contract initializes the distribution on the distributor, updates the contracts with
+ *         rescue function - this payload should be executed by the owner of the addresses provider.
+ */
 contract AvaRescueMissionPayload_Guardian_1 {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
   address public immutable V2_POOL_IMPL;

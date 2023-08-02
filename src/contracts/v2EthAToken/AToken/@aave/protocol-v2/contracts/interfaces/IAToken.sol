@@ -4,8 +4,9 @@ pragma solidity 0.6.12;
 import {IERC20} from '../dependencies/openzeppelin/contracts/IERC20.sol';
 import {IScaledBalanceToken} from './IScaledBalanceToken.sol';
 import {IAaveIncentivesController} from './IAaveIncentivesController.sol';
+import {IRescue} from '../../../../../../interfaces/IRescue.sol';
 
-interface IAToken is IERC20, IScaledBalanceToken {
+interface IAToken is IERC20, IScaledBalanceToken, IRescue {
   /**
    * @dev Emitted after the mint action
    * @param from The address performing the mint
@@ -34,18 +35,6 @@ interface IAToken is IERC20, IScaledBalanceToken {
     string aTokenName,
     string aTokenSymbol,
     bytes params
-  );
-
-  /**
-   * @dev Emitted during the token rescue
-   * @param tokenRescued The token which is being rescued
-   * @param receiver The recipient which will receive the rescued token
-   * @param amountRescued The amount being rescued
-   **/
-  event TokensRescued(
-    address indexed tokenRescued,
-    address indexed receiver,
-    uint256 amountRescued
   );
 
   /**
@@ -125,12 +114,4 @@ interface IAToken is IERC20, IScaledBalanceToken {
    * @dev Returns the address of the incentives controller contract
    **/
   function getIncentivesController() external view returns (IAaveIncentivesController);
-
-  /**
-   * @notice Rescue and transfer tokens locked in this contract
-   * @param token The address of the token
-   * @param to The address of the recipient
-   * @param amount The amount of token to transfer
-   */
-  function rescueTokens(address token, address to, uint256 amount) external;
 }

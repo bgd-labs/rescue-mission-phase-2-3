@@ -4,8 +4,9 @@ pragma experimental ABIEncoderV2;
 
 import {ILendingPoolAddressesProvider} from './ILendingPoolAddressesProvider.sol';
 import {DataTypes} from '../protocol/libraries/types/DataTypes.sol';
+import {IRescue} from '../../../../interfaces/IRescue.sol';
 
-interface ILendingPool {
+interface ILendingPool is IRescue {
   /**
    * @dev Emitted on deposit()
    * @param reserve The address of the underlying asset of the reserve
@@ -168,18 +169,6 @@ interface ILendingPool {
   );
 
   /**
-   * @dev Emitted during the token rescue
-   * @param tokenRescued The token which is being rescued
-   * @param receiver The recipient which will receive the rescued token
-   * @param amountRescued The amount being rescued
-   **/
-  event TokensRescued(
-    address indexed tokenRescued,
-    address indexed receiver,
-    uint256 amountRescued
-  );
-
-  /**
    * @dev Deposits an `amount` of underlying asset into the reserve, receiving in return overlying aTokens.
    * - E.g. User deposits 100 USDC and gets in return 100 aUSDC
    * @param asset The address of the underlying asset to deposit
@@ -326,14 +315,6 @@ interface ILendingPool {
     bytes calldata params,
     uint16 referralCode
   ) external;
-
-  /**
-   * @notice Rescue and transfer tokens locked in this contract
-   * @param token The address of the token
-   * @param to The address of the recipient
-   * @param amount The amount of token to transfer
-   **/
-  function rescueTokens(address token, address to, uint256 amount) external;
 
   /**
    * @dev Returns the user account data across all the reserves

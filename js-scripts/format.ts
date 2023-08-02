@@ -6,6 +6,7 @@ import {getTokenDecimals, getNetworkName} from './common/helper';
 import TOKENS_ETH from './assets/ethTokens.json';
 import TOKENS_POL from './assets/polTokens.json';
 import TOKENS_AVA from './assets/avaTokens.json';
+import TOKENS_OPT from './assets/optTokens.json';
 import V2_POL_A_TOKENS from './assets/v2PolATokens.json';
 import V2_ETH_A_TOKENS from './assets/v2EthATokens.json';
 import V1_ETH_A_TOKENS from './assets/v1EthATokens.json';
@@ -23,6 +24,7 @@ import polygonAdaiRescueMap from './maps/polygon/v2_adaiRescueMap.json';
 import polygonUsdcRescueMap from './maps/polygon/usdcRescueMap.json';
 import avalancheUsdtERescueMap from './maps/avalanche/usdt.eRescueMap.json';
 import avalancheUsdcERescueMap from './maps/avalanche/usdc.eRescueMap.json';
+import optimismUsdcRescueMap from './maps/optimism/usdcRescueMap.json';
 import fs from 'fs';
 
 async function format(
@@ -61,3 +63,4 @@ format(polygonAdaiRescueMap, 'v2_adai', V2_POL_A_TOKENS.DAI, ChainId.polygon);
 format(polygonUsdcRescueMap, 'usdc', TOKENS_POL.USDC, ChainId.polygon);
 format(avalancheUsdtERescueMap, 'usdt.e', TOKENS_AVA['USDT.e'], ChainId.avalanche);
 format(avalancheUsdcERescueMap, 'usdc.e', TOKENS_AVA['USDC.e'], ChainId.avalanche);
+format(optimismUsdcRescueMap, 'usdc', TOKENS_OPT.USDC, ChainId.optimism);
