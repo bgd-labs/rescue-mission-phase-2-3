@@ -14,7 +14,6 @@ The following table represents the tokens to rescue from various different contr
 | GUSD             | AAVE V2 POOL                    | 19994.86                | ETHEREUM  |
 | LINK             | AAVE v1 POOL                    | 4084                    | ETHEREUM  |
 | USDT             | AAVE V2 A_USDT                  | 11010                   | ETHEREUM  |
-| HOT              | AAVE V2 POOL                    | 1046391                 | ETHEREUM  |
 | USDC             | AAVE V2 POOL                    | 1089.889717             | ETHEREUM  |
 | WBTC             | AAVE V2 POOL                    | 0.22994977              | POLYGON   |
 | AAVE V2 A_DAI    | AAVE V2 A_DAI                   | 4250.580268097645600939 | POLYGON   |
@@ -123,7 +122,7 @@ On ethereum we will use the same merkle distributor as in phase one while deploy
   - Updates v2 aRai contract with rescue function
   - Updates v2 aUsdt contract with rescue function
   - Registers MerkleRoot for each token on the merkle distributor contract.
-  - Transfers aRai, aBtc, Usdt, Usdc, Dai, Gusd, Link, Hot tokens to the merkle distributor from the aave contracts where funds were stuck
+  - Transfers aRai, aBtc, Usdt, Usdc, Dai, Gusd, Link tokens to the merkle distributor from the aave contracts where funds were stuck
 - [Polygon Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/PolRescueMissionPayload.sol):
   - Updates v2 pool with rescue function
   - Updates v2 aDai contract with rescue function

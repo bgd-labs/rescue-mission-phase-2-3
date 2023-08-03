@@ -17,7 +17,6 @@ import ethereumUsdtRescueMap from './maps/ethereum/usdtRescueMap.json';
 import ethereumDaiRescueMap from './maps/ethereum/daiRescueMap.json';
 import ethereumGusdRescueMap from './maps/ethereum/gusdRescueMap.json';
 import ethereumLinkRescueMap from './maps/ethereum/linkRescueMap.json';
-import ethereumHotRescueMap from './maps/ethereum/hotRescueMap.json';
 import ethereumUsdcRescueMap from './maps/ethereum/usdcRescueMap.json';
 import polygonAusdcRescueMap from './maps/polygon/v2_ausdcRescueMap.json';
 import polygonWbtcRescueMap from './maps/polygon/wbtcRescueMap.json';
@@ -50,7 +49,6 @@ generateMerkleRoot(ethereumUsdtRescueMap, 'usdt', TOKENS_ETH.USDT, ChainId.mainn
 generateMerkleRoot(ethereumDaiRescueMap, 'dai', TOKENS_ETH.DAI, ChainId.mainnet);
 generateMerkleRoot(ethereumGusdRescueMap, 'gusd', TOKENS_ETH.GUSD, ChainId.mainnet);
 generateMerkleRoot(ethereumLinkRescueMap, 'link', TOKENS_ETH.LINK, ChainId.mainnet);
-generateMerkleRoot(ethereumHotRescueMap, 'hot', TOKENS_ETH.HOT, ChainId.mainnet);
 generateMerkleRoot(ethereumUsdcRescueMap, 'usdc', TOKENS_ETH.USDC, ChainId.mainnet);
 generateMerkleRoot(polygonAusdcRescueMap, 'v2_ausdc', V2_POL_A_TOKENS.USDC, ChainId.polygon);
 generateMerkleRoot(polygonWbtcRescueMap, 'wbtc', TOKENS_POL.WBTC, ChainId.polygon);

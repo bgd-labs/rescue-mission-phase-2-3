@@ -16,7 +16,7 @@ import {fetchTxns, generateAndSaveMap} from './common/helper';
 
 async function generateMainnetTokensMap() {
   const tokenList = Object.entries(TOKENS_ETH);
-  const tokensStuckInV2Pool = [TOKENS_ETH.DAI, TOKENS_ETH.GUSD, TOKENS_ETH.USDC, TOKENS_ETH.HOT];
+  const tokensStuckInV2Pool = [TOKENS_ETH.DAI, TOKENS_ETH.GUSD, TOKENS_ETH.USDC];
   const tokensStuckInV2AmmPool = [TOKENS_ETH.USDT];
   const tokensStuckInV1Pool = [TOKENS_ETH.LINK, V1_ETH_A_TOKENS.WBTC];
 

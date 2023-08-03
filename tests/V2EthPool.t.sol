@@ -14,12 +14,10 @@ contract V2EthPoolTest is Test {
   address constant MERKLE_DISTRIBUTOR = address(1653);
   address constant DAI_TOKEN = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
   address constant GUSD_TOKEN = 0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd;
-  address constant HOT_TOKEN = 0x6c6EE5e31d828De241282B9606C8e98Ea48526E2;
   address constant USDC_TOKEN = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
 
   uint256 constant DAI_RESCUE_AMOUNT = 22_000e18;
   uint256 constant GUSD_RESCUE_AMOUNT = 19_994_86;
-  uint256 constant HOT_RESCUE_AMOUNT = 1_046_391e18;
   uint256 constant USDC_RESCUE_AMOUNT = 1_089_889717;
 
   function setUp() public {
@@ -46,14 +44,6 @@ contract V2EthPoolTest is Test {
     vm.startPrank(AaveGovernanceV2.SHORT_EXECUTOR);
     LendingPool(LENDING_POOL).rescueTokens(GUSD_TOKEN, MERKLE_DISTRIBUTOR, GUSD_RESCUE_AMOUNT);
     assertEq(IERC20(GUSD_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), GUSD_RESCUE_AMOUNT);
-    vm.stopPrank();
-  }
-
-  function testRescueHot() public {
-    _updatePool();
-    vm.startPrank(AaveGovernanceV2.SHORT_EXECUTOR);
-    LendingPool(LENDING_POOL).rescueTokens(HOT_TOKEN, MERKLE_DISTRIBUTOR, HOT_RESCUE_AMOUNT);
-    assertEq(IERC20(HOT_TOKEN).balanceOf(MERKLE_DISTRIBUTOR), HOT_RESCUE_AMOUNT);
     vm.stopPrank();
   }
 

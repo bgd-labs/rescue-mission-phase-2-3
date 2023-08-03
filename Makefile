@@ -26,25 +26,45 @@ diff-contracts :;
 
 storage-diff:
 	forge inspect etherscan/v1Pool/LendingPool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v1Pool_layout.md
+	npm run clean-storage-report v1Pool_layout
 	forge inspect src/contracts/v1Pool/LendingPool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v1Pool_layout.md
+	npm run clean-storage-report rescue_v1Pool_layout
 	make git-diff before=reports/v1Pool_layout.md after=reports/rescue_v1Pool_layout.md out=v1Pool_layout_diff
+
 	forge inspect etherscan/v2AmmPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v2AmmPool_layout.md
+	npm run clean-storage-report v2AmmPool_layout
 	forge inspect src/contracts/v2AmmPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v2AmmPool_layout.md
+	npm run clean-storage-report rescue_v2AmmPool_layout
 	make git-diff before=reports/v2AmmPool_layout.md after=reports/rescue_v2AmmPool_layout.md out=v2AmmPool_layout_diff
+
 	forge inspect etherscan/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v2EthPool_layout.md
+	npm run clean-storage-report v2EthPool_layout
 	forge inspect src/contracts/v2EthPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v2EthPool_layout.md
+	npm run clean-storage-report rescue_v2EthPool_layout
 	make git-diff before=reports/v2EthPool_layout.md after=reports/rescue_v2EthPool_layout.md out=v2EthPool_layout_diff
+
 	forge inspect etherscan/v2PolPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v2PolPool_layout.md
+	npm run clean-storage-report v2PolPool_layout
 	forge inspect src/contracts/v2PolPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v2PolPool_layout.md
+	npm run clean-storage-report rescue_v2PolPool_layout
 	make git-diff before=reports/v2PolPool_layout.md after=reports/rescue_v2PolPool_layout.md out=v2PolPool_layout_diff
+
 	forge inspect etherscan/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/v2AvaPool_layout.md
+	npm run clean-storage-report v2AvaPool_layout
 	forge inspect src/contracts/v2AvaPool/LendingPool/contracts/protocol/lendingpool/LendingPool.sol:LendingPool storage-layout --pretty > reports/rescue_v2AvaPool_layout.md
+	npm run clean-storage-report rescue_v2AvaPool_layout
 	make git-diff before=reports/v2AvaPool_layout.md after=reports/rescue_v2AvaPool_layout.md out=v2AvaPool_layout_diff
+
 	forge inspect etherscan/v2EthAToken/AToken/\@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol:AToken storage-layout --pretty > reports/v2EthAToken_layout.md
+	npm run clean-storage-report v2EthAToken_layout
 	forge inspect src/contracts/v2EthAToken/AToken/\@aave/protocol-v2/contracts/protocol/tokenization/AToken.sol:AToken storage-layout --pretty > reports/rescue_v2EthAToken_layout.md
+	npm run clean-storage-report rescue_v2EthAToken_layout
 	make git-diff before=reports/v2EthAToken_layout.md after=reports/rescue_v2EthAToken_layout.md out=v2EthAToken_layout_diff
+
 	forge inspect etherscan/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol:AToken storage-layout --pretty > reports/v2PolAToken_layout.md
+	npm run clean-storage-report v2PolAToken_layout
 	forge inspect src/contracts/v2PolAToken/AToken/lib/protocol-v2/contracts/protocol/tokenization/AToken.sol:AToken storage-layout --pretty > reports/rescue_v2PolAToken_layout.md
+	npm run clean-storage-report rescue_v2PolAToken_layout
 	make git-diff before=reports/v2PolAToken_layout.md after=reports/rescue_v2PolAToken_layout.md out=v2PolAToken_layout_diff
 
 deploy-eth-contracts :; forge script scripts/EthDeploy.s.sol:EthDeploy --rpc-url ${RPC_MAINNET} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --etherscan-api-key ${ETHERSCAN_API_KEY_MAINNET} --gas-estimate-multiplier 100 --verify -vvvv
