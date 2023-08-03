@@ -3,14 +3,16 @@ pragma solidity ^0.8.0;
 
 import {AaveV2Avalanche} from 'aave-address-book/AaveV2Avalanche.sol';
 import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkleDistributor.sol';
+import {IRescue} from './interfaces/IRescue.sol';
 
 /**
- * @title AvaRescueMissionPayload_Guardian_1
+ * @title AvaRescueMissionPayload
  * @author BGD
  * @notice This payload contract initializes the distribution on the distributor, updates the contracts with
- *         rescue function - this payload should be executed by the owner of the addresses provider.
+ *         rescue function and transfer the tokens to rescue to the merkle distributor contract - the payload should
+ *         be executed by the pool admin / owner of addresses provider / guardian multi-sig.
  */
-contract AvaRescueMissionPayload_Guardian_1 {
+contract AvaRescueMissionPayload {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
   address public immutable V2_POOL_IMPL;
 
@@ -41,6 +43,8 @@ contract AvaRescueMissionPayload_Guardian_1 {
     _initializeDistribution();
 
     _updateContractWithRescueFunction();
+
+    _rescueTokensToMerkleDistributor();
   }
 
   function _initializeDistribution() internal {
@@ -58,5 +62,18 @@ contract AvaRescueMissionPayload_Guardian_1 {
   function _updateContractWithRescueFunction() internal {
     // Set new pool implementaion with rescue function for Aave V2 pool
     AaveV2Avalanche.POOL_ADDRESSES_PROVIDER.setLendingPoolImpl(V2_POOL_IMPL);
+  }
+
+  function _rescueTokensToMerkleDistributor() internal {
+    IRescue(address(AaveV2Avalanche.POOL)).rescueTokens(
+      USDTe_TOKEN,
+      address(AAVE_MERKLE_DISTRIBUTOR),
+      USDTe_RESCUE_AMOUNT
+    );
+    IRescue(address(AaveV2Avalanche.POOL)).rescueTokens(
+      USDCe_TOKEN,
+      address(AAVE_MERKLE_DISTRIBUTOR),
+      USDCe_RESCUE_AMOUNT
+    );
   }
 }
