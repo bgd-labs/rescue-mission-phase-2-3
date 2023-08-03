@@ -11,6 +11,7 @@
     "test-pol-claims": "env-cmd ts-node js-scripts/test-claims/testPolygonClaims.ts",
     "test-ava-claims": "env-cmd ts-node js-scripts/test-claims/testAvalancheClaims.ts",
     "test-opt-claims": "env-cmd ts-node js-scripts/test-claims/testOptimismClaims.ts",
+    "clean-storage-report": "ts-node ./js-scripts/preprocess-storage-report.ts",
     "lint": "prettier ./",
     "lint:fix": "npm run lint -- --write"
   },
