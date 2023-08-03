@@ -40,7 +40,7 @@ function cleanMarkdownTable(markdown: string): string {
   const lines = markdown.split('\n');
 
   // Get the separator line containing multiple dashes
-  const separatorLine = lines.find(line => line.includes('|-'));
+  const separatorLine = lines.find((line) => line.includes('|-'));
 
   if (separatorLine) {
     // Find the number of columns in the table
@@ -54,7 +54,7 @@ function cleanMarkdownTable(markdown: string): string {
   lines[0] = `|${lines[0]
     .slice(1, -1)
     .split('|')
-    .map(column => column.trim())
+    .map((column) => column.trim())
     .join('|')}|`;
 
   return lines.join('\n');

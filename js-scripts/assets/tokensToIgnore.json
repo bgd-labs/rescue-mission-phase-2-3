@@ -48,6 +48,10 @@
     "chainId": 1
   },
   {
+    "name": "HOT-v2Pool",
+    "chainId": 1
+  },
+  {
     "name": "WMATIC-v3Pool",
     "chainId": 137
   },

@@ -33,7 +33,6 @@ const ethMerkleTree: Record<string, string> = {
   ETH_DAI: './js-scripts/maps/ethereum/merkleTree/daiRescueMerkleTree.json',
   ETH_GUSD: './js-scripts/maps/ethereum/merkleTree/gusdRescueMerkleTree.json',
   ETH_LINK: './js-scripts/maps/ethereum/merkleTree/linkRescueMerkleTree.json',
-  ETH_HOT: './js-scripts/maps/ethereum/merkleTree/hotRescueMerkleTree.json',
   ETH_USDC: './js-scripts/maps/ethereum/merkleTree/usdcRescueMerkleTree.json',
 };
 
@@ -61,8 +60,7 @@ const distributionIds: Record<string, number> = {
   ETH_DAI: 7,
   ETH_GUSD: 8,
   ETH_LINK: 9,
-  ETH_HOT: 10,
-  ETH_USDC: 11,
+  ETH_USDC: 10,
   // polygon
   POL_WBTC: 0,
   V2_POL_A_DAI: 1,

@@ -24,11 +24,9 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
   uint256 public constant DAI_RESCUE_AMOUNT = 22_000e18;
   uint256 public constant GUSD_RESCUE_AMOUNT = 19_994_86;
   uint256 public constant LINK_RESCUE_AMOUNT = 4084e18;
-  uint256 public constant HOT_RESCUE_AMOUNT = 1_046_391e18;
   uint256 public constant USDC_RESCUE_AMOUNT = 1_089_889717;
 
   address constant WBTC_A_TOKEN = 0xFC4B8ED459e00e5400be803A9BB3954234FD50e3;
-  address public constant HOT_TOKEN = 0x6c6EE5e31d828De241282B9606C8e98Ea48526E2;
 
   address public payload;
   address public aaveMerkleDistributor;
@@ -70,7 +68,6 @@ contract EthRescueMissionPayloadTest is TestWithExecutor {
       IERC20(AaveV2EthereumAssets.LINK_UNDERLYING).balanceOf(aaveMerkleDistributor),
       LINK_RESCUE_AMOUNT
     );
-    assertEq(IERC20(HOT_TOKEN).balanceOf(aaveMerkleDistributor), HOT_RESCUE_AMOUNT);
     assertEq(
       IERC20(AaveV2EthereumAssets.USDC_UNDERLYING).balanceOf(aaveMerkleDistributor),
       USDC_RESCUE_AMOUNT

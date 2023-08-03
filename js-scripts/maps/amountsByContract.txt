@@ -24,22 +24,22 @@ total amount for USDC-v2aUSDC chainId: 137 in token decimals: 510.18811 latestBl
 total amount for WETH-v3aWETH chainId: 42161 in token decimals: 0.0001 latestBlock: 10575568 isBeingRescued: false
 total amount for WMATIC-v3Pool chainId: 137 in token decimals: 2.000000000000000004 latestBlock: 37651132 isBeingRescued: false
 
-Last run: Tue, 01 Aug 2023 11:55:17 GMT Network: mainnet
+Last run: Thu, 03 Aug 2023 10:44:55 GMT Network: mainnet
 total amount for v2aRAI-v2aRAI chainId: 1 in token decimals: 1481.16074087007480402 latestBlock: 13119114 isBeingRescued: true
 total amount for v1aWBTC-v1Pool chainId: 1 in token decimals: 1.92454215 latestBlock: 12585493 isBeingRescued: true
-total amount for LINK-v1Pool chainId: 1 in token decimals: 4084 latestBlock: 10731281 isBeingRescued: true
-total amount for USDC-v1PoolCore chainId: 1 in token decimals: 6.7 latestBlock: 16207220 isBeingRescued: false
-total amount for USDT-v2AmmPool chainId: 1 in token decimals: 20600.057405 latestBlock: 14622757 isBeingRescued: true
-total amount for AAVE-v1PoolCore chainId: 1 in token decimals: 0.0001 latestBlock: 15645264 isBeingRescued: false
-total amount for UNI-v1PoolCore chainId: 1 in token decimals: 2.000042624e-7 latestBlock: 15046659 isBeingRescued: false
-total amount for CRV-v2aCRV chainId: 1 in token decimals: 30.283651754438846093 latestBlock: 15855408 isBeingRescued: false
-total amount for HOT-v2Pool chainId: 1 in token decimals: 1046391 latestBlock: 12157773 isBeingRescued: true
-total amount for DAI-v2Pool chainId: 1 in token decimals: 22000 latestBlock: 12272121 isBeingRescued: true
-total amount for USDT-v2aUSDT chainId: 1 in token decimals: 11010 latestBlock: 12803636 isBeingRescued: true
-total amount for USDC-v2aUSDC chainId: 1 in token decimals: 0.001559 latestBlock: 16233244 isBeingRescued: false
-total amount for GUSD-v2Pool chainId: 1 in token decimals: 19994.86 latestBlock: 13771667 isBeingRescued: true
-total amount for YFI-v1PoolCore chainId: 1 in token decimals: 0.028763673110583385 latestBlock: 15820873 isBeingRescued: false
-total amount for DAI-v1PoolCore chainId: 1 in token decimals: 0.001000000001001 latestBlock: 10196043 isBeingRescued: false
-total amount for USDT-v1PoolCore chainId: 1 in token decimals: 1.51 latestBlock: 16207680 isBeingRescued: false
 total amount for USDC-v2Pool chainId: 1 in token decimals: 1089.889717 latestBlock: 15690192 isBeingRescued: true
+total amount for HOT-v2Pool chainId: 1 in token decimals: 1046391 latestBlock: 12157773 isBeingRescued: false
+total amount for AAVE-v1PoolCore chainId: 1 in token decimals: 0.0001 latestBlock: 15645264 isBeingRescued: false
+total amount for USDT-v1PoolCore chainId: 1 in token decimals: 1.51 latestBlock: 16207680 isBeingRescued: false
+total amount for USDC-v1PoolCore chainId: 1 in token decimals: 6.7 latestBlock: 16207220 isBeingRescued: false
+total amount for YFI-v1PoolCore chainId: 1 in token decimals: 0.028763673110583385 latestBlock: 15820873 isBeingRescued: false
 total amount for WETH-v2aWETH chainId: 1 in token decimals: 0.0101 latestBlock: 15937015 isBeingRescued: false
+total amount for USDC-v2aUSDC chainId: 1 in token decimals: 0.001559 latestBlock: 16233244 isBeingRescued: false
+total amount for USDT-v2aUSDT chainId: 1 in token decimals: 11010 latestBlock: 12803636 isBeingRescued: true
+total amount for CRV-v2aCRV chainId: 1 in token decimals: 30.283651754438846093 latestBlock: 15855408 isBeingRescued: false
+total amount for DAI-v2Pool chainId: 1 in token decimals: 22000 latestBlock: 12272121 isBeingRescued: true
+total amount for UNI-v1PoolCore chainId: 1 in token decimals: 2.000042624e-7 latestBlock: 15046659 isBeingRescued: false
+total amount for LINK-v1Pool chainId: 1 in token decimals: 4084 latestBlock: 10731281 isBeingRescued: true
+total amount for DAI-v1PoolCore chainId: 1 in token decimals: 0.001000000001001 latestBlock: 10196043 isBeingRescued: false
+total amount for USDT-v2AmmPool chainId: 1 in token decimals: 20600.057405 latestBlock: 14622757 isBeingRescued: true
+total amount for GUSD-v2Pool chainId: 1 in token decimals: 19994.86 latestBlock: 13771667 isBeingRescued: true

@@ -105,15 +105,6 @@
       "distributionId": 9
     }
   ],
-  "0xCCE8D59AFFdd93be338FC77FA0A298C2CB65Da59": [
-    {
-      "tokenAmount": "1046391 ethereum_hot",
-      "tokenAmountInWei": "1046391000000000000000000",
-      "proof": [],
-      "index": 0,
-      "distributionId": 10
-    }
-  ],
   "0x42CEb793F7Aa094b3Cd4B63C40D1E0af60c5BCBd": [
     {
       "tokenAmount": "1 ethereum_usdc",
@@ -123,7 +114,7 @@
         "0xc9745c983cb10a605df7f3c12e2af0a3c1e357bf1532b2b5508caf9b4abfcf5f"
       ],
       "index": 0,
-      "distributionId": 11
+      "distributionId": 10
     }
   ],
   "0x4baD9Ef5a8011Dd5592b82B4DcB99E0C7cbcc145": [
@@ -135,7 +126,7 @@
         "0xc9745c983cb10a605df7f3c12e2af0a3c1e357bf1532b2b5508caf9b4abfcf5f"
       ],
       "index": 1,
-      "distributionId": 11
+      "distributionId": 10
     }
   ],
   "0xECeA185f14DeEaA708C9BE8Bf45B1798eb0B1938": [
@@ -146,7 +137,7 @@
         "0x130ff986857c940a500f99a9f713d03efdb01dc3b67d3da68b99e8e7823ffd6f"
       ],
       "index": 2,
-      "distributionId": 11
+      "distributionId": 10
     }
   ]
 }
