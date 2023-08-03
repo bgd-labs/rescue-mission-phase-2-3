@@ -5,23 +5,23 @@ This phase will affect the tokens locked on smart contracts around the liquidity
 
 The following table represents the tokens to rescue from various different contracts of Aave:
 
-| Tokens to Rescue | Contract where tokens are stuck | Amount                  | Network   |
-| ---------------- | ------------------------------- | ----------------------- | --------- |
-| AAVE V2 A_RAI    | AAVE V2 A_RAI                   | 1481.16074087007480402  | ETHEREUM  |
-| AAVE V2 A_WBTC   | AAVE V1 POOL                    | 1.92454215              | ETHEREUM  |
-| USDT             | AAVE V2 AMM_POOL                | 20600.057405            | ETHEREUM  |
-| DAI              | AAVE V2 POOL                    | 22000                   | ETHEREUM  |
-| GUSD             | AAVE V2 POOL                    | 19994.86                | ETHEREUM  |
-| LINK             | AAVE v1 POOL                    | 4084                    | ETHEREUM  |
-| USDT             | AAVE V2 A_USDT                  | 11010                   | ETHEREUM  |
-| USDC             | AAVE V2 POOL                    | 1089.889717             | ETHEREUM  |
-| WBTC             | AAVE V2 POOL                    | 0.22994977              | POLYGON   |
-| AAVE V2 A_DAI    | AAVE V2 A_DAI                   | 4250.580268097645600939 | POLYGON   |
-| AAVE V2 A_USDC   | AAVE V2 A_USDC                  | 514131.378018           | POLYGON   |
-| USDC             | AAVE V2 POOL                    | 4515.242949             | POLYGON   |
-| USDT.e           | AAVE V2 POOL                    | 1772.206585             | AVALANCHE |
-| USDC.e           | AAVE V2 POOL                    | 2522.408895             | AVALANCHE |
-| USDC             | AAVE V3 POOL                    | 44428.421035            | OPTIMISM  |
+| Tokens to Rescue | Contract where tokens are stuck | Amount | Network |
+| --- | --- | --- | --- |
+| [AAVE V2 A_RAI](https://etherscan.io/address/0xc9BC48c72154ef3e5425641a3c747242112a46AF) | [AAVE V2 A_RAI](https://etherscan.io/address/0xc9BC48c72154ef3e5425641a3c747242112a46AF) | 1481.16074087007480402 | ETHEREUM |
+| [AAVE V1 A_WBTC](https://etherscan.io/address/0xFC4B8ED459e00e5400be803A9BB3954234FD50e3) | [AAVE V1 POOL](https://etherscan.io/address/0x398eC7346DcD622eDc5ae82352F02bE94C62d119) | 1.92454215 | ETHEREUM |
+| [USDT](https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7) | [AAVE V2 AMM_POOL](https://etherscan.io/address/0x7937D4799803FbBe595ed57278Bc4cA21f3bFfCB) | 20600.057405 | ETHEREUM |
+| [DAI](https://etherscan.io/address/0x6b175474e89094c44da98b954eedeac495271d0f) | [AAVE V2 POOL](https://etherscan.io/address/0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9) | 22000 | ETHEREUM |
+| [GUSD](https://etherscan.io/address/0x056fd409e1d7a124bd7017459dfea2f387b6d5cd) | [AAVE V2 POOL](https://etherscan.io/address/0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9) | 19994.86 | ETHEREUM |
+| [LINK](https://etherscan.io/address/0x514910771af9ca656af840dff83e8264ecf986ca) | [AAVE V1 POOL](https://etherscan.io/address/0x398eC7346DcD622eDc5ae82352F02bE94C62d119) | 4084 | ETHEREUM |
+| [USDT](https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7) | [AAVE V2 A_USDT](https://etherscan.io/address/0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811) | 11010 | ETHEREUM |
+| [USDC](https://etherscan.io/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48) | [AAVE V2 POOL](https://etherscan.io/address/0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9) | 1089.889717 | ETHEREUM |
+| [WBTC](https://polygonscan.com/address/0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6) | [AAVE V2 POOL](https://polygonscan.com/address/0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf) | 0.22994977 | POLYGON |
+| [AAVE V2 A_DAI](https://polygonscan.com/address/0x27F8D03b3a2196956ED754baDc28D73be8830A6e) | [AAVE V2 A_DAI](https://polygonscan.com/address/0x27F8D03b3a2196956ED754baDc28D73be8830A6e) | 4250.580268097645600939 | POLYGON |
+| [AAVE V2 A_USDC](https://polygonscan.com/address/0x1a13F4Ca1d028320A707D99520AbFefca3998b7F) | [AAVE V2 A_USDC](https://polygonscan.com/address/0x1a13F4Ca1d028320A707D99520AbFefca3998b7F) | 514131.378018 | POLYGON |
+| [USDC](https://polygonscan.com/address/0x2791bca1f2de4661ed88a30c99a7a9449aa84174) | [AAVE V2 POOL](https://polygonscan.com/address/0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf) | 4515.242949 | POLYGON |
+| [USDT.e](https://snowtrace.io/address/0xc7198437980c041c805a1edcba50c1ce5db95118) | [AAVE V2 POOL](https://snowtrace.io/address/0x4F01AeD16D97E3aB5ab2B501154DC9bb0F1A5A2C) | 1772.206585 | AVALANCHE |
+| [USDC.e](https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664) | [AAVE V2 POOL](https://snowtrace.io/address/0x4F01AeD16D97E3aB5ab2B501154DC9bb0F1A5A2C) | 2522.408895 | AVALANCHE |
+| [USDC](https://optimistic.etherscan.io/address/0x7f5c764cbc14f9669b88837ca1490cca17c31607) | [AAVE V3 POOL](https://optimistic.etherscan.io/address/0x794a61358D6845594F94dc1DB02A252b5b4814aD) | 44428.421035 | OPTIMISM |
 
 ## About:
 
@@ -52,46 +52,48 @@ TENDERLY_FORK_URL_OPTIMISM= // to test all the claims on optimism
 
 # Dune Api Key
 DUNE_API_KEY= // to query data needed for rescue from dune
+
 ```
 
 ## Scripts:
 
-`generate-address-value-map`: This script will query all token transfer events to aave contracts using the [dune](https://dune.com/) api. For checking transactions when user has sent underlying token to the aToken contract we filter out the transfer transactions - by removing the transfer transactions which has been caused when user has performed operations such as Deposit, Repay, Liquidation, Flashloan on the pool contract. For checking transactions when user has sent tokens to aave v1 pool core, we also filter out the transfer transactions cause by Deposit, Repay, Liquidation, Flashloan operations.
+- `generate-address-value-map`: This script will query all token transfer events to aave contracts using the [dune](https://dune.com/) api. For checking transactions when user has sent underlying token to the aToken contract we filter out the transfer transactions - by removing the transfer transactions which has been caused when user has performed operations such as Deposit, Repay, Liquidation, Flashloan on the pool contract. For checking transactions when user has sent tokens to aave v1 pool core, we also filter out the transfer transactions cause by Deposit, Repay, Liquidation, Flashloan operations.
+    
+    This script also generates a [resume](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/amountsByContract.txt) indicating the amount to rescue for every token sent on the contracts. Tokens with value less than $1000 are ignored.
+    
+    ```
+    npm run generate-json-mainnet
+    npm run generate-json-l2
+    ```
+    
+    This will generate the json for each token as: address - amounts - transactions.
 
-This script also generates a [resume](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/amountsByContract.txt) indicating the amount to rescue for every token sent on the contracts. Tokens with value less than $1000 are ignored.
+    Example of a generated file from this command - [usdtRescueMap.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/usdtRescueMap.json)
 
-```
-npm run generate-json-mainnet
-npm run generate-json-l2
-```
 
-This will generate the json for each token as: address - amounts - transactions.
+- `generate-merkle-roots`: This script will take the above generated address value map json as input and generate a merkle tree for each token on each network.
+    
+    ```
+    npm run generate-tree
+    ```
+    
+    Example of a generate file from this command: [usdtRescueMerkleTree.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/merkleTree/usdtRescueMerkleTree.json)
 
-Example of a generated file from this command - [usdtRescueMap.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/usdtRescueMap.json)
+- `generate-json-formatted`: To format the address value map generated we can run the following command to format the json map in the token decimals.
+    
+    ```
+    npm run generate-json-formatted
+    ```
+    
+    Example of a generated file from this command: [usdtRescueMapFormatted.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/formatted/usdtRescueMapFormatted.json)
 
-`generate-merkle-roots`: This script will take the above generated address value map json as input and generate a merkle tree for each token on each network.
-
-```
-npm run generate-tree
-```
-
-Example of a generate file from this command: [usdtRescueMerkleTree.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/merkleTree/usdtRescueMerkleTree.json)
-
-`generate-json-formatted`: To format the address value map generated we can run the following command to format the json map in the token decimals.
-
-```
-npm run generate-json-formatted
-```
-
-Example of a generated file from this command: [usdtRescueMapFormatted.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/formatted/usdtRescueMapFormatted.json)
-
-`generate:users-json`: Script to generate user resume - which will include the proofs for the users in order to claim the tokens from the distributor contract. There will be one file generated for each network containing all the user resume.
-
-```
-npm run generate:users-json
-```
-
-Example of a generated file from this command: [usersMerkleTrees.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/usersMerkleTrees.json)
+- `generate:users-json`: Script to generate user resume - which will include the proofs for the users in order to claim the tokens from the distributor contract. There will be one file generated for each network containing all the user resume.
+    
+    ```
+    npm run generate:users-json
+    ```
+    Example of a generated file from this command: [usersMerkleTrees.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/usersMerkleTrees.json)
+    
 
 ## Contracts:
 
@@ -116,29 +118,27 @@ On ethereum we will use the same merkle distributor as in phase one while deploy
 ## Payloads:
 
 - [Ethereum Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/EthRescueMissionPayload.sol):
-  - Updates v1 pool with rescue function
-  - Updates v2 pool with rescue function
-  - Updates v2 amm pool with rescue function
-  - Updates v2 aRai contract with rescue function
-  - Updates v2 aUsdt contract with rescue function
-  - Registers MerkleRoot for each token on the merkle distributor contract.
-  - Transfers aRai, aBtc, Usdt, Usdc, Dai, Gusd, Link tokens to the merkle distributor from the aave contracts where funds were stuck
+    - Updates v1 pool with rescue function
+    - Updates v2 pool with rescue function
+    - Updates v2 amm pool with rescue function
+    - Updates v2 aRai contract with rescue function
+    - Updates v2 aUsdt contract with rescue function
+    - Registers MerkleRoot for each token on the merkle distributor contract.
+    - Transfers aRai, aBtc, Usdt, Usdc, Dai, Gusd, Link tokens to the merkle distributor from the aave contracts where funds were stuck
 - [Polygon Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/PolRescueMissionPayload.sol):
-  - Updates v2 pool with rescue function
-  - Updates v2 aDai contract with rescue function
-  - Updates v2 aUdsc contract with rescue function
-  - Registers MerkleRoot for each token on the merkle distributor contract.
-  - Transfers Wbtc, aDai, aUsdc, Usdc tokens to the merkle distributor contract.
+    - Updates v2 pool with rescue function
+    - Updates v2 aDai contract with rescue function
+    - Updates v2 aUdsc contract with rescue function
+    - Registers MerkleRoot for each token on the merkle distributor contract.
+    - Transfers Wbtc, aDai, aUsdc, Usdc tokens to the merkle distributor contract.
 - [Optimism Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/OptRescueMissionPayload.sol)
-  - Registers MerkleRoot for token on the merkle distributor contract.
-  - Transfers Usdc token to the merkle distributor contract.
-- [Avalanche Payload 1](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/AvaRescueMissionPayload_Guardian_1.sol):
-  - This payload should be called by the owner of addresses provider (guardian).
-  - Updates v2 pool with rescue function
-  - Registers MerkleRoot for each token on the merkle distributor contract.
-- [Avalanche Payload 2](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/AvaRescueMissionPayload_Guardian_2.sol):
-  - This payload should be called by the pool admin (guardian).
-  - Transfers Usdc.e Usdt.e to the merkle distributor contract.
+    - Registers MerkleRoot for token on the merkle distributor contract.
+    - Transfers Usdc token to the merkle distributor contract.
+- [Avalanche Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/AvaRescueMissionPayload.sol):
+    - This payload should be called by the owner of addresses provider / pool admin / guardian.
+    - Updates v2 pool with rescue function
+    - Registers MerkleRoot for each token on the merkle distributor contract.
+    - Transfers Usdc.e Usdt.e to the merkle distributor contract.
 
 ## Tests:
 
@@ -159,4 +159,4 @@ npm run test-opt-claims
 
 ## License
 
-Copyright © 2023, [BGD Labs](https://bgdlabs.com/). Released under the [MIT License](./LICENSE).
+Copyright © 2023, [BGD Labs](https://bgdlabs.com/). Released under the [MIT License](notion://www.notion.so/LICENSE).
