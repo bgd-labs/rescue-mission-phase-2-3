@@ -79,9 +79,7 @@ const deploy = async () => {
     provider.getSigner(DEPLOYER)
   );
 
-  const payloadContract = await payloadFactory.deploy(
-    merkleDistributorContract.address
-  );
+  const payloadContract = await payloadFactory.deploy(merkleDistributorContract.address);
   console.log(`[Payload]: ${payloadContract.address}`);
 
   //---------------------------------------------------------------------------------------------------------------------------------
@@ -99,7 +97,13 @@ const deploy = async () => {
   const withDelegateCalls = [true];
 
   const bridgeExecutorInterface = new ethers.utils.Interface(OptBridgeExecutorAbi);
-  const encodedData = bridgeExecutorInterface.encodeFunctionData('queue', [targets, values, signatures, calldatas, withDelegateCalls]);
+  const encodedData = bridgeExecutorInterface.encodeFunctionData('queue', [
+    targets,
+    values,
+    signatures,
+    calldatas,
+    withDelegateCalls,
+  ]);
 
   const l2CrossDomainMessengerContract = new ethers.Contract(
     L2_CROSS_DOMAIN_MESSENGER,
