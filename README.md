@@ -132,12 +132,10 @@ On ethereum we will use the same merkle distributor as in phase one while deploy
 - [Optimism Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/OptRescueMissionPayload.sol)
   - Registers MerkleRoot for token on the merkle distributor contract.
   - Transfers Usdc token to the merkle distributor contract.
-- [Avalanche Payload 1](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/AvaRescueMissionPayload_Guardian_1.sol):
-  - This payload should be called by the owner of addresses provider (guardian).
+- [Avalanche Payload 1](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/AvaRescueMissionPayload.sol):
+  - This payload should be called by the owner of addresses provider / pool admin / guardian.
   - Updates v2 pool with rescue function
   - Registers MerkleRoot for each token on the merkle distributor contract.
-- [Avalanche Payload 2](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/AvaRescueMissionPayload_Guardian_2.sol):
-  - This payload should be called by the pool admin (guardian).
   - Transfers Usdc.e Usdt.e to the merkle distributor contract.
 
 ## Tests:
