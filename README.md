@@ -1,9 +1,14 @@
-# Aave Rescue Mission Phase 2 and 3 ⛑️
+# Aave Rescue Mission Phase 2 & 3 🚑 👻
 
-Repository containing all the code needed for phase 2 and 3 to rescue tokens sent directly to contracts of the Aave ecosystem.
-This phase will affect the tokens locked on smart contracts around the liquidity pools - v1 Pool, v2 Pool, AMM pool, v3Pool, aTokens across Ethereum, Polygon, Avalanche, Optimism, Fantom, Arbitrum networks.
+![rescue](https://github.com/bgd-labs/rescue-mission-phase-1/blob/master/ghost_rescue.jpg)
 
-The following table represents the tokens to rescue from various different contracts of Aave:
+Repository containing all the code needed for Phase 2&3 to rescue tokens sent directly to contracts of the Aave ecosystem.
+
+This phase will affect the tokens locked on smart contracts of the Aave liquidity pools: Aave v1 Ethereum, Aave v2 Ethereum, Aave v2 AMM, Aave v3 (all networks).
+
+<br>
+
+The following table represents the tokens to rescue from various contracts:
 
 | Tokens to Rescue | Contract where tokens are stuck | Amount | Network |
 | --- | --- | --- | --- |
@@ -23,15 +28,19 @@ The following table represents the tokens to rescue from various different contr
 | [USDC.e](https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664) | [AAVE V2 POOL](https://snowtrace.io/address/0x4F01AeD16D97E3aB5ab2B501154DC9bb0F1A5A2C) | 2522.408895 | AVALANCHE |
 | [USDC](https://optimistic.etherscan.io/address/0x7f5c764cbc14f9669b88837ca1490cca17c31607) | [AAVE V3 POOL](https://optimistic.etherscan.io/address/0x794a61358D6845594F94dc1DB02A252b5b4814aD) | 44428.421035 | OPTIMISM |
 
-## About:
+<br>
 
-This repository compliments the [rescue mission phase 1](https://github.com/bgd-labs/rescue-mission-phase-1) and is divided into three parts:
+## Contents
 
-- Scripts to fetch tokens to rescue off-chain using dune, generating address value maps and merkle trees for each tokens.
-- Implementation contracts of Aave where funds are stuck with added rescue function.
+This repository is a follow-up of [rescue mission phase 1](https://github.com/bgd-labs/rescue-mission-phase-1) and is divided into three parts:
+
+- Scripts to fetch tokens to rescue off-chain using Dune analytics, generating address/value maps and Merkle trees for each token.
+- Upgraded implementation contracts of Aave where funds are stuck, adding a rescue function.
 - Proposal payloads.
 
 <img width="1083" alt="Screenshot 2023-08-02 at 5 16 56 PM" src="https://github.com/bgd-labs/rescue-mission-phase-2-3/assets/22850280/5397ffe2-cbb6-4d2b-9cfe-74762f1371ed">
+
+<br>
 
 ## Setup:
 
@@ -55,11 +64,15 @@ DUNE_API_KEY= // to query data needed for rescue from dune
 
 ```
 
-## Scripts:
+<br>
 
-- `generate-address-value-map`: This script will query all token transfer events to aave contracts using the [dune](https://dune.com/) api. For checking transactions when user has sent underlying token to the aToken contract we filter out the transfer transactions - by removing the transfer transactions which has been caused when user has performed operations such as Deposit, Repay, Liquidation, Flashloan on the pool contract. For checking transactions when user has sent tokens to aave v1 pool core, we also filter out the transfer transactions cause by Deposit, Repay, Liquidation, Flashloan operations.
+## Scripts
+
+- `generate-address-value-map`: This script will query all token transfer events to Aave contracts using the [dune](https://dune.com/) API. For checking transactions where users have sent underlying token to the aToken contract itself,  we filter out the transfer transactions - by removing those happening during "normal" operations such as Deposit, Repay, Liquidation, and Flashloan on the pool contract.
+
+  For checking transactions where users have sent tokens to Aave v1 pool core, we also filter out the transfer transactions caused by Deposit, Repay, Liquidation, and Flashloan operations.
     
-    This script also generates a [resume](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/amountsByContract.txt) indicating the amount to rescue for every token sent on the contracts. Tokens with value less than $1000 are ignored.
+  This script also generates a [summary](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/amountsByContract.txt) indicating the amount to rescue for every token sent on the contracts. Tokens with a value less than $1000 are ignored.
     
     ```
     npm run generate-json-mainnet
@@ -71,13 +84,13 @@ DUNE_API_KEY= // to query data needed for rescue from dune
     Example of a generated file from this command - [usdtRescueMap.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/usdtRescueMap.json)
 
 
-- `generate-merkle-roots`: This script will take the above generated address value map json as input and generate a merkle tree for each token on each network.
+- `generate-merkle-roots`: This script will take the above-generated address/value map JSON as input and generate a Merkle tree for each token on each network.
     
     ```
     npm run generate-tree
     ```
     
-    Example of a generate file from this command: [usdtRescueMerkleTree.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/merkleTree/usdtRescueMerkleTree.json)
+    Example of a generated file from this command: [usdtRescueMerkleTree.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/merkleTree/usdtRescueMerkleTree.json)
 
 - `generate-json-formatted`: To format the address value map generated we can run the following command to format the json map in the token decimals.
     
@@ -87,7 +100,7 @@ DUNE_API_KEY= // to query data needed for rescue from dune
     
     Example of a generated file from this command: [usdtRescueMapFormatted.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/formatted/usdtRescueMapFormatted.json)
 
-- `generate:users-json`: Script to generate user resume - which will include the proofs for the users in order to claim the tokens from the distributor contract. There will be one file generated for each network containing all the user resume.
+- `generate:users-json`: Script to generate user resume - which will include the proofs for the users in order to claim the tokens from the distributor contract. There will be one file generated for each network containing all the user summary.
     
     ```
     npm run generate:users-json
@@ -95,9 +108,11 @@ DUNE_API_KEY= // to query data needed for rescue from dune
     Example of a generated file from this command: [usersMerkleTrees.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/usersMerkleTrees.json)
     
 
-## Contracts:
+<br>
 
-The following Aave contracts are updated by adding a rescue function which can transfer the stuck funds to the merkle distributor contract.
+## Contracts
+
+The following Aave contracts are updated by adding a rescue function that can transfer the stuck funds to the Merkle distributor contract.
 
 - Aave v1 pool
 - Aave v2 amm pool
@@ -109,11 +124,11 @@ The following Aave contracts are updated by adding a rescue function which can t
 - Aave v2 aDai contract on polygon
 - Aave v2 aUsdc contract on polygon
 
-This is different than the previous approach in phase 1, where we were rescuing funds on the initialize method, now we have a seperate method `rescueTokens()` to rescue funds.
+This is different than the previous approach in phase 1, where we were rescuing funds on the initialize method. Now we have a separate method `rescueTokens()` to rescue funds.
 
-We have a merkle distributor on each network which will distribute the tokens to the users.
+We have a Merkle distributor on each network which will distribute the tokens to the users.
 
-On ethereum we will use the same merkle distributor as in phase one while deploy new merkle distributors on the other networks.
+On Ethereum, we will use the same Merkle distributor as in phase one while deploying new Merkle distributors on the other networks.
 
 ## Payloads:
 
@@ -123,26 +138,28 @@ On ethereum we will use the same merkle distributor as in phase one while deploy
     - Updates v2 amm pool with rescue function
     - Updates v2 aRai contract with rescue function
     - Updates v2 aUsdt contract with rescue function
-    - Registers MerkleRoot for each token on the merkle distributor contract.
-    - Transfers aRai, aBtc, Usdt, Usdc, Dai, Gusd, Link tokens to the merkle distributor from the aave contracts where funds were stuck
+    - Registers MerkleRoot for each token on the Merkle distributor contract.
+    - Transfers aRai, aBtc, Usdt, Usdc, Dai, Gusd, Link tokens to the Merkle distributor from the aave contracts where funds were stuck
 - [Polygon Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/PolRescueMissionPayload.sol):
     - Updates v2 pool with rescue function
     - Updates v2 aDai contract with rescue function
     - Updates v2 aUdsc contract with rescue function
-    - Registers MerkleRoot for each token on the merkle distributor contract.
-    - Transfers Wbtc, aDai, aUsdc, Usdc tokens to the merkle distributor contract.
+    - Registers MerkleRoot for each token on the Merkle distributor contract.
+    - Transfers Wbtc, aDai, aUsdc, Usdc tokens to the Merkle distributor contract.
 - [Optimism Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/OptRescueMissionPayload.sol)
-    - Registers MerkleRoot for token on the merkle distributor contract.
-    - Transfers Usdc token to the merkle distributor contract.
+    - Registers MerkleRoot for token on the Merkle distributor contract.
+    - Transfers Usdc token to the Merkle distributor contract.
 - [Avalanche Payload](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/src/contracts/AvaRescueMissionPayload.sol):
     - This payload should be called by the owner of addresses provider / pool admin / guardian.
     - Updates v2 pool with rescue function
     - Registers MerkleRoot for each token on the merkle distributor contract.
-    - Transfers Usdc.e Usdt.e to the merkle distributor contract.
+    - Transfers Usdc.e Usdt.e to the Merkle distributor contract.
+
+<br>
 
 ## Tests:
 
-To run the tests on foundry:
+To run the tests:
 
 ```
 forge test
@@ -156,6 +173,8 @@ npm run test-pol-claims
 npm run test-ava-claims
 npm run test-opt-claims
 ```
+
+<br>
 
 ## License
 
