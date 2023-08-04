@@ -38,7 +38,7 @@ This repository is a follow-up of [rescue mission phase 1](https://github.com/bg
 - Upgraded implementation contracts of Aave where funds are stuck, adding a rescue function.
 - Proposal payloads.
 
-<img width="1083" alt="Screenshot 2023-08-02 at 5 16 56 PM" src="https://github.com/bgd-labs/rescue-mission-phase-2-3/assets/22850280/5397ffe2-cbb6-4d2b-9cfe-74762f1371ed">
+<img width="1083" alt="Screenshot 2023-08-04 at 3 54 10 PM" src="https://github.com/bgd-labs/rescue-mission-phase-2-3/assets/22850280/20f31628-3fb7-4654-abe1-ab01fcf5980e">
 
 <br>
 
