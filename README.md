@@ -2,7 +2,7 @@
 
 ![rescue](https://github.com/bgd-labs/rescue-mission-phase-1/blob/master/ghost_rescue.jpg)
 
-Repository containing all the code needed for Phase 2&3 to rescue tokens sent directly to contracts of the Aave ecosystem.
+Repository containing all the code needed for Phase 2 & 3 to rescue tokens sent directly to contracts of the Aave ecosystem.
 
 This phase will affect the tokens locked on smart contracts of the Aave liquidity pools: Aave v1 Ethereum, Aave v2 Ethereum, Aave v2 AMM, Aave v3 (all networks).
 
@@ -106,7 +106,6 @@ DUNE_API_KEY= // to query data needed for rescue from dune
     npm run generate:users-json
     ```
     Example of a generated file from this command: [usersMerkleTrees.json](https://github.com/bgd-labs/rescue-mission-phase-2-3/blob/main/js-scripts/maps/ethereum/usersMerkleTrees.json)
-    
 
 <br>
 
@@ -129,6 +128,8 @@ This is different than the previous approach in phase 1, where we were rescuing 
 We have a Merkle distributor on each network which will distribute the tokens to the users.
 
 On Ethereum, we will use the same Merkle distributor as in phase one while deploying new Merkle distributors on the other networks.
+
+<br>
 
 ## Payloads:
 
