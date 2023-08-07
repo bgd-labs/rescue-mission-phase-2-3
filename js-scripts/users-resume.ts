@@ -1,3 +1,4 @@
+import {ChainId} from '@aave/contract-helpers';
 import fs from 'fs';
 
 type LightUserInfo = Record<string, Record<string, string>>;
@@ -8,6 +9,7 @@ type UserInfo = {
   index: number;
   distributionId: number;
   tokenAmount: string;
+  chainId: number;
 };
 
 type Claim = {
@@ -88,15 +90,20 @@ const generateUsersJson = (network: string): void => {
   const usersJson: UsersJson = {};
   const lightUsersJson: LightUserInfo = {};
   let merkleTree: Record<string, string>;
+  let chainId: ChainId;
 
   if (network === 'ethereum') {
     merkleTree = ethMerkleTree;
+    chainId = ChainId.mainnet;
   } else if (network === 'polygon') {
     merkleTree = polMerkleTree;
+    chainId = ChainId.polygon;
   } else if (network === 'avalanche') {
     merkleTree = avaMerkleTree;
+    chainId = ChainId.avalanche;
   } else if (network === 'optimism') {
     merkleTree = optMerkleTree;
+    chainId = ChainId.optimism;
   } else {
     throw Error('Invalid network');
   }
@@ -122,6 +129,7 @@ const generateUsersJson = (network: string): void => {
         proof: claimerInfo.proof,
         index: claimerInfo.index,
         distributionId: distributionIds[token],
+        chainId,
       });
     }
   }
@@ -133,21 +141,26 @@ const generateUsersJson = (network: string): void => {
   );
 };
 
-const generateCommonUsersAmounts = (): void => {
+const generateCommonJson = (): void => {
   const usersJson: UsersJson = {};
   const lightUsersJson: LightUserInfo = {};
   let merkleTree: Record<string, string>;
+  let chainId: ChainId;
   const networks = ['ethereum', 'polygon', 'avalanche', 'optimism'];
 
   for (const network of networks) {
     if (network === 'ethereum') {
       merkleTree = ethMerkleTree;
+      chainId = ChainId.mainnet;
     } else if (network === 'polygon') {
       merkleTree = polMerkleTree;
+      chainId = ChainId.polygon;
     } else if (network === 'avalanche') {
       merkleTree = avaMerkleTree;
+      chainId = ChainId.avalanche;
     } else if (network === 'optimism') {
       merkleTree = optMerkleTree;
+      chainId = ChainId.optimism;
     } else {
       throw Error('Invalid network');
     }
@@ -173,11 +186,13 @@ const generateCommonUsersAmounts = (): void => {
           proof: claimerInfo.proof,
           index: claimerInfo.index,
           distributionId: distributionIds[token],
+          chainId,
         });
       }
     }
   }
 
+  fs.writeFileSync(`./js-scripts/maps/usersMerkleTrees.json`, JSON.stringify(usersJson));
   fs.writeFileSync(`./js-scripts/maps/usersAmounts.json`, JSON.stringify(lightUsersJson));
 };
 
@@ -186,4 +201,4 @@ generateUsersJson('polygon');
 generateUsersJson('avalanche');
 generateUsersJson('optimism');
 
-generateCommonUsersAmounts();
+generateCommonJson();

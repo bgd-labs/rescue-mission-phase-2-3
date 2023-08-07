@@ -5,7 +5,8 @@
       "tokenAmountInWei": "44428421035",
       "proof": [],
       "index": 0,
-      "distributionId": 0
+      "distributionId": 0,
+      "chainId": 10
     }
   ]
 }
