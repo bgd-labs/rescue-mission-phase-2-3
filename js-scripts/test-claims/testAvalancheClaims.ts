@@ -2,9 +2,9 @@ import 'dotenv';
 import fs from 'fs';
 import {ethers, providers} from 'ethers';
 import {AddressesProviderAbi} from './abis/AddressesProvider.json';
+import {WEthGatewayAbi} from './abis/WEthGateway.json';
 import V2LendingPool from '../../out/protocol/lendingpool/LendingPool.sol/LendingPool.json';
-import AvaRescueMissionPayloadGuardian1 from '../../out/AvaRescueMissionPayload_Guardian_1.sol/AvaRescueMissionPayload_Guardian_1.json';
-import AvaRescueMissionPayloadGuardian2 from '../../out/AvaRescueMissionPayload_Guardian_2.sol/AvaRescueMissionPayload_Guardian_2.json';
+import AvaRescueMissionPayload from '../../out/AvaRescueMissionPayload.sol/AvaRescueMissionPayload.json';
 import AaveMerkleDistributor from '../../out/AaveMerkleDistributor.sol/AaveMerkleDistributor.json';
 
 const TENDERLY_FORK_URL = process.env.TENDERLY_FORK_URL_AVALANCHE;
@@ -74,7 +74,10 @@ const provider = new providers.StaticJsonRpcProvider(TENDERLY_FORK_URL);
 
 const DEPLOYER = '0x25F2226B597E8F9514B3F68F00f494cF4f286491';
 const POOL_ADDRESSES_PROVIDER = '0xb6A86025F0FE1862B372cb0ca18CE3EDe02A318f';
-const OWNER = '0x01244E7842254e3FD229CD263472076B1439D1Cd'; // owner of addresses provider
+// const OWNER = '0x01244E7842254e3FD229CD263472076B1439D1Cd'; // owner of addresses provider
+const ADDRESSES_PROVIDER_OWNER = '0xa35b76e4935449e33c56ab24b23fcd3246f13470';
+const WETH_GATEWAY_OWNER = '0x01244E7842254e3FD229CD263472076B1439D1Cd';
+const WETH_GATEWAY = '0x8a47f74d1ee0e2edeb4f3a7e64ef3bd8e11d27c8';
 
 const giveEth = async (addresses: string[]) => {
   await provider.send('tenderly_addBalance', [
@@ -121,48 +124,43 @@ const deploy = async () => {
   console.log(`[AaveV2LendingPoolImpl]: ${v2PoolContract.address}`);
 
   //---------------------------------------------------------------------------------------------------------------------------------
-  //                                                      DEPLOY PAYLOADS
+  //                                                      DEPLOY PAYLOAD
   //---------------------------------------------------------------------------------------------------------------------------------
 
-  const payload_1_Factory = new ethers.ContractFactory(
-    AvaRescueMissionPayloadGuardian1.abi,
-    AvaRescueMissionPayloadGuardian1.bytecode,
+  const payload_Factory = new ethers.ContractFactory(
+    AvaRescueMissionPayload.abi,
+    AvaRescueMissionPayload.bytecode,
     provider.getSigner(DEPLOYER)
   );
-  const payload_1_Contract = await payload_1_Factory.deploy(
-    merkleDistributorContract.address,
-    v2PoolContract.address
-  );
-  console.log(`[Payload 1]: ${payload_1_Contract.address}`);
-
-  const payload_2_Factory = new ethers.ContractFactory(
-    AvaRescueMissionPayloadGuardian2.abi,
-    AvaRescueMissionPayloadGuardian2.bytecode,
-    provider.getSigner(DEPLOYER)
-  );
-  const payload_2_Contract = await payload_2_Factory.deploy(merkleDistributorContract.address);
-  console.log(`[Payload 2]: ${payload_2_Contract.address}`);
+  const payload_Contract = await payload_Factory.deploy(merkleDistributorContract.address, v2PoolContract.address);
+  console.log(`[Payload]: ${payload_Contract.address}`);
 
   //---------------------------------------------------------------------------------------------------------------------------------
   //                                                      EXECUTE PAYLOAD
   //---------------------------------------------------------------------------------------------------------------------------------
 
   // transferring permission to execute the payload as its difficult to simulate delegate-call via the multi-sig
-  const transferTx = await merkleDistributorContract.transferOwnership(payload_1_Contract.address);
+  const transferTx = await merkleDistributorContract.transferOwnership(payload_Contract.address);
   await transferTx.wait();
 
   const addressesProvider = new ethers.Contract(
     POOL_ADDRESSES_PROVIDER,
     AddressesProviderAbi,
-    provider.getSigner(OWNER)
+    provider.getSigner(ADDRESSES_PROVIDER_OWNER)
   );
-  await addressesProvider.setPoolAdmin(payload_2_Contract.address);
-  await addressesProvider.transferOwnership(payload_1_Contract.address);
+  await addressesProvider.setPoolAdmin(payload_Contract.address);
+  await addressesProvider.transferOwnership(payload_Contract.address);
+
+  const wethGateway = new ethers.Contract(
+    WETH_GATEWAY,
+    WEthGatewayAbi,
+    provider.getSigner(WETH_GATEWAY_OWNER)
+  );
+  await wethGateway.transferOwnership(payload_Contract.address);
 
   // execute payloads
-  await payload_1_Contract.execute();
-  await payload_2_Contract.execute();
-  console.log('Payloads executed');
+  await payload_Contract.execute();
+  console.log('Payload executed');
 
   return {
     provider,
