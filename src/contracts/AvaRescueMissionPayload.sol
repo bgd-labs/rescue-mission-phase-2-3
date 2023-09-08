@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import {AaveV2Avalanche} from 'aave-address-book/AaveV2Avalanche.sol';
 import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkleDistributor.sol';
+import {IWETHGateway} from './interfaces/IWETHGateway.sol';
 import {IRescue} from './interfaces/IRescue.sol';
 
 /**
@@ -10,7 +11,7 @@ import {IRescue} from './interfaces/IRescue.sol';
  * @author BGD
  * @notice This payload contract initializes the distribution on the distributor, updates the contracts with
  *         rescue function and transfer the tokens to rescue to the merkle distributor contract - the payload should
- *         be executed by the pool admin / owner of addresses provider / guardian multi-sig.
+ *         be executed by the pool admin / guardian multi-sig.
  */
 contract AvaRescueMissionPayload {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
@@ -20,15 +21,19 @@ contract AvaRescueMissionPayload {
 
   address public constant USDCe_TOKEN = 0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664;
 
+  address public constant WETH_GATEWAY = 0x8a47F74d1eE0e2edEB4F3A7e64EF3bD8e11D27C8;
+
   bytes32 public constant USDTe_MERKLE_ROOT =
     0xa9512e18f4e9bd831bd35f0b57ed065c33b1f91ae2dce6881eead4b6bf8b39c7;
 
   bytes32 public constant USDCe_MERKLE_ROOT =
-    0xf6792060f920340a1c5d8caada0adb7bcdaac606ba7a1d6e1e7a3bec5125f4e5;
+    0xeb179de06f52bdf883837eb45464224305c5eaddfa9518e0e293f5abca13b0fe;
 
-  uint256 public constant USDTe_RESCUE_AMOUNT = 1_772_206585;
+  uint256 public constant USDTe_POOL_RESCUE_AMOUNT = 1_772_206585;
 
-  uint256 public constant USDCe_RESCUE_AMOUNT = 2_522_408895;
+  uint256 public constant USDCe_POOL_RESCUE_AMOUNT = 2_522_408895;
+
+  uint256 public constant USDCe_WETH_GATEWAY_RESCUE_AMOUNT = 14_100_000000;
 
   /**
    * @param aaveMerkleDistributor distributor contract which will distribute the tokens to rescue.
@@ -68,12 +73,17 @@ contract AvaRescueMissionPayload {
     IRescue(address(AaveV2Avalanche.POOL)).rescueTokens(
       USDTe_TOKEN,
       address(AAVE_MERKLE_DISTRIBUTOR),
-      USDTe_RESCUE_AMOUNT
+      USDTe_POOL_RESCUE_AMOUNT
     );
     IRescue(address(AaveV2Avalanche.POOL)).rescueTokens(
       USDCe_TOKEN,
       address(AAVE_MERKLE_DISTRIBUTOR),
-      USDCe_RESCUE_AMOUNT
+      USDCe_POOL_RESCUE_AMOUNT
+    );
+    IWETHGateway(WETH_GATEWAY).emergencyTokenTransfer(
+      USDCe_TOKEN,
+      address(AAVE_MERKLE_DISTRIBUTOR),
+      USDCe_WETH_GATEWAY_RESCUE_AMOUNT
     );
   }
 }

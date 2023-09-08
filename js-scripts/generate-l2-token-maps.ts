@@ -8,6 +8,7 @@ import {
   AAVE_V3_OPT_POOL,
   AAVE_V3_ARB_POOL,
   AAVE_V3_FAN_POOL,
+  AAVE_V2_AVA_WETH_GATEWAY,
 } from '../js-scripts/common/constants';
 import {fetchTxns, generateAndSaveMap} from './common/helper';
 import TOKENS_POL from './assets/polTokens.json';
@@ -105,6 +106,7 @@ async function generatePolTokensMap() {
 async function generateAvaTokensMap() {
   const tokenList = Object.entries(TOKENS_AVA);
   const tokensStuckInV2Pool = [TOKENS_AVA['USDC.e'], TOKENS_AVA['USDT.e']];
+  const tokensStuckInWethGateway = [TOKENS_AVA['USDC.e']];
 
   tokenList.forEach(async (token) => {
     const tokenName = token[0];
@@ -112,6 +114,9 @@ async function generateAvaTokensMap() {
     const v2AToken = V2_AVA_A_TOKENS[tokenName as keyof typeof V2_AVA_A_TOKENS];
     const v3AToken = V3_AVA_A_TOKENS[tokenName as keyof typeof V3_AVA_A_TOKENS];
     const tokenStuckInV2Pool = tokensStuckInV2Pool.find((stuckToken) => stuckToken == tokenAddress);
+    const tokenStuckInWethGateway = tokensStuckInWethGateway.find(
+      (stuckToken) => stuckToken == tokenAddress
+    );
 
     const mappedContracts: Record<string, {amount: string; txHash: string[]}>[] = await Promise.all(
       [
@@ -148,6 +153,18 @@ async function generateAvaTokensMap() {
               AAVE_V2_AVA_POOL,
               ChainId.avalanche,
               `${tokenName}-v2Pool`,
+              ContractType.Pool,
+              AaveMarket.v2
+            )
+          : {},
+
+        // tokens sent to ava weth gateway contract
+        tokenStuckInWethGateway
+          ? fetchTxns(
+              tokenAddress,
+              AAVE_V2_AVA_WETH_GATEWAY,
+              ChainId.avalanche,
+              `${tokenName}-wethGateway`,
               ContractType.Pool,
               AaveMarket.v2
             )

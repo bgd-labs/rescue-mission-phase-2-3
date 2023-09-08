@@ -99,6 +99,10 @@
     "name": "USDC-v3aUSDC",
     "chainId": 137
   },
+  {
+    "name": "USDT-v2aUSDT",
+    "chainId": 137
+  },
 
   {
     "name": "DAI-v2aDAI",
