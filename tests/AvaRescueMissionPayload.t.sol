@@ -25,14 +25,8 @@ contract AvaRescueMissionPayloadTest is TestWithExecutor {
   address public aaveMerkleDistributor;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('avalanche'), 32249000);
+    vm.createSelectFork(vm.rpcUrl('avalanche'), 34911904);
     _deployContracts();
-    vm.startPrank(OWNER_ADDRESSES_PROVIDER);
-    // TODO: remove this after the ownership has been transferred
-    IOwnable(address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER)).transferOwnership(
-      AaveV2Avalanche.POOL_ADMIN
-    );
-    vm.stopPrank();
     _selectPayloadExecutor(AaveV2Avalanche.POOL_ADMIN);
   }
 
