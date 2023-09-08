@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {AaveV2Avalanche} from 'aave-address-book/AaveV2Avalanche.sol';
+import {AaveV2Avalanche, AaveV2AvalancheAssets} from 'aave-address-book/AaveV2Avalanche.sol';
 import {AaveMerkleDistributor} from 'rescue-mission-phase-1/contracts/AaveMerkleDistributor.sol';
 import {IWETHGateway} from './interfaces/IWETHGateway.sol';
 import {IRescue} from './interfaces/IRescue.sol';
@@ -16,10 +16,6 @@ import {IRescue} from './interfaces/IRescue.sol';
 contract AvaRescueMissionPayload {
   AaveMerkleDistributor public immutable AAVE_MERKLE_DISTRIBUTOR;
   address public immutable V2_POOL_IMPL;
-
-  address public constant USDTe_TOKEN = 0xc7198437980c041c805A1EDcbA50c1Ce5db95118;
-
-  address public constant USDCe_TOKEN = 0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664;
 
   address public constant WETH_GATEWAY = 0x8a47F74d1eE0e2edEB4F3A7e64EF3bD8e11D27C8;
 
@@ -54,8 +50,8 @@ contract AvaRescueMissionPayload {
 
   function _initializeDistribution() internal {
     address[] memory tokens = new address[](2);
-    tokens[0] = USDTe_TOKEN;
-    tokens[1] = USDCe_TOKEN;
+    tokens[0] = AaveV2AvalancheAssets.USDTe_UNDERLYING;
+    tokens[1] = AaveV2AvalancheAssets.USDCe_UNDERLYING;
 
     bytes32[] memory merkleRoots = new bytes32[](2);
     merkleRoots[0] = USDTe_MERKLE_ROOT;
@@ -71,17 +67,17 @@ contract AvaRescueMissionPayload {
 
   function _rescueTokensToMerkleDistributor() internal {
     IRescue(address(AaveV2Avalanche.POOL)).rescueTokens(
-      USDTe_TOKEN,
+      AaveV2AvalancheAssets.USDTe_UNDERLYING,
       address(AAVE_MERKLE_DISTRIBUTOR),
       USDTe_POOL_RESCUE_AMOUNT
     );
     IRescue(address(AaveV2Avalanche.POOL)).rescueTokens(
-      USDCe_TOKEN,
+      AaveV2AvalancheAssets.USDCe_UNDERLYING,
       address(AAVE_MERKLE_DISTRIBUTOR),
       USDCe_POOL_RESCUE_AMOUNT
     );
     IWETHGateway(WETH_GATEWAY).emergencyTokenTransfer(
-      USDCe_TOKEN,
+      AaveV2AvalancheAssets.USDCe_UNDERLYING,
       address(AAVE_MERKLE_DISTRIBUTOR),
       USDCe_WETH_GATEWAY_RESCUE_AMOUNT
     );
