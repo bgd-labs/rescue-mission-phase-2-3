@@ -10,5 +10,11 @@
     "txns": [
       "0x7b9beee0bbf8c7fcfec89fb7de795ee8d604608d01b3202f1d957c73e210ae5b"
     ]
+  },
+  "0x59e1e03dA5B312Af38c15ED63E021d91D0df8428": {
+    "amount": "14100000000",
+    "txns": [
+      "0x49a6220567afab4a885cdc2d41b64c82b2f9c287b7300db13ca4e7631a8a2438"
+    ]
   }
 }

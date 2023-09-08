@@ -87,6 +87,9 @@
   "0x358Dbc0B83186591F3202400ffCD70c14C1FF9aE": {
     "AVA_USDC_E": "2521.408895 avalanche_usdc.e"
   },
+  "0x59e1e03dA5B312Af38c15ED63E021d91D0df8428": {
+    "AVA_USDC_E": "14100 avalanche_usdc.e"
+  },
   "0x3c82976E756E8280Ddb7AB9529E2063Ec1bBF90b": {
     "OPT_USDC": "44428.421035 optimism_usdc"
   }

@@ -26,6 +26,7 @@ The following table represents the tokens to rescue from various contracts:
 | [USDC](https://polygonscan.com/address/0x2791bca1f2de4661ed88a30c99a7a9449aa84174)           | [AAVE V2 POOL](https://polygonscan.com/address/0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf)         | 4515.242949             | POLYGON   |
 | [USDT.e](https://snowtrace.io/address/0xc7198437980c041c805a1edcba50c1ce5db95118)            | [AAVE V2 POOL](https://snowtrace.io/address/0x4F01AeD16D97E3aB5ab2B501154DC9bb0F1A5A2C)            | 1772.206585             | AVALANCHE |
 | [USDC.e](https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664)            | [AAVE V2 POOL](https://snowtrace.io/address/0x4F01AeD16D97E3aB5ab2B501154DC9bb0F1A5A2C)            | 2522.408895             | AVALANCHE |
+| [USDC.e](https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664)            | [WETH_GATEWAY](https://snowtrace.io/address/0x8a47F74d1eE0e2edEB4F3A7e64EF3bD8e11D27C8)            | 14100             | AVALANCHE |
 | [USDC](https://optimistic.etherscan.io/address/0x7f5c764cbc14f9669b88837ca1490cca17c31607)   | [AAVE V3 POOL](https://optimistic.etherscan.io/address/0x794a61358D6845594F94dc1DB02A252b5b4814aD) | 44428.421035            | OPTIMISM  |
 
 <br>
@@ -38,7 +39,7 @@ This repository is a follow-up of [rescue mission phase 1](https://github.com/bg
 - Upgraded implementation contracts of Aave where funds are stuck, adding a rescue function.
 - Proposal payloads.
 
-<img width="1083" alt="Screenshot 2023-08-04 at 3 54 10 PM" src="https://github.com/bgd-labs/rescue-mission-phase-2-3/assets/22850280/20f31628-3fb7-4654-abe1-ab01fcf5980e">
+<img width="1047" alt="Screenshot 2023-09-08 at 4 40 33 PM" src="https://github.com/bgd-labs/rescue-mission-phase-2-3/assets/22850280/2b157012-4a3a-4444-83bb-7adf86743fb4">
 
 <br>
 
@@ -152,7 +153,8 @@ On Ethereum, we will use the same Merkle distributor as in phase one while deplo
   - This payload should be called by the owner of addresses provider / pool admin / guardian.
   - Updates v2 pool with rescue function
   - Registers MerkleRoot for each token on the merkle distributor contract.
-  - Transfers Usdc.e Usdt.e to the Merkle distributor contract.
+  - Transfers Usdc.e Usdt.e from the v2 to the merkle distributor contract.
+  - Transfers Usdc.e from the wethGateway contract to the merkle distributor contract.
 
 <br>
 
